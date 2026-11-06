@@ -1,0 +1,17 @@
+{
+  "name": "sipsi-sonora-2027",
+  "version": "1.0.0",
+  "description": "Plataforma Integral de Prestaciones Sociales IMSS Sonora 2027",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "imss",
+    "sipsi",
+    "sonora",
+    "paa"
+  ],
+  "author": "IMSS OOAD Sonora",
+  "license": "ISC"
+}
