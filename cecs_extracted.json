@@ -1,0 +1,308 @@
+{
+  "2605": [
+    {
+      "claveCec": "101",
+      "nombre": "HGZ UMF 54",
+      "alianza": "Convenio Unidad Médica (UMF/HGZ)",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS EMPALME"
+    },
+    {
+      "claveCec": "103",
+      "nombre": "ESC 20 NOVIEMBRE",
+      "alianza": "Sector Educativo / Escolar (CAM)",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS EMPALME"
+    },
+    {
+      "claveCec": "105",
+      "nombre": "UNIDAD DEPORTIVA JULIO ALFONSO",
+      "alianza": "Espacio Municipal / Deportivo",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS EMPALME"
+    },
+    {
+      "claveCec": "150",
+      "nombre": "CEC VIRTUAL",
+      "alianza": "Plataforma Virtual Institucional",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS EMPALME"
+    },
+    {
+      "claveCec": "601",
+      "nombre": "MAQUILAS ROCAFUERTE",
+      "alianza": "Sector Productivo / Empresa",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS EMPALME"
+    },
+    {
+      "claveCec": "602",
+      "nombre": "MAQUILAS TETAKAWI",
+      "alianza": "Sector Productivo / Empresa",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS EMPALME"
+    }
+  ],
+  "2602": [
+    {
+      "claveCec": "101",
+      "nombre": "C. A. M.  40",
+      "alianza": "Centro Comunitario Conveniado",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS CIUDAD OBREGÓN"
+    },
+    {
+      "claveCec": "103",
+      "nombre": "UNIDAD DEPORTIVA CONRADO NAVARRO",
+      "alianza": "Espacio Municipal / Deportivo",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS CIUDAD OBREGÓN"
+    },
+    {
+      "claveCec": "104",
+      "nombre": "UNIDAD DEPORTIVA ALVARO OBREGÓN",
+      "alianza": "Espacio Municipal / Deportivo",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS CIUDAD OBREGÓN"
+    },
+    {
+      "claveCec": "105",
+      "nombre": "BIBLIOTECA PÚBLICA",
+      "alianza": "Espacio Municipal / Deportivo",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS CIUDAD OBREGÓN"
+    },
+    {
+      "claveCec": "106",
+      "nombre": "UMF NO. 66",
+      "alianza": "Convenio Unidad Médica (UMF/HGZ)",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS CIUDAD OBREGÓN"
+    },
+    {
+      "claveCec": "107",
+      "nombre": "HGZ NO. 1",
+      "alianza": "Convenio Unidad Médica (UMF/HGZ)",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS CIUDAD OBREGÓN"
+    },
+    {
+      "claveCec": "108",
+      "nombre": "ASOCIACIÓN ADULTOS MAYORES \"FUNDACIÓN LÚLU\"",
+      "alianza": "Asociación Civil / Adultos Mayores",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS CIUDAD OBREGÓN"
+    },
+    {
+      "claveCec": "109",
+      "nombre": "UNIDAD MÉDICA DE ALTA ESPECIALDAD CD. OBREGÓN",
+      "alianza": "Convenio Unidad Médica (UMF/HGZ)",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS CIUDAD OBREGÓN"
+    },
+    {
+      "claveCec": "110",
+      "nombre": "INSTITUTO LA SALLE, INSTITUTO EDUCATIVO",
+      "alianza": "Sector Educativo / Escolar (CAM)",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS CIUDAD OBREGÓN"
+    },
+    {
+      "claveCec": "150",
+      "nombre": "CEC VIRTUAL",
+      "alianza": "Plataforma Virtual Institucional",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS CIUDAD OBREGÓN"
+    },
+    {
+      "claveCec": "151",
+      "nombre": "INSTITUCIÓN DE JOVENES CON DISCAPACIDAD",
+      "alianza": "Centro Comunitario Conveniado",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS CIUDAD OBREGÓN"
+    },
+    {
+      "claveCec": "152",
+      "nombre": "OOAD",
+      "alianza": "Centro Comunitario Conveniado",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS CIUDAD OBREGÓN"
+    },
+    {
+      "claveCec": "153",
+      "nombre": "ESC PRIMARIA CARLOS M. CALLEJA",
+      "alianza": "Sector Educativo / Escolar (CAM)",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS CIUDAD OBREGÓN"
+    },
+    {
+      "claveCec": "601",
+      "nombre": "CREMERIA DEL YAQUI",
+      "alianza": "Sector Productivo / Empresa",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS CIUDAD OBREGÓN"
+    },
+    {
+      "claveCec": "901",
+      "nombre": "ESTANCIA DEL ADULTO MAYOR \"ABUELOS ACTIVOS\"",
+      "alianza": "Asociación Civil / Adultos Mayores",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS CIUDAD OBREGÓN"
+    },
+    {
+      "claveCec": "904",
+      "nombre": "EJIDO FRANCISCO JAVIER MINA",
+      "alianza": "Comunitario / Ejidal / Indígena",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS CIUDAD OBREGÓN"
+    },
+    {
+      "claveCec": "907",
+      "nombre": "CADI POTAM",
+      "alianza": "Comunitario / Ejidal / Indígena",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS CIUDAD OBREGÓN"
+    }
+  ],
+  "2606": [
+    {
+      "claveCec": "125",
+      "nombre": "CENTRO DE REINSERCIÓN SOCIAL",
+      "alianza": "Centro de Reinserción Social (CERESO)",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS HUATABAMPO"
+    },
+    {
+      "claveCec": "150",
+      "nombre": "CEC VIRTUAL",
+      "alianza": "Plataforma Virtual Institucional",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS HUATABAMPO"
+    },
+    {
+      "claveCec": "601",
+      "nombre": "INDUSTRIAS BARDA",
+      "alianza": "Sector Productivo / Empresa",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS HUATABAMPO"
+    },
+    {
+      "claveCec": "904",
+      "nombre": "SAN ANTONIO",
+      "alianza": "Comunitario / Ejidal / Indígena",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS HUATABAMPO"
+    },
+    {
+      "claveCec": "905",
+      "nombre": "PUEBLO INDIGENA LA UNIÓN",
+      "alianza": "Comunitario / Ejidal / Indígena",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS HUATABAMPO"
+    }
+  ],
+  "2603": [
+    {
+      "claveCec": "102",
+      "nombre": "C. A. M. 43",
+      "alianza": "Centro Comunitario Conveniado",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS NOGALES"
+    },
+    {
+      "claveCec": "150",
+      "nombre": "CEC VIRTUAL",
+      "alianza": "Plataforma Virtual Institucional",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS NOGALES"
+    },
+    {
+      "claveCec": "601",
+      "nombre": "WEST MED (AIRLIFE)",
+      "alianza": "Sector Productivo / Empresa",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS NOGALES"
+    }
+  ],
+  "2604": [
+    {
+      "claveCec": "101",
+      "nombre": "C. A. M",
+      "alianza": "Centro Comunitario Conveniado",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS NAVOJOA"
+    },
+    {
+      "claveCec": "104",
+      "nombre": "C.A.M.E.",
+      "alianza": "Sector Educativo / Escolar (CAM)",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS NAVOJOA"
+    },
+    {
+      "claveCec": "105",
+      "nombre": "UNIDAD DEPORTIVA FAUSTINO FÉLIX SERNA",
+      "alianza": "Espacio Municipal / Deportivo",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS NAVOJOA"
+    },
+    {
+      "claveCec": "107",
+      "nombre": "ESC. SEC. HEROICO COLEGIO MILITAR",
+      "alianza": "Sector Educativo / Escolar (CAM)",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS NAVOJOA"
+    },
+    {
+      "claveCec": "115",
+      "nombre": "ESCUELA CENTRO ESCOLAR TALAMANTE",
+      "alianza": "Sector Educativo / Escolar (CAM)",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS NAVOJOA"
+    },
+    {
+      "claveCec": "150",
+      "nombre": "CEC VIRTUAL",
+      "alianza": "Plataforma Virtual Institucional",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS NAVOJOA"
+    },
+    {
+      "claveCec": "601",
+      "nombre": "CORPORATIVO MAPCO",
+      "alianza": "Sector Productivo / Empresa",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS NAVOJOA"
+    }
+  ],
+  "2601": [
+    {
+      "claveCec": "103",
+      "nombre": "CAM 14",
+      "alianza": "Sector Educativo / Escolar (CAM)",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS HERMOSILLO"
+    },
+    {
+      "claveCec": "104",
+      "nombre": "ESC SEC TÉCNICA NO. 1 \"CARLOS ESPINOZA MUÑOZ\"",
+      "alianza": "Sector Educativo / Escolar (CAM)",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS HERMOSILLO"
+    },
+    {
+      "claveCec": "150",
+      "nombre": "CEC VIRTUAL",
+      "alianza": "Plataforma Virtual Institucional",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS HERMOSILLO"
+    },
+    {
+      "claveCec": "601",
+      "nombre": "COCA COLA",
+      "alianza": "Sector Productivo / Empresa",
+      "capacidad": 250,
+      "ubicacion": "Sede CEC en influencia CSS HERMOSILLO"
+    }
+  ]
+}
