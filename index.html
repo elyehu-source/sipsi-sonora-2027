@@ -4327,11 +4327,19 @@
       if (!c) return 15;
       if (c.metaMin) return c.metaMin;
       if (c.cupoMin) return c.cupoMin;
-      const cve = c.clave || (c.curso && c.curso.match(/\[(\d+)\]/) ? c.curso.match(/\[(\d+)\]/)[1] : '');
+      const cve = c.clave || c.claveAct || c.cveActividad || c.cveCurso || (c.curso && c.curso.match(/\[(\d+)\]/) ? c.curso.match(/\[(\d+)\]/)[1] : '');
       if (cve && CATALOGO_CTPAA_MAP[cve] && CATALOGO_CTPAA_MAP[cve].cupoMin) {
         return CATALOGO_CTPAA_MAP[cve].cupoMin;
       }
-      return 15;
+      const nombreNorm = normalizarTextoParaComparar(c.curso || c.actividad || c.nombre || '');
+      if (nombreNorm) {
+        for (const k in CATALOGO_CTPAA_MAP) {
+          if (normalizarTextoParaComparar(CATALOGO_CTPAA_MAP[k].nombre) === nombreNorm) {
+            return CATALOGO_CTPAA_MAP[k].cupoMin;
+          }
+        }
+      }
+      return c.cupo || 15;
     }
 
     function normalizarTextoParaComparar(txt) {
