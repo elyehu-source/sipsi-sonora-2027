@@ -1,0 +1,21 @@
+{
+  "name": "IMSS · Plataforma Integral de Prestaciones Sociales 2027 (Sonora)",
+  "short_name": "IMSS SIPSI 2027",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#13322B",
+  "theme_color": "#13322B",
+  "description": "Sistema Oficial de Programación Anual de Actividades (PAA 2027) · Órgano de Operación Administrativa Desconcentrada Sonora",
+  "icons": [
+    {
+      "src": "/app_icon.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "/app_icon.ico",
+      "sizes": "16x16 32x32 48x48 64x64 128x128 256x256",
+      "type": "image/x-icon"
+    }
+  ]
+}
