@@ -16,7 +16,7 @@ const MIME_TYPES = {
 };
 
 const server = http.createServer((req, res) => {
-  const reqUrl = new URL(req.url, 'http://localhost:3000');
+  const reqUrl = new URL(req.url, 'http://localhost:3005');
 
   // API endpoints para persistencia en disco duro de cursos y configuración
   if (reqUrl.pathname === '/api/guardar-cursos' && req.method === 'POST') {
@@ -27,6 +27,20 @@ const server = http.createServer((req, res) => {
         const payload = JSON.parse(body);
         const cursos = Array.isArray(payload) ? payload : (payload.cursosList || []);
         const filePath = path.resolve(process.cwd(), 'cursos_exportados.json');
+        
+        // Proteccion: Si llega un array vacio pero ya existen cursos guardados, NO borrar el archivo
+        if (cursos.length === 0 && fs.existsSync(filePath)) {
+          try {
+            const current = JSON.parse(fs.readFileSync(filePath, 'utf8') || '[]');
+            if (current.length > 0 && !payload.forzarVacio) {
+              console.log(`[Seguridad] Bloqueado guardado vacio accidental. Se preservan ${current.length} cursos existentes.`);
+              res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+              res.end(JSON.stringify({ ok: true, count: current.length, protected: true }));
+              return;
+            }
+          } catch(e) {}
+        }
+
         fs.writeFileSync(filePath, JSON.stringify(cursos, null, 2), 'utf8');
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({ ok: true, count: cursos.length }));
@@ -107,7 +121,7 @@ const server = http.createServer((req, res) => {
   });
 });
 
-const PORT = 3000;
+const PORT = 3005;
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server listening on http://localhost:${PORT}`);
 });
