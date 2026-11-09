@@ -11682,8 +11682,13 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
         const u = UOPSI_CATALOGO[c.uopsiCve] || { nombre: c.uopsiNombre || c.uopsiCve };
         const tr = document.createElement('tr');
 
-        const fIniTexto = c.fecIni || c.fechaIni || '';
-        const fFinTexto = c.fecFin || c.fechaFin || '';
+        const formatFechaDMY = (fStr) => {
+          if (!fStr) return '';
+          const m = String(fStr).trim().match(/^(\d{4})-(\d{2})-(\d{2})/);
+          return m ? `${m[3]}-${m[2]}-${m[1]}` : fStr;
+        };
+        const fIniTexto = formatFechaDMY(c.fecIni || c.fechaIni || '');
+        const fFinTexto = formatFechaDMY(c.fecFin || c.fechaFin || '');
         const periodoTexto = (fIniTexto && fFinTexto)
           ? `${fIniTexto} al ${fFinTexto}`
           : (c.duracionSem ? `${c.duracionSem} sem (2027)` : 'Anual 2027');
