@@ -144,6 +144,9 @@
     }
   </style>
   <script src="./xlsx.full.min.js"></script>
+  <!-- Firebase SDKs para sincronización centralizada en vivo 24/7 entre todas las PCs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -9658,6 +9661,7 @@
         fechaHoyEl.textContent = new Date().toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' });
       }
       cargarDatosDesdeStorage();
+      inicializarFirebase();
       cargarCursosSegunEje();
       alCambiarUopsi();
       recalcularCursoPrevio();
@@ -9674,6 +9678,121 @@
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') guardarEnStorage();
     });
+
+    
+    // =========================================================================
+    // FIREBASE REALTIME DATABASE: SINCRONIZACIÓN CENTRAL EN VIVO ENTRE TODAS LAS PCS
+    // =========================================================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyBwHmPG3ZYkSVv_0Xv2yi-xvlgeUu-XX_k",
+      authDomain: "project-45ae77c7-7154-41b8-bb8.firebaseapp.com",
+      projectId: "project-45ae77c7-7154-41b8-bb8",
+      storageBucket: "project-45ae77c7-7154-41b8-bb8.firebasestorage.app",
+      messagingSenderId: "939771022004",
+      appId: "1:939771022004:web:b26f1b1e9ee480007125e1",
+      measurementId: "G-REG2Z8RP89",
+      databaseURL: "https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com"
+    };
+
+    let firebaseDb = null;
+    let sincronizandoConNube = false;
+    let estadoConexionNube = false;
+
+    function inicializarFirebase() {
+      try {
+        if (typeof firebase !== 'undefined') {
+          if (!firebase.apps || !firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+          }
+          firebaseDb = firebase.database();
+          console.log('[Firebase] SDK inicializado. Conectando a Realtime Database central...');
+          conectarSincronizacionEnVivo();
+        }
+      } catch (err) {
+        console.warn('[Firebase] Inicializacion diferida:', err.message);
+      }
+    }
+
+    function conectarSincronizacionEnVivo() {
+      if (!firebaseDb) return;
+
+      // Monitor de conexion en tiempo real con Google
+      const connectedRef = firebaseDb.ref('.info/connected');
+      connectedRef.on('value', (snap) => {
+        estadoConexionNube = !!snap.val();
+        actualizarIndicadorGuardado();
+        if (estadoConexionNube) {
+          console.log('[Firebase] 🟢 Conexión activa con la base de datos central en la nube.');
+        } else {
+          console.log('[Firebase] 🟡 Modo sin conexión (respaldo local activo).');
+        }
+      });
+
+      // Escuchar cambios de cursos en tiempo real de todas las unidades
+      const refCursos = firebaseDb.ref('sipsi_sonora_2027/cursos');
+      refCursos.on('value', (snapshot) => {
+        if (sincronizandoConNube) return;
+        const data = snapshot.val();
+
+        if (Array.isArray(data) && data.length > 0) {
+          const strLocal = JSON.stringify(cursosList);
+          const strNube = JSON.stringify(data);
+          if (strLocal !== strNube) {
+            console.log(`[Firebase] 📥 Recibidos ${data.length} cursos actualizados desde la nube.`);
+            cursosList = data.filter(c => UOPSI_CATALOGO[c.uopsiCve]);
+
+            try {
+              localStorage.setItem('imss_paa_cursos_2027_v2', JSON.stringify(cursosList));
+              localStorage.setItem('imss_paa_cursos_2027_backup', JSON.stringify(cursosList));
+            } catch(e){}
+
+            actualizarTodo();
+            mostrarToast(`☁️ Padrón sincronizado en vivo desde la nube (${cursosList.length} cursos)`, 'info');
+          }
+        } else if (!data && cursosList && cursosList.length > 0) {
+          // La base de datos esta recien creada: subir el padron existente inicial
+          console.log('[Firebase] Base de datos en blanco. Subiendo padrón inicial de Sonora...');
+          sincronizarConNube();
+        }
+      }, (err) => {
+        console.warn('[Firebase] Lectura restringida o pendiente de reglas:', err.message);
+      });
+
+      // Escuchar cambios de complementarias en tiempo real
+      const refComp = firebaseDb.ref('sipsi_sonora_2027/complementarias');
+      refComp.on('value', (snapshot) => {
+        if (sincronizandoConNube) return;
+        const data = snapshot.val();
+        if (Array.isArray(data)) {
+          if (JSON.stringify(complementariasList) !== JSON.stringify(data)) {
+            complementariasList = data.filter(a => UOPSI_CATALOGO[a.uopsiCve]);
+            try {
+              localStorage.setItem('imss_paa_comp_2027_clean_v1', JSON.stringify(complementariasList));
+            } catch(e){}
+            actualizarTodo();
+          }
+        }
+      }, (err) => {
+        console.warn('[Firebase] Complementarias lectura pendiente:', err.message);
+      });
+    }
+
+    function sincronizarConNube() {
+      if (!firebaseDb) return;
+      sincronizandoConNube = true;
+
+      firebaseDb.ref('sipsi_sonora_2027').update({
+        cursos: cursosList,
+        complementarias: complementariasList,
+        ultimaActualizacion: new Date().toISOString()
+      }).then(() => {
+        setTimeout(() => { sincronizandoConNube = false; }, 600);
+        console.log('[Firebase] 📤 Actividades enviadas a la nube con éxito.');
+      }).catch((err) => {
+        sincronizandoConNube = false;
+        console.warn('[Firebase] Aviso de sincronización con la nube:', err.message);
+      });
+    }
 
     function cargarDatosDesdeStorage() {
       const STORAGE_KEY_CURSOS = 'imss_paa_cursos_2027_v2';
@@ -9825,6 +9944,9 @@
         localStorage.setItem('imss_paa_ultimo_guardado', new Date().toISOString());
 
         actualizarIndicadorGuardado();
+        if (typeof sincronizarConNube === 'function') {
+          sincronizarConNube();
+        }
       } catch (e) {
         console.warn('Error guardando en localStorage:', e);
       }
@@ -9849,7 +9971,8 @@
       if (ind) {
         const total = (cursosList ? cursosList.length : 0) + (complementariasList ? complementariasList.length : 0);
         const horaStr = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        ind.innerHTML = `Guardado (${total} acts · ${horaStr})`;
+        const iconoNube = estadoConexionNube ? '<i class="fa-solid fa-cloud" style="color:#4ade80;"></i> Nube en Vivo' : '<i class="fa-solid fa-cloud-arrow-up" style="color:#93c5fd;"></i> Guardado Local';
+        ind.innerHTML = `${iconoNube} (${total} acts · ${horaStr})`;
         if (badge) {
           badge.style.borderColor = '#4ade80';
           badge.style.background = 'rgba(74, 222, 128, 0.2)';
