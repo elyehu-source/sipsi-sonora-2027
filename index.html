@@ -9735,11 +9735,45 @@
         const data = snapshot.val();
 
         if (Array.isArray(data) && data.length > 0) {
-          const strLocal = JSON.stringify(cursosList);
-          const strNube = JSON.stringify(data);
-          if (strLocal !== strNube) {
-            console.log(`[Firebase] 📥 Recibidos ${data.length} cursos actualizados desde la nube.`);
-            cursosList = data.filter(c => UOPSI_CATALOGO[c.uopsiCve]);
+          // ========================================================
+          // RESCATE Y FUSIÓN 100% AUTOMÁTICA DE CUALQUIER COMPUTADORA
+          // ========================================================
+          // Detectar si este equipo capturó cursos previamente que aún no están en la nube
+          const idsEnNube = new Set(data.map(c => c.id));
+          const cursosLocalesParaSubir = [];
+
+          if (Array.isArray(cursosList) && cursosList.length > 0) {
+            cursosList.forEach(localCurso => {
+              if (!localCurso || !localCurso.id) return;
+              if (!idsEnNube.has(localCurso.id)) {
+                // Verificar que no sea un duplicado exacto
+                const yaExisteExacto = data.some(nc => 
+                  nc.uopsiCve === localCurso.uopsiCve &&
+                  nc.aula === localCurso.aula &&
+                  nc.horaIni === localCurso.horaIni &&
+                  nc.fecIni === localCurso.fecIni &&
+                  nc.curso === localCurso.curso
+                );
+                if (!yaExisteExacto) {
+                  cursosLocalesParaSubir.push(localCurso);
+                }
+              }
+            });
+          }
+
+          if (cursosLocalesParaSubir.length > 0) {
+            console.log(`[Auto-Rescate] 🌟 Se detectaron ${cursosLocalesParaSubir.length} cursos capturados previamente en este equipo. Fusionando y subiendo a la nube automáticamente...`);
+            const padronFusionado = [...data, ...cursosLocalesParaSubir];
+            cursosList = padronFusionado.filter(c => UOPSI_CATALOGO[c.uopsiCve]);
+
+            sincronizandoConNube = true;
+            firebaseDb.ref('sipsi_sonora_2027').update({
+              cursos: cursosList,
+              ultimaActualizacion: new Date().toISOString(),
+              ultimoEquipoRescatado: (cursosLocalesParaSubir[0].uopsiNombre || 'CSS Sonora') + ' (+' + cursosLocalesParaSubir.length + ' cursos)'
+            }).then(() => {
+              setTimeout(() => { sincronizandoConNube = false; }, 600);
+            });
 
             try {
               localStorage.setItem('imss_paa_cursos_2027_v2', JSON.stringify(cursosList));
@@ -9747,18 +9781,43 @@
             } catch(e){}
 
             actualizarTodo();
-            mostrarToast(`☁️ Padrón sincronizado en vivo desde la nube (${cursosList.length} cursos)`, 'info');
+            mostrarToast(`🎉 ¡Se rescataron e integraron automáticamente ${cursosLocalesParaSubir.length} cursos de este equipo a la nube estatal!`, 'success');
+          } else {
+            // Si no hay cursos nuevos en este equipo, sincronizar lo que viene de la nube
+            const strLocal = JSON.stringify(cursosList);
+            const strNube = JSON.stringify(data);
+            if (strLocal !== strNube) {
+              console.log(`[Firebase] 📥 Padrón sincronizado en vivo (${data.length} cursos recibidos).`);
+              cursosList = data.filter(c => UOPSI_CATALOGO[c.uopsiCve]);
+
+              try {
+                localStorage.setItem('imss_paa_cursos_2027_v2', JSON.stringify(cursosList));
+                localStorage.setItem('imss_paa_cursos_2027_backup', JSON.stringify(cursosList));
+              } catch(e){}
+
+              actualizarTodo();
+            }
           }
         } else if (!data && cursosList && cursosList.length > 0) {
-          // La base de datos esta recien creada: subir el padron existente inicial
           console.log('[Firebase] Base de datos en blanco. Subiendo padrón inicial de Sonora...');
           sincronizarConNube();
         }
       }, (err) => {
-        console.warn('[Firebase] Lectura restringida o pendiente de reglas:', err.message);
+        console.warn('[Firebase] Lectura de cursos:', err.message);
       });
 
-      // Escuchar cambios de complementarias en tiempo real
+      // Registrar presencia y actividad de este equipo en la nube
+      try {
+        const uCve = document.getElementById('c-uopsi') ? document.getElementById('c-uopsi').value : '2606';
+        const pcId = 'PC_' + (navigator.platform || 'WEB').replace(/\s+/g, '_') + '_' + Math.random().toString(36).slice(2, 6);
+        firebaseDb.ref('sipsi_sonora_2027/conexiones_equipos/' + pcId).set({
+          uopsiCve: uCve,
+          uopsiNombre: (UOPSI_CATALOGO[uCve] ? UOPSI_CATALOGO[uCve].nombre : 'CSS'),
+          ultimaConexion: new Date().toISOString(),
+          cursosEnPantalla: cursosList ? cursosList.length : 0
+        });
+      } catch(e){}
+
       const refComp = firebaseDb.ref('sipsi_sonora_2027/complementarias');
       refComp.on('value', (snapshot) => {
         if (sincronizandoConNube) return;
