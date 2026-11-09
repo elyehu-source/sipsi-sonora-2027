@@ -18,7 +18,7 @@ const MIME_TYPES = {
 const server = http.createServer((req, res) => {
   const reqUrl = new URL(req.url, 'http://localhost:3005');
 
-  // API endpoints para persistencia en disco duro de cursos y configuración
+  // API endpoints para persistencia en disco duro de cursos, complementarias y configuración
   if (reqUrl.pathname === '/api/guardar-cursos' && req.method === 'POST') {
     let body = '';
     req.on('data', chunk => { body += chunk; });
@@ -26,14 +26,15 @@ const server = http.createServer((req, res) => {
       try {
         const payload = JSON.parse(body);
         const cursos = Array.isArray(payload) ? payload : (payload.cursosList || []);
+        const comp = payload.complementariasList || [];
         const filePath = path.resolve(process.cwd(), 'cursos_exportados.json');
         
-        // Proteccion: Si llega un array vacio pero ya existen cursos guardados, NO borrar el archivo
+        // Protección: Si llega un array vacío pero ya existen cursos guardados, NO borrar el archivo
         if (cursos.length === 0 && fs.existsSync(filePath)) {
           try {
             const current = JSON.parse(fs.readFileSync(filePath, 'utf8') || '[]');
             if (current.length > 0 && !payload.forzarVacio) {
-              console.log(`[Seguridad] Bloqueado guardado vacio accidental. Se preservan ${current.length} cursos existentes.`);
+              console.log(`[Seguridad] Bloqueado guardado vacío accidental. Se preservan ${current.length} cursos existentes.`);
               res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
               res.end(JSON.stringify({ ok: true, count: current.length, protected: true }));
               return;
@@ -42,8 +43,14 @@ const server = http.createServer((req, res) => {
         }
 
         fs.writeFileSync(filePath, JSON.stringify(cursos, null, 2), 'utf8');
+
+        if (Array.isArray(comp)) {
+          const compPath = path.resolve(process.cwd(), 'complementarias_exportadas.json');
+          fs.writeFileSync(compPath, JSON.stringify(comp, null, 2), 'utf8');
+        }
+
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-        res.end(JSON.stringify({ ok: true, count: cursos.length }));
+        res.end(JSON.stringify({ ok: true, count: cursos.length, compCount: comp.length }));
       } catch (err) {
         res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({ ok: false, error: err.message }));
@@ -55,6 +62,24 @@ const server = http.createServer((req, res) => {
   if (reqUrl.pathname === '/api/cargar-cursos' && req.method === 'GET') {
     try {
       const filePath = path.resolve(process.cwd(), 'cursos_exportados.json');
+      if (fs.existsSync(filePath)) {
+        const data = fs.readFileSync(filePath, 'utf8');
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store, no-cache' });
+        res.end(data);
+      } else {
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end('[]');
+      }
+    } catch (err) {
+      res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(JSON.stringify({ ok: false, error: err.message }));
+    }
+    return;
+  }
+
+  if (reqUrl.pathname === '/api/cargar-complementarias' && req.method === 'GET') {
+    try {
+      const filePath = path.resolve(process.cwd(), 'complementarias_exportadas.json');
       if (fs.existsSync(filePath)) {
         const data = fs.readFileSync(filePath, 'utf8');
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store, no-cache' });
