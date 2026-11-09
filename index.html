@@ -11710,19 +11710,73 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
       reader.onload = (e) => {
         try {
           const json = JSON.parse(e.target.result);
-          if (json.cursos && json.complementarias) {
-            cursosList = json.cursos.filter(c => UOPSI_CATALOGO[c.uopsiCve]);
-            complementariasList = json.complementarias.filter(c => UOPSI_CATALOGO[c.uopsiCve]);
+          const nuevosCursos = (json.cursos || []).filter(c => UOPSI_CATALOGO[c.uopsiCve]);
+          const nuevasComp = (json.complementarias || []).filter(c => UOPSI_CATALOGO[c.uopsiCve]);
+
+          if (nuevosCursos.length === 0 && nuevasComp.length === 0) {
+            mostrarToast("El archivo no contiene actividades válidas para Sonora.", "error");
+            return;
+          }
+
+          // Preguntar si desea FUSIONAR (sumar cursos de otras unidades sin borrar lo propio) o REEMPLAZAR
+          let fusionar = true;
+          if (cursosList.length > 0 || complementariasList.length > 0) {
+            fusionar = confirm(
+              `Se detectaron ${nuevosCursos.length} cursos y ${nuevasComp.length} complementarias en el archivo.\n\n` +
+              `¿Desea FUSIONAR estos cursos con los que ya tiene en pantalla?\n\n` +
+              `• ACEPTAR (Recomendado): FUSIONAR y consolidar (conserva tus cursos y suma los de este archivo sin duplicar).\n` +
+              `• CANCELAR: REEMPLAZAR completamente tu padrón con el contenido de este archivo.`
+            );
+          }
+
+          if (fusionar) {
+            // Fusion inteligente: no duplicar cursos ya existentes por ID o por clave+uopsi+aula+dias+hora
+            const mapaIds = new Set(cursosList.map(c => c.id));
+            let agregados = 0;
+            nuevosCursos.forEach(c => {
+              if (!mapaIds.has(c.id)) {
+                cursosList.push(c);
+                mapaIds.add(c.id);
+                agregados++;
+              }
+            });
+
+            const mapaCompIds = new Set(complementariasList.map(a => a.id));
+            let agregadasComp = 0;
+            nuevasComp.forEach(a => {
+              if (!mapaCompIds.has(a.id)) {
+                complementariasList.push(a);
+                mapaCompIds.add(a.id);
+                agregadasComp++;
+              }
+            });
+
+            if (json.cecs) {
+              const mapaCecs = new Set(cecsList.map(x => x.cve || x.id || x.nombre));
+              json.cecs.forEach(x => {
+                const k = x.cve || x.id || x.nombre;
+                if (!mapaCecs.has(k)) { cecsList.push(x); mapaCecs.add(k); }
+              });
+            }
+            if (json.diagnosticos) {
+              diagnosticosObj = { ...diagnosticosObj, ...json.diagnosticos };
+            }
+
+            guardarEnStorage();
+            actualizarTodo();
+            mostrarToast(`✅ Fusión exitosa: Se sumaron ${agregados} cursos y ${agregadasComp} complementarias. Total en tu padrón: ${cursosList.length} cursos.`, "success");
+          } else {
+            // Reemplazo total
+            cursosList = nuevosCursos;
+            complementariasList = nuevasComp;
             if (json.cecs) cecsList = json.cecs.filter(c => UOPSI_CATALOGO[c.uopsiCve]);
             if (json.diagnosticos) diagnosticosObj = json.diagnosticos;
             guardarEnStorage();
             actualizarTodo();
-            mostrarToast("Borrador JSON sincronizado correctamente.", "success");
-          } else {
-            mostrarToast("Estructura JSON no compatible.", "error");
+            mostrarToast(`Padrón reemplazado con éxito. Total: ${cursosList.length} cursos.`, "info");
           }
         } catch(err) {
-          mostrarToast("Error al procesar el archivo.", "error");
+          mostrarToast("Error al procesar el archivo: " + err.message, "error");
         }
       };
       reader.readAsText(f);
