@@ -4507,27 +4507,110 @@
       });
     }
 
-    function sincronizarConNube() {
+    function sanitizarClaveFirebase(id) {
+      return String(id || '').replace(/[.#$\[\]\/]/g, '_');
+    }
+
+    // ALTA GRANULAR: Sube únicamente los cursos nuevos creados en este momento sin tocar lo demás
+    function sincronizarAltaCursosEnNube(nuevosCursos) {
       if (!firebaseDb) return;
       sincronizandoConNube = true;
+      const updates = {};
+      const lista = Array.isArray(nuevosCursos) ? nuevosCursos : [nuevosCursos];
+      lista.forEach(c => {
+        if (c && c.id) {
+          const k = sanitizarClaveFirebase(c.id);
+          updates['cursos/' + k] = c;
+        }
+      });
+      updates['ultimaActualizacion'] = new Date().toISOString();
 
-      // REEMPLAZO ABSOLUTO con .set() para que cualquier curso o grupo eliminado se borre de raíz en la nube
-      Promise.all([
-        firebaseDb.ref('sipsi_sonora_2027_v2/cursos').set(cursosList),
-        firebaseDb.ref('sipsi_sonora_2027_v2/complementarias').set(complementariasList),
-        firebaseDb.ref('sipsi_sonora_2027_v2/ultimaActualizacion').set(new Date().toISOString())
-      ]).then(() => {
-        setTimeout(() => { sincronizandoConNube = false; }, 600);
-        console.log('[Firebase] ☁️ Padrón actualizado en la nube respetando altas y bajas.');
-      }).catch((err) => {
+      firebaseDb.ref('sipsi_sonora_2027_v2').update(updates).then(() => {
+        setTimeout(() => { sincronizandoConNube = false; }, 300);
+        console.log(`[Firebase] 🟢 ${lista.length} curso(s) sincronizado(s) en la nube de forma granular.`);
+      }).catch(err => {
         sincronizandoConNube = false;
-        console.warn('[Firebase] Aviso de sincronización:', err.message);
+        console.warn('[Firebase] Error al guardar en nube:', err.message);
       });
     }
 
+    // BAJA GRANULAR: Borra únicamente los cursos especificados sin afectar nada más
+    function sincronizarBajaCursosEnNube(idsABorrar) {
+      if (!firebaseDb) return;
+      sincronizandoConNube = true;
+      const updates = {};
+      const lista = Array.isArray(idsABorrar) ? idsABorrar : [idsABorrar];
+      lista.forEach(id => {
+        if (id) {
+          const k = sanitizarClaveFirebase(id);
+          updates['cursos/' + k] = null;
+        }
+      });
+      updates['ultimaActualizacion'] = new Date().toISOString();
+
+      firebaseDb.ref('sipsi_sonora_2027_v2').update(updates).then(() => {
+        setTimeout(() => { sincronizandoConNube = false; }, 300);
+        console.log(`[Firebase] 🗑️ ${lista.length} curso(s) eliminado(s) permanentemente de la nube.`);
+      }).catch(err => {
+        sincronizandoConNube = false;
+        console.warn('[Firebase] Error al eliminar en nube:', err.message);
+      });
+    }
+
+    // COMPLEMENTARIAS GRANULARES
+    function sincronizarAltaCompEnNube(nuevaComp) {
+      if (!firebaseDb || !nuevaComp || !nuevaComp.id) return;
+      sincronizandoConNube = true;
+      const k = sanitizarClaveFirebase(nuevaComp.id);
+      const updates = {
+        ['complementarias/' + k]: nuevaComp,
+        ultimaActualizacion: new Date().toISOString()
+      };
+      firebaseDb.ref('sipsi_sonora_2027_v2').update(updates).then(() => {
+        setTimeout(() => { sincronizandoConNube = false; }, 300);
+      }).catch(() => { sincronizandoConNube = false; });
+    }
+
+    function sincronizarBajaCompEnNube(id) {
+      if (!firebaseDb || !id) return;
+      sincronizandoConNube = true;
+      const k = sanitizarClaveFirebase(id);
+      const updates = {
+        ['complementarias/' + k]: null,
+        ultimaActualizacion: new Date().toISOString()
+      };
+      firebaseDb.ref('sipsi_sonora_2027_v2').update(updates).then(() => {
+        setTimeout(() => { sincronizandoConNube = false; }, 300);
+      }).catch(() => { sincronizandoConNube = false; });
+    }
+
+    // REEMPLAZO TOTAL (Solo usado en carga de borrador masivo o Limpiar Todo)
+    function sincronizarReemplazoTotalEnNube() {
+      if (!firebaseDb) return;
+      sincronizandoConNube = true;
+      const mapCursos = {};
+      (cursosList || []).forEach(c => {
+        if (c && c.id) mapCursos[sanitizarClaveFirebase(c.id)] = c;
+      });
+      const mapComp = {};
+      (complementariasList || []).forEach(a => {
+        if (a && a.id) mapComp[sanitizarClaveFirebase(a.id)] = a;
+      });
+
+      Promise.all([
+        firebaseDb.ref('sipsi_sonora_2027_v2/cursos').set(mapCursos),
+        firebaseDb.ref('sipsi_sonora_2027_v2/complementarias').set(mapComp),
+        firebaseDb.ref('sipsi_sonora_2027_v2/ultimaActualizacion').set(new Date().toISOString())
+      ]).then(() => {
+        setTimeout(() => { sincronizandoConNube = false; }, 400);
+      }).catch(() => { sincronizandoConNube = false; });
+    }
+
+    const sincronizarConNube = sincronizarReemplazoTotalEnNube;
+
     function cargarDatosDesdeStorage() {
       // Limpieza de cachés antiguas para descartar duplicados zombi de versiones anteriores
-      const APP_VERSION = '2027.2.6';
+      const APP_VERSION = '2027.3.0';
       try {
         if (localStorage.getItem('imss_sipsi_app_version') !== APP_VERSION) {
           localStorage.removeItem('imss_paa_cursos_2027_v2');
@@ -5822,16 +5905,18 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
 ¿Desea registrar de todas formas?`)) return;
 
       const horasSemana = Math.round(dur * dias.length * 10) / 10;
-      const serieId = "SERIE-" + Date.now().toString().slice(-4);
+      const serieId = "SERIE-" + Date.now().toString(36) + "-" + Math.random().toString(36).substring(2, 6);
       const cecEl = document.getElementById('c-cec');
       const cveCec = (cecEl && cecEl.value) ? cecEl.value : '0';
       const desCec = (cecEl && cecEl.value !== '0' && cecEl.options && cecEl.options[cecEl.selectedIndex]) ? ((cecEl.options[cecEl.selectedIndex].dataset && cecEl.options[cecEl.selectedIndex].dataset.nombre) || cecEl.options[cecEl.selectedIndex].text || 'Sede Principal CSS') : 'Sede Principal CSS';
 
+      const nuevosCursosAGuardar = [];
+
       if (calc.grupos.length === 1) {
         const g = calc.grupos[0];
         const metaSipsi = cupo * g.sesionesTotales;
-        cursosList.unshift({
-          id: "C-" + Date.now().toString().slice(-4) + "-G" + g.grupo,
+        const nuevoCurso = {
+          id: "C-" + Date.now().toString(36) + "-" + Math.random().toString(36).substring(2, 6) + "-G" + g.grupo,
           uopsiCve,
           eje,
           clave: act.clave,
@@ -5871,13 +5956,16 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
           esAjusteTolerancia: g.esAjusteTolerancia,
           pctAjuste: g.pctAjuste,
           metaSipsi
-        });
+        };
+        cursosList.unshift(nuevoCurso);
+        nuevosCursosAGuardar.push(nuevoCurso);
       } else {
         // Registrar toda la serie continua de grupos encadenados
+        const serieRand = Math.random().toString(36).substring(2, 6);
         calc.grupos.forEach(g => {
           const metaSipsi = cupo * g.sesionesTotales;
-          cursosList.push({
-            id: "C-" + Date.now().toString().slice(-4) + "-G" + g.grupo,
+          const nuevoG = {
+            id: "C-" + Date.now().toString(36) + "-" + serieRand + "-G" + g.grupo,
             uopsiCve,
             eje,
             clave: act.clave,
@@ -5917,13 +6005,15 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
             esAjusteTolerancia: g.esAjusteTolerancia,
             pctAjuste: g.pctAjuste,
             metaSipsi
-          });
+          };
+          cursosList.push(nuevoG);
+          nuevosCursosAGuardar.push(nuevoG);
         });
       }
 
       guardarEnStorage();
       actualizarTodo();
-      sincronizarConNube();
+      sincronizarAltaCursosEnNube(nuevosCursosAGuardar);
 
       // Ocultar alerta de colision del curso recien guardado
       const alerta = document.getElementById('c-alerta-colision');
@@ -5975,10 +6065,11 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
 • Aceptar: Eliminará TODOS los ${totalSerie} grupos de la serie.
 • Cancelar: No eliminará la serie (podrá retirar solo este grupo individual).`);
         if (resp) {
+          const idsABorrar = cursosList.filter(c => c.grupoSerieId === item.grupoSerieId).map(c => c.id);
           cursosList = cursosList.filter(c => c.grupoSerieId !== item.grupoSerieId);
           guardarEnStorage();
           actualizarTodo();
-          sincronizarConNube();
+          sincronizarBajaCursosEnNube(idsABorrar);
           mostrarToast(`Serie completa de ${totalSerie} grupos eliminada.`, "warning");
           return;
         } else {
@@ -5986,7 +6077,7 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
             cursosList = cursosList.filter(c => c.id !== id);
             guardarEnStorage();
             actualizarTodo();
-            sincronizarConNube();
+            sincronizarBajaCursosEnNube(id);
             mostrarToast(`${item.nombreGrupo || 'Grupo ' + item.grupo} eliminado.`, "warning");
           }
           return;
@@ -5997,7 +6088,7 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
         cursosList = cursosList.filter(c => c.id !== id);
         guardarEnStorage();
         actualizarTodo();
-        sincronizarConNube();
+        sincronizarBajaCursosEnNube(id);
         mostrarToast("Actividad retirada.", "warning");
       }
     }
@@ -6055,14 +6146,16 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
       const asistentes = parseInt(document.getElementById('ac-asistentes').value) || 0;
       const padronSipsi = document.getElementById('ac-check-padron').checked;
 
-      complementariasList.unshift({
-        id: "AC-" + Date.now().toString().slice(-4),
+      const nuevaComp = {
+        id: "AC-" + Date.now().toString(36) + "-" + Math.random().toString(36).substring(2, 6),
         uopsiCve, tipo, eje, nombre, modalidad, sede, fecha, horario, responsable, tipoResp, asistentes, padronSipsi
-      });
+      };
+
+      complementariasList.unshift(nuevaComp);
 
       guardarEnStorage();
       actualizarTodo();
-      sincronizarConNube();
+      sincronizarAltaCompEnNube(nuevaComp);
       document.getElementById('ac-nombre').value = '';
       mostrarToast(`Actividad '${nombre}' registrada.`, "success");
     }
@@ -6072,7 +6165,7 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
         complementariasList = complementariasList.filter(a => a.id !== id);
         guardarEnStorage();
         actualizarTodo();
-        sincronizarConNube();
+        sincronizarBajaCompEnNube(id);
         mostrarToast("Actividad eliminada.", "warning");
       }
     }
