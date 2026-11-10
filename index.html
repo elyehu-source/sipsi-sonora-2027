@@ -474,6 +474,38 @@
           <div class="card-body" style="padding: 0.65rem 1rem;">
             <div class="progress-bar-container"><div class="progress-bar-fill" id="prog-bar-sonora" style="width: 0%;"></div></div>
             <div id="uopsis-pills-container" style="display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.65rem;"></div>
+
+            <!-- TABLA INSTITUCIONAL DE METAS POR ÁREA TEMÁTICA Y UNIDAD (PAA 2027) -->
+            <div style="margin-top: 0.85rem; border-top: 1px solid #e2e8f0; padding-top: 0.75rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="font-weight: 700; font-size: 0.83rem; color: #0a5c36; display: flex; align-items: center; gap: 0.4rem;">
+                  <i class="fa-solid fa-table-cells"></i> Metas Institucionales por Área Temática (PAA 2027)
+                </div>
+                <div style="font-size: 0.72rem; color: #64748b;">
+                  <span style="font-weight:600; color:#0a5c36;">Meta Cupo Proyectado</span> (Progreso / Meta)
+                </div>
+              </div>
+              <div class="table-responsive" style="overflow-x: auto; border: 1px solid #cbd5e1; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                <table id="tabla-metas-areas" style="width: 100%; border-collapse: collapse; font-size: 0.77rem; text-align: center;">
+                  <thead>
+                    <tr style="background: #0a5c36; color: #ffffff;">
+                      <th style="padding: 7px 10px; text-align: left; font-weight: 700; border-right: 1px solid rgba(255,255,255,0.15);">Unidad Operativa</th>
+                      <th style="padding: 7px 8px; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.15);">Capacitación y Adiestramiento Técnico</th>
+                      <th style="padding: 7px 8px; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.15);">Cultura Física y Deporte</th>
+                      <th style="padding: 7px 8px; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.15);">Desarrollo Cultural</th>
+                      <th style="padding: 7px 8px; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.15);">Promoción de la Salud</th>
+                      <th style="padding: 7px 10px; font-weight: 700; background: #074729;">Cupo Proyectado Unidad</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbody-metas-areas">
+                    <!-- Filas dinámicas generadas en actualizarTodo() -->
+                  </tbody>
+                  <tfoot id="tfoot-metas-areas" style="background: #f1f5f9; font-weight: 700; border-top: 2px solid #94a3b8;">
+                    <!-- Totales Generales -->
+                  </tfoot>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -2303,13 +2335,58 @@
 ];
 
     const UOPSI_CATALOGO = {
-      "2601": { nombre: "CSS Hermosillo", cve: "2601", meta: 12479, poblacion: 95000 },
-      "2602": { nombre: "CSS Ciudad Obregón", cve: "2602", meta: 7941, poblacion: 80000 },
-      "2603": { nombre: "CSS Nogales", cve: "2603", meta: 5003, poblacion: 50000 },
-      "2604": { nombre: "CSS Navojoa", cve: "2604", meta: 4866, poblacion: 35000 },
-      "2605": { nombre: "CSS Empalme", cve: "2605", meta: 4639, poblacion: 18000 },
-      "2606": { nombre: "CSS Huatabampo", cve: "2606", meta: 8272, poblacion: 25000 }
+      "2601": { 
+        nombre: "CSS Hermosillo", 
+        cve: "2601", 
+        meta: 12479, 
+        poblacion: 95000,
+        metasArea: { "Capacitación": 2595, "Deporte": 5893, "Cultura": 1219, "Salud": 2772 }
+      },
+      "2602": { 
+        nombre: "CSS Ciudad Obregón", 
+        cve: "2602", 
+        meta: 7941, 
+        poblacion: 80000,
+        metasArea: { "Capacitación": 2571, "Deporte": 2810, "Cultura": 677, "Salud": 1883 }
+      },
+      "2603": { 
+        nombre: "CSS Nogales", 
+        cve: "2603", 
+        meta: 5003, 
+        poblacion: 50000,
+        metasArea: { "Capacitación": 873, "Deporte": 876, "Cultura": 620, "Salud": 2634 }
+      },
+      "2604": { 
+        nombre: "CSS Navojoa", 
+        cve: "2604", 
+        meta: 4866, 
+        poblacion: 35000,
+        metasArea: { "Capacitación": 1118, "Deporte": 1703, "Cultura": 584, "Salud": 1461 }
+      },
+      "2605": { 
+        nombre: "CSS Empalme", 
+        cve: "2605", 
+        meta: 4639, 
+        poblacion: 18000,
+        metasArea: { "Capacitación": 1393, "Deporte": 1673, "Cultura": 620, "Salud": 953 }
+      },
+      "2606": { 
+        nombre: "CSS Huatabampo", 
+        cve: "2606", 
+        meta: 8272, 
+        poblacion: 25000,
+        metasArea: { "Capacitación": 1116, "Deporte": 3918, "Cultura": 1021, "Salud": 2217 }
+      }
     };
+
+    function normalizarAreaEje(ejeStr) {
+      const s = String(ejeStr || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+      if (s.includes('cap') || s.includes('adiest')) return 'Capacitación';
+      if (s.includes('dep') || s.includes('fisic')) return 'Deporte';
+      if (s.includes('cul')) return 'Cultura';
+      if (s.includes('sal')) return 'Salud';
+      return 'Salud';
+    }
 
     const META_MINIMA_SONORA = 43200;
 
@@ -4672,7 +4749,7 @@
     const sincronizarConNube = sincronizarReemplazoTotalEnNube;
 
     function cargarDatosDesdeStorage() {
-      const APP_VERSION = '2027.3.6';
+      const APP_VERSION = '2027.3.7';
       try {
         // Cargar eliminadosSet desde localStorage
         const rawElim = localStorage.getItem('imss_paa_eliminados_2027');
@@ -6695,6 +6772,30 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
         elBadgeGlobal.textContent = granTot >= META_MINIMA_SONORA ? 'Meta Acreditada' : 'En Déficit';
       }
 
+      // Calcular progreso por Área Temática para cada Unidad
+      const uAreaProg = {
+        "2601": { "Capacitación": 0, "Deporte": 0, "Cultura": 0, "Salud": 0 },
+        "2602": { "Capacitación": 0, "Deporte": 0, "Cultura": 0, "Salud": 0 },
+        "2603": { "Capacitación": 0, "Deporte": 0, "Cultura": 0, "Salud": 0 },
+        "2604": { "Capacitación": 0, "Deporte": 0, "Cultura": 0, "Salud": 0 },
+        "2605": { "Capacitación": 0, "Deporte": 0, "Cultura": 0, "Salud": 0 },
+        "2606": { "Capacitación": 0, "Deporte": 0, "Cultura": 0, "Salud": 0 }
+      };
+
+      cursosList.forEach(c => {
+        if (c && c.uopsiCve && uAreaProg[c.uopsiCve]) {
+          const areaNorm = normalizarAreaEje(c.eje);
+          uAreaProg[c.uopsiCve][areaNorm] += (Number(c.cupo) || 0);
+        }
+      });
+
+      complementariasList.forEach(a => {
+        if (a && a.padronSipsi && a.uopsiCve && uAreaProg[a.uopsiCve]) {
+          const areaNorm = normalizarAreaEje(a.eje);
+          uAreaProg[a.uopsiCve][areaNorm] += (Number(a.asistentes) || 0);
+        }
+      });
+
       // Pills UOPSI con cupo proyectado/meta asignada
       const pCont = document.getElementById('uopsis-pills-container');
       if (pCont) {
@@ -6708,6 +6809,106 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
           pill.innerHTML = `<span><strong>${u.nombre}:</strong> ${val.toLocaleString()}/${u.meta.toLocaleString()}</span> <span class="badge ${cumple ? 'badge-cumple' : 'badge-deficit'}" style="font-size:0.65rem;padding:1px 4px;">${Math.round((val/u.meta)*100)}%</span>`;
           pCont.appendChild(pill);
         });
+      }
+
+      // Renderizar Tabla Oficial de Metas por Área Temática (PAA 2027)
+      const tbodyMetas = document.getElementById('tbody-metas-areas');
+      const tfootMetas = document.getElementById('tfoot-metas-areas');
+
+      // Orden oficial de las unidades según la imagen institucional:
+      // CSS CIUDAD OBREGÓN (2602), CSS EMPALME (2605), CSS HERMOSILLO (2601),
+      // CSS HUATABAMPO (2606), CSS NAVOJOA (2604), CSS NOGALES (2603)
+      const ordenUnidades = ['2602', '2605', '2601', '2606', '2604', '2603'];
+      const areasList = ['Capacitación', 'Deporte', 'Cultura', 'Salud'];
+
+      if (tbodyMetas) {
+        tbodyMetas.innerHTML = '';
+        ordenUnidades.forEach((cve, idx) => {
+          const u = UOPSI_CATALOGO[cve];
+          const mArea = u.metasArea || {};
+          const pArea = uAreaProg[cve] || {};
+          const totProgU = uMetas[cve] || 0;
+          const bgRow = (idx % 2 === 0) ? '#ffffff' : '#f8fafc';
+
+          const tr = document.createElement('tr');
+          tr.style.background = bgRow;
+          tr.style.borderBottom = '1px solid #e2e8f0';
+
+          let celdasHTML = `<td style="padding: 6px 10px; text-align: left; font-weight: 700; color: #1e293b; border-right: 1px solid #e2e8f0;">${u.nombre.toUpperCase()}</td>`;
+
+          areasList.forEach(ar => {
+            const metaAr = mArea[ar] || 0;
+            const progAr = pArea[ar] || 0;
+            const pctAr = metaAr > 0 ? Math.round((progAr / metaAr) * 100) : 0;
+            const cumpleAr = progAr >= metaAr;
+
+            celdasHTML += `
+              <td style="padding: 6px 8px; border-right: 1px solid #e2e8f0;">
+                <div style="font-weight: 700; color: #0f172a; font-size: 0.81rem;">${metaAr.toLocaleString()}</div>
+                <div style="font-size: 0.67rem; color: ${cumpleAr ? '#15803d' : '#64748b'}; margin-top: 1px;">
+                  ${progAr.toLocaleString()} <span style="font-weight:600; color:${cumpleAr ? '#15803d' : (pctAr > 0 ? '#b45309' : '#94a3b8')};">(${pctAr}%)</span>
+                </div>
+              </td>
+            `;
+          });
+
+          const pctTotU = u.meta > 0 ? Math.round((totProgU / u.meta) * 100) : 0;
+          const cumpleTot = totProgU >= u.meta;
+          celdasHTML += `
+            <td style="padding: 6px 10px; background: ${cumpleTot ? '#f0fdf4' : '#fff1f2'};">
+              <div style="font-weight: 800; color: ${cumpleTot ? '#166534' : '#991b1b'}; font-size: 0.83rem;">${u.meta.toLocaleString()}</div>
+              <div style="font-size: 0.67rem; color: ${cumpleTot ? '#15803d' : '#e11d48'}; font-weight: 700;">
+                ${totProgU.toLocaleString()} (${pctTotU}%)
+              </div>
+            </td>
+          `;
+
+          tr.innerHTML = celdasHTML;
+          tbodyMetas.appendChild(tr);
+        });
+      }
+
+      if (tfootMetas) {
+        let totCapProg = 0, totDepProg = 0, totCultProg = 0, totSalProg = 0;
+        ordenUnidades.forEach(cve => {
+          const pArea = uAreaProg[cve] || {};
+          totCapProg += (pArea['Capacitación'] || 0);
+          totDepProg += (pArea['Deporte'] || 0);
+          totCultProg += (pArea['Cultura'] || 0);
+          totSalProg += (pArea['Salud'] || 0);
+        });
+
+        const pctCapTot = Math.round((totCapProg / 9666) * 100);
+        const pctDepTot = Math.round((totDepProg / 16873) * 100);
+        const pctCultTot = Math.round((totCultProg / 4741) * 100);
+        const pctSalTot = Math.round((totSalProg / 11920) * 100);
+        const pctGranTot = Math.round((granTot / 43200) * 100);
+
+        tfootMetas.innerHTML = `
+          <tr style="border-top: 2px solid #cbd5e1; background: #f8fafc;">
+            <td style="padding: 7px 10px; text-align: left; font-weight: 800; color: #0a5c36; border-right: 1px solid #cbd5e1;">TOTAL GENERAL</td>
+            <td style="padding: 7px 8px; border-right: 1px solid #cbd5e1;">
+              <div style="font-weight: 800; color: #0f172a; font-size: 0.83rem;">9,666</div>
+              <div style="font-size: 0.67rem; color: #64748b;">${totCapProg.toLocaleString()} (${pctCapTot}%)</div>
+            </td>
+            <td style="padding: 7px 8px; border-right: 1px solid #cbd5e1;">
+              <div style="font-weight: 800; color: #0f172a; font-size: 0.83rem;">16,873</div>
+              <div style="font-size: 0.67rem; color: #64748b;">${totDepProg.toLocaleString()} (${pctDepTot}%)</div>
+            </td>
+            <td style="padding: 7px 8px; border-right: 1px solid #cbd5e1;">
+              <div style="font-weight: 800; color: #0f172a; font-size: 0.83rem;">4,741</div>
+              <div style="font-size: 0.67rem; color: #64748b;">${totCultProg.toLocaleString()} (${pctCultProg}%)</div>
+            </td>
+            <td style="padding: 7px 8px; border-right: 1px solid #cbd5e1;">
+              <div style="font-weight: 800; color: #0f172a; font-size: 0.83rem;">11,920</div>
+              <div style="font-size: 0.67rem; color: #64748b;">${totSalProg.toLocaleString()} (${pctSalTot}%)</div>
+            </td>
+            <td style="padding: 7px 10px; background: #e2e8f0;">
+              <div style="font-weight: 800; color: #0a5c36; font-size: 0.85rem;">43,200</div>
+              <div style="font-size: 0.67rem; color: #0a5c36; font-weight: 700;">${granTot.toLocaleString()} (${pctGranTot}%)</div>
+            </td>
+          </tr>
+        `;
       }
 
       // Stats Tab 2
