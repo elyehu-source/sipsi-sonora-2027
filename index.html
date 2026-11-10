@@ -4463,7 +4463,7 @@
       });
 
       // Escuchar cambios de cursos en tiempo real de todas las unidades
-      const refCursos = firebaseDb.ref('sipsi_sonora_2027/cursos');
+      const refCursos = firebaseDb.ref('sipsi_sonora_2027_v2/cursos');
       refCursos.on('value', (snapshot) => {
         if (sincronizandoConNube) return;
         const raw = snapshot.val();
@@ -4489,7 +4489,7 @@
         console.warn('[Firebase] Lectura de cursos:', err.message);
       });
 
-      const refComp = firebaseDb.ref('sipsi_sonora_2027/complementarias');
+      const refComp = firebaseDb.ref('sipsi_sonora_2027_v2/complementarias');
       refComp.on('value', (snapshot) => {
         if (sincronizandoConNube) return;
         const raw = snapshot.val();
@@ -4513,9 +4513,9 @@
 
       // REEMPLAZO ABSOLUTO con .set() para que cualquier curso o grupo eliminado se borre de raíz en la nube
       Promise.all([
-        firebaseDb.ref('sipsi_sonora_2027/cursos').set(cursosList),
-        firebaseDb.ref('sipsi_sonora_2027/complementarias').set(complementariasList),
-        firebaseDb.ref('sipsi_sonora_2027/ultimaActualizacion').set(new Date().toISOString())
+        firebaseDb.ref('sipsi_sonora_2027_v2/cursos').set(cursosList),
+        firebaseDb.ref('sipsi_sonora_2027_v2/complementarias').set(complementariasList),
+        firebaseDb.ref('sipsi_sonora_2027_v2/ultimaActualizacion').set(new Date().toISOString())
       ]).then(() => {
         setTimeout(() => { sincronizandoConNube = false; }, 600);
         console.log('[Firebase] ☁️ Padrón actualizado en la nube respetando altas y bajas.');
@@ -4526,6 +4526,16 @@
     }
 
     function cargarDatosDesdeStorage() {
+      // Limpieza de cachés antiguas para descartar duplicados zombi de versiones anteriores
+      const APP_VERSION = '2027.2.5';
+      try {
+        if (localStorage.getItem('imss_sipsi_app_version') !== APP_VERSION) {
+          localStorage.removeItem('imss_paa_cursos_2027_v2');
+          localStorage.removeItem('imss_paa_cursos_2027_backup');
+          localStorage.setItem('imss_sipsi_app_version', APP_VERSION);
+        }
+      } catch(e){}
+
       const STORAGE_KEY_CURSOS = 'imss_paa_cursos_2027_v2';
       const STORAGE_BACKUP_CURSOS = 'imss_paa_cursos_2027_backup';
       const STORAGE_KEY_COMP = 'imss_paa_comp_2027_clean_v1';
