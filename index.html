@@ -159,8 +159,8 @@
       </div>
     </div>
     <div class="header-actions">
-      <<div id="indicador-guardado-status" style="display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); padding:4px 10px; border-radius:20px; font-size:0.75rem; color:#fff; font-weight:600;" title="Tus actividades se guardan automáticamente en tu equipo"><i class="fa-solid fa-cloud-arrow-up" style="color:#4ade80;"></i> <span id="indicador-guardado-texto">Guardado automático activo</span></div>
-        button class="btn btn-outline btn-sm" style="background: rgba(255,255,255,0.18); color: white; border-color: rgba(255,255,255,0.35); font-weight: 600;" onclick="abrirModalImportador()" title="Importar Excel o CSV oficial SIPSI">
+      <div id="indicador-guardado-status" style="display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); padding:4px 10px; border-radius:20px; font-size:0.75rem; color:#fff; font-weight:600;" title="Tus actividades se guardan automáticamente en tu equipo"><i class="fa-solid fa-cloud-arrow-up" style="color:#4ade80;"></i> <span id="indicador-guardado-texto">Guardado automático activo</span></div>
+      <button class="btn btn-outline btn-sm" style="background: rgba(255,255,255,0.18); color: white; border-color: rgba(255,255,255,0.35); font-weight: 600;" onclick="abrirModalImportador()" title="Importar Excel o CSV oficial SIPSI">
         <i class="fa-solid fa-file-import"></i> Importar Excel / CSV
       </button>
       <button class="btn btn-outline btn-sm" style="background: #0a5c36; color: white; border-color: #0a5c36; font-weight: 600;" onclick="descargarExcelProgramacion()" title="Descargar Reporte Oficial PAA de Cursos en Excel (36 Columnas)">
@@ -184,7 +184,16 @@
       <span><strong>Cobertura:</strong> 6 CSS Oficiales</span>
       <span class="badge badge-cumple" id="tb-badge-pass">PASS: 6/6 Acreditadas</span>
     </div>
-    <div class="toolbar-group">
+    <div class="toolbar-group" style="gap: 0.65rem; align-items: center;">
+      <!-- SELECTOR DE PERFIL / MODO DE TRABAJO -->
+      <div style="display: inline-flex; background: #e2e8f0; padding: 2px; border-radius: 20px; font-size: 0.73rem; font-weight: 700; border: 1px solid #cbd5e1; box-shadow: inset 0 1px 2px rgba(0,0,0,0.06);">
+        <button type="button" id="btn-modo-oficial" onclick="cambiarModoTrabajo('oficial')" style="border: none; border-radius: 16px; padding: 4px 11px; cursor: pointer; transition: all 0.2s; background: #15803d; color: #ffffff; display: flex; align-items: center; gap: 5px;">
+          <i class="fa-solid fa-users"></i> Padrón Oficial (En Vivo)
+        </button>
+        <button type="button" id="btn-modo-simulacion" onclick="cambiarModoTrabajo('simulacion')" style="border: none; border-radius: 16px; padding: 4px 11px; cursor: pointer; transition: all 0.2s; background: transparent; color: #475569; display: flex; align-items: center; gap: 5px;">
+          <i class="fa-solid fa-flask"></i> Mi Simulación Privada
+        </button>
+      </div>
       <div id="txt-persist-status"><i class="fa-solid fa-cloud-arrow-up" style="color: #16a34a;"></i> Guardado automático activo</div>
     </div>
   </div>
@@ -455,6 +464,32 @@
       </div>
 
       <div class="content-pane">
+        <!-- BANNER DE SIMULACIÓN Y ANÁLISIS PRIVADO -->
+        <div id="banner-simulacion" style="display: none; background: linear-gradient(90deg, #1e3a8a, #2563eb); color: white; padding: 0.65rem 1rem; border-radius: 8px; margin-bottom: 0.85rem; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.6rem; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); border: 1px solid #3b82f6;">
+          <div style="display: flex; align-items: center; gap: 0.65rem;">
+            <div style="background: rgba(255,255,255,0.2); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;">
+              <i class="fa-solid fa-flask"></i>
+            </div>
+            <div>
+              <div style="font-weight: 800; font-size: 0.88rem; letter-spacing: 0.3px;">MODO SIMULACIÓN Y ANÁLISIS PRIVADO ACTIVO</div>
+              <div style="font-size: 0.72rem; opacity: 0.92; margin-top: 1px;">
+                Borrador personal 100% aislado. Puedes agregar, eliminar y ensayar metas libremente. <strong style="text-decoration: underline;">Tus compañeros NO ven estos cambios</strong>.
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
+            <button type="button" class="btn btn-sm" onclick="clonarPadronOficialASimulacion()" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4); font-size: 0.74rem; font-weight: 600; padding: 0.3rem 0.65rem; border-radius: 4px;" title="Copiar el padrón oficial actual de la nube para experimentar desde el estado más reciente">
+              <i class="fa-solid fa-cloud-arrow-down"></i> Copiar del Oficial
+            </button>
+            <button type="button" class="btn btn-sm" onclick="publicarSimulacionAOficial()" style="background: #16a34a; color: white; border: 1px solid #22c55e; font-size: 0.74rem; font-weight: 700; padding: 0.3rem 0.65rem; border-radius: 4px;" title="Aplicar esta propuesta como el nuevo padrón oficial en la nube (compartido)">
+              <i class="fa-solid fa-cloud-arrow-up"></i> Publicar al Oficial
+            </button>
+            <button type="button" class="btn btn-sm" onclick="cambiarModoTrabajo('oficial')" style="background: #ffffff; color: #1e3a8a; border: none; font-size: 0.74rem; font-weight: 700; padding: 0.3rem 0.65rem; border-radius: 4px;" title="Salir de la simulación y volver al padrón oficial en vivo">
+              <i class="fa-solid fa-arrow-left"></i> Volver al Oficial
+            </button>
+          </div>
+        </div>
+
         <div class="stat-strip" style="margin-bottom: 0.85rem;">
           <div class="stat-card"><div class="stat-val" id="st-cursos-tot">0</div><div class="stat-lbl">Cursos PAA</div></div>
           <div class="stat-card"><div class="stat-val" id="st-horas-tot">0 hrs</div><div class="stat-lbl">Horas PAA</div></div>
@@ -4467,6 +4502,13 @@
     let diagnosticosObj = {};
     const eliminadosSet = new Set();
 
+    // =========================================================================
+    // PERFIL INDIVIDUAL / MODO SIMULACIÓN PRIVADO
+    // =========================================================================
+    let modoTrabajoActual = 'oficial'; // 'oficial' | 'simulacion'
+    let cursosOficialesCache = [];
+    let compOficialesCache = [];
+
     window.addEventListener('DOMContentLoaded', () => {
       const fechaHoyEl = document.getElementById('rep-fecha-hoy');
       if (fechaHoyEl) {
@@ -4509,6 +4551,157 @@
     let firebaseDb = null;
     let sincronizandoConNube = false;
     let estadoConexionNube = false;
+
+    // GESTIÓN DE PERFIL INDIVIDUAL / SIMULACIÓN PRIVADA
+    function cambiarModoTrabajo(modo) {
+      if (modo === modoTrabajoActual) return;
+
+      if (modo === 'simulacion') {
+        // 1. Respaldar estado oficial en memoria
+        cursosOficialesCache = [...cursosList];
+        compOficialesCache = [...complementariasList];
+        modoTrabajoActual = 'simulacion';
+
+        // 2. Cargar datos de simulación desde localStorage o inicializar con copia fresca
+        let simC = null;
+        let simComp = null;
+        try {
+          const rawC = localStorage.getItem('imss_paa_simulacion_cursos');
+          if (rawC) simC = JSON.parse(rawC);
+          const rawComp = localStorage.getItem('imss_paa_simulacion_comp');
+          if (rawComp) simComp = JSON.parse(rawComp);
+        } catch(e){}
+
+        if (Array.isArray(simC) && simC.length > 0) {
+          cursosList = simC;
+        } else {
+          // Primera vez: clonar padrón oficial actual
+          cursosList = JSON.parse(JSON.stringify(cursosOficialesCache));
+          try {
+            localStorage.setItem('imss_paa_simulacion_cursos', JSON.stringify(cursosList));
+          } catch(e){}
+        }
+
+        if (Array.isArray(simComp)) {
+          complementariasList = simComp;
+        } else {
+          complementariasList = JSON.parse(JSON.stringify(compOficialesCache));
+        }
+
+        actualizarInterfazModo();
+        actualizarTodo();
+        mostrarToast('🧪 Modo Simulación Privado activado. Tus cambios no afectan a nadie.', 'info');
+      } else {
+        // Volver a modo oficial
+        try {
+          localStorage.setItem('imss_paa_simulacion_cursos', JSON.stringify(cursosList));
+          localStorage.setItem('imss_paa_simulacion_comp', JSON.stringify(complementariasList));
+        } catch(e){}
+
+        modoTrabajoActual = 'oficial';
+
+        if (cursosOficialesCache.length > 0) {
+          cursosList = [...cursosOficialesCache];
+        } else {
+          cargarDatosDesdeStorage();
+        }
+        if (compOficialesCache.length > 0) {
+          complementariasList = [...compOficialesCache];
+        }
+
+        // Si Firebase está activo, refrescar con la versión central en vivo
+        if (firebaseDb) {
+          firebaseDb.ref('sipsi_sonora_2027_v2/cursos').once('value').then(snap => {
+            const raw = snap.val();
+            if (raw) {
+              cursosList = (Array.isArray(raw) ? raw.filter(Boolean) : Object.values(raw).filter(Boolean))
+                .filter(c => c && c.id && !eliminadosSet.has(sanitizarClaveFirebase(c.id)) && UOPSI_CATALOGO[c.uopsiCve]);
+              actualizarTodo();
+            }
+          }).catch(()=>{});
+        }
+
+        actualizarInterfazModo();
+        actualizarTodo();
+        mostrarToast('👥 Regresaste al Padrón Oficial Compartido en vivo.', 'success');
+      }
+    }
+
+    function actualizarInterfazModo() {
+      const btnOficial = document.getElementById('btn-modo-oficial');
+      const btnSimulacion = document.getElementById('btn-modo-simulacion');
+      const banner = document.getElementById('banner-simulacion');
+      const txtPersist = document.getElementById('txt-persist-status');
+
+      if (modoTrabajoActual === 'simulacion') {
+        if (btnOficial) {
+          btnOficial.style.background = 'transparent';
+          btnOficial.style.color = '#475569';
+        }
+        if (btnSimulacion) {
+          btnSimulacion.style.background = '#2563eb';
+          btnSimulacion.style.color = '#ffffff';
+        }
+        if (banner) banner.style.display = 'flex';
+        if (txtPersist) {
+          txtPersist.innerHTML = '<i class="fa-solid fa-flask" style="color: #2563eb;"></i> Modo Simulación Privado (Aislado)';
+        }
+      } else {
+        if (btnOficial) {
+          btnOficial.style.background = '#15803d';
+          btnOficial.style.color = '#ffffff';
+        }
+        if (btnSimulacion) {
+          btnSimulacion.style.background = 'transparent';
+          btnSimulacion.style.color = '#475569';
+        }
+        if (banner) banner.style.display = 'none';
+        if (txtPersist) {
+          txtPersist.innerHTML = '<i class="fa-solid fa-cloud-arrow-up" style="color: #16a34a;"></i> Guardado automático activo';
+        }
+      }
+    }
+
+    function clonarPadronOficialASimulacion() {
+      if (modoTrabajoActual !== 'simulacion') return;
+      if (!confirm('¿Deseas reemplazar tu borrador de simulación con una copia fresca del Padrón Oficial que está en la nube?')) return;
+
+      if (firebaseDb) {
+        firebaseDb.ref('sipsi_sonora_2027_v2/cursos').once('value').then(snap => {
+          const raw = snap.val();
+          if (raw) {
+            cursosList = (Array.isArray(raw) ? raw.filter(Boolean) : Object.values(raw).filter(Boolean))
+              .filter(c => c && c.id && !eliminadosSet.has(sanitizarClaveFirebase(c.id)) && UOPSI_CATALOGO[c.uopsiCve]);
+            try {
+              localStorage.setItem('imss_paa_simulacion_cursos', JSON.stringify(cursosList));
+            } catch(e){}
+            actualizarTodo();
+            mostrarToast(`Simulación reiniciada con ${cursosList.length} cursos oficiales.`, 'success');
+          }
+        });
+      } else if (cursosOficialesCache.length > 0) {
+        cursosList = JSON.parse(JSON.stringify(cursosOficialesCache));
+        actualizarTodo();
+        mostrarToast(`Simulación reiniciada con ${cursosList.length} cursos oficiales.`, 'success');
+      }
+    }
+
+    function publicarSimulacionAOficial() {
+      if (modoTrabajoActual !== 'simulacion') return;
+      const cant = cursosList.length;
+      const resp = confirm(`⚠️ ATENCIÓN: Esta acción publicará tu simulación (${cant} cursos) al Padrón Oficial en la Nube y se reflejará en las pantallas de todos tus compañeros.\n\n¿Estás completamente seguro de aplicar tu simulación como el nuevo Padrón Oficial?`);
+      if (!resp) return;
+
+      cursosOficialesCache = [...cursosList];
+      compOficialesCache = [...complementariasList];
+      modoTrabajoActual = 'oficial';
+      actualizarInterfazModo();
+
+      sincronizarReemplazoTotalEnNube();
+      guardarEnStorage();
+      actualizarTodo();
+      mostrarToast(`🎉 ¡Tu propuesta de ${cant} cursos ha sido publicada como Padrón Oficial en la Nube!`, 'success');
+    }
 
     function inicializarFirebase() {
       try {
@@ -4574,6 +4767,15 @@
       const refCursos = firebaseDb.ref('sipsi_sonora_2027_v2/cursos');
       refCursos.on('value', (snapshot) => {
         if (sincronizandoConNube) return;
+        if (modoTrabajoActual === 'simulacion') {
+          // En modo simulación, actualizar solo el caché de respaldo oficial sin tocar la simulación activa
+          const raw = snapshot.val();
+          if (raw) {
+            cursosOficialesCache = (Array.isArray(raw) ? raw.filter(Boolean) : Object.values(raw).filter(Boolean))
+              .filter(c => c && c.id && !eliminadosSet.has(sanitizarClaveFirebase(c.id)) && UOPSI_CATALOGO[c.uopsiCve]);
+          }
+          return;
+        }
         const raw = snapshot.val();
         if (raw === null || raw === undefined) return;
 
@@ -4602,6 +4804,14 @@
       const refComp = firebaseDb.ref('sipsi_sonora_2027_v2/complementarias');
       refComp.on('value', (snapshot) => {
         if (sincronizandoConNube) return;
+        if (modoTrabajoActual === 'simulacion') {
+          const raw = snapshot.val();
+          if (raw) {
+            compOficialesCache = (Array.isArray(raw) ? raw.filter(Boolean) : Object.values(raw).filter(Boolean))
+              .filter(a => a && a.id && !eliminadosSet.has(sanitizarClaveFirebase(a.id)) && UOPSI_CATALOGO[a.uopsiCve]);
+          }
+          return;
+        }
         const raw = snapshot.val();
         if (raw === null || raw === undefined) return;
         const data = (Array.isArray(raw) ? raw.filter(Boolean) : Object.values(raw).filter(Boolean))
@@ -4621,6 +4831,7 @@
 
     // ALTA GRANULAR: Sube únicamente los cursos nuevos creados en este momento sin tocar lo demás
     function sincronizarAltaCursosEnNube(nuevosCursos) {
+      if (modoTrabajoActual === 'simulacion') return; // En simulación privada NO se altera la nube
       if (!firebaseDb) return;
       sincronizandoConNube = true;
       const updates = {};
@@ -4655,6 +4866,7 @@
     function sincronizarBajaCursosEnNube(idsABorrar) {
       const lista = Array.isArray(idsABorrar) ? idsABorrar : [idsABorrar];
       if (!lista.length) return;
+      if (modoTrabajoActual === 'simulacion') return; // En simulación privada NO se altera la nube
 
       // 1. Inmediatamente en lista negra local
       lista.forEach(id => {
@@ -4749,7 +4961,7 @@
     const sincronizarConNube = sincronizarReemplazoTotalEnNube;
 
     function cargarDatosDesdeStorage() {
-      const APP_VERSION = '2027.3.7';
+      const APP_VERSION = '2027.4.0';
       try {
         // Cargar eliminadosSet desde localStorage
         const rawElim = localStorage.getItem('imss_paa_eliminados_2027');
@@ -4884,6 +5096,15 @@
     }
 
     function guardarEnStorage() {
+      if (modoTrabajoActual === 'simulacion') {
+        try {
+          localStorage.setItem('imss_paa_simulacion_cursos', JSON.stringify(cursosList));
+          localStorage.setItem('imss_paa_simulacion_comp', JSON.stringify(complementariasList));
+          localStorage.setItem('imss_paa_simulacion_ultimo', new Date().toISOString());
+        } catch(e){}
+        return;
+      }
+
       const STORAGE_KEY_CURSOS = 'imss_paa_cursos_2027_v2';
       const STORAGE_BACKUP_CURSOS = 'imss_paa_cursos_2027_backup';
       const STORAGE_KEY_COMP = 'imss_paa_comp_2027_clean_v1';
