@@ -186,7 +186,7 @@
       <span><strong>Días Hábiles:</strong> 353</span>
       <span><strong>Cobertura:</strong> 6 CSS Oficiales</span>
       <span class="badge badge-cumple" id="tb-badge-pass">PASS: 6/6 Acreditadas</span>
-      <span class="badge" style="background:#0284c7; color:#ffffff; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px;" title="Versión de Sistema Oficial">v2027.4.6</span>
+      <span class="badge" style="background:#0284c7; color:#ffffff; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px;" title="Versión de Sistema Oficial">v2027.4.7</span>
     </div>
     <div class="toolbar-group" style="gap: 0.65rem; align-items: center;">
       <!-- SELECTOR DE PERFIL / MODO DE TRABAJO -->
@@ -5531,8 +5531,7 @@
           return;
         }
         const raw = snapshot.val();
-        if (raw === null || raw === undefined) return;
-        const data = (Array.isArray(raw) ? raw.filter(Boolean) : Object.values(raw).filter(Boolean))
+        const data = (raw ? (Array.isArray(raw) ? raw.filter(Boolean) : Object.values(raw).filter(Boolean)) : [])
           .filter(a => a && a.id && !eliminadosSet.has(sanitizarClaveFirebase(a.id)) && UOPSI_CATALOGO[a.uopsiCve]);
 
         if (JSON.stringify(complementariasList) !== JSON.stringify(data)) {
@@ -5597,24 +5596,40 @@
         localStorage.setItem('imss_paa_eliminados_2027', JSON.stringify([...eliminadosSet]));
       } catch(e){}
 
-      // 2. Si no hay Firebase, terminamos local
-      if (!firebaseDb) return;
-
-      sincronizandoConNube = true;
-      const updates = {};
       const nowIso = new Date().toISOString();
+      const updates = {};
       lista.forEach(id => {
         if (id) {
           const k = sanitizarClaveFirebase(id);
           updates['cursos/' + k] = null;
           updates['eliminados/' + k] = nowIso;
-          // Doble garantía directa: borrar nodo atómicamente en Firebase
+
+          // GARANTÍA 1: Petición REST con keepalive:true (Sobrevive a F5, recargas y cierre de pestañas)
           try {
-            firebaseDb.ref('sipsi_sonora_2027_v2/cursos/' + k).remove().catch(() => {});
-            firebaseDb.ref('sipsi_sonora_2027_v2/eliminados/' + k).set(nowIso).catch(() => {});
+            fetch(`https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2/cursos/${k}.json`, {
+              method: 'DELETE',
+              keepalive: true
+            }).catch(() => {});
+            fetch(`https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2/eliminados/${k}.json`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(nowIso),
+              keepalive: true
+            }).catch(() => {});
           } catch(e){}
+
+          // GARANTÍA 2: Borrado directo atómico vía SDK WebSocket
+          if (firebaseDb) {
+            try {
+              firebaseDb.ref('sipsi_sonora_2027_v2/cursos/' + k).remove().catch(() => {});
+              firebaseDb.ref('sipsi_sonora_2027_v2/eliminados/' + k).set(nowIso).catch(() => {});
+            } catch(e){}
+          }
         }
       });
+
+      if (!firebaseDb) return;
+      sincronizandoConNube = true;
       updates['ultimaActualizacion'] = nowIso;
 
       firebaseDb.ref('sipsi_sonora_2027_v2').update(updates).then(() => {
@@ -5647,13 +5662,28 @@
       if (modoTrabajoActual === 'simulacion') return;
       const k = sanitizarClaveFirebase(id);
       eliminadosSet.add(k);
+      const nowIso = new Date().toISOString();
       try {
         localStorage.setItem('imss_paa_eliminados_2027', JSON.stringify([...eliminadosSet]));
       } catch(e){}
 
+      // GARANTÍA 1: REST con keepalive:true
+      try {
+        fetch(`https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2/complementarias/${k}.json`, {
+          method: 'DELETE',
+          keepalive: true
+        }).catch(() => {});
+        fetch(`https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2/eliminados/${k}.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(nowIso),
+          keepalive: true
+        }).catch(() => {});
+      } catch(e){}
+
+      // GARANTÍA 2: SDK WebSocket
       if (!firebaseDb) return;
       sincronizandoConNube = true;
-      const nowIso = new Date().toISOString();
       const updates = {
         ['complementarias/' + k]: null,
         ['eliminados/' + k]: nowIso,
@@ -5694,7 +5724,7 @@
     const sincronizarConNube = sincronizarReemplazoTotalEnNube;
 
     function cargarDatosDesdeStorage() {
-      const APP_VERSION = '2027.4.6';
+      const APP_VERSION = '2027.4.7';
       try {
         // Cargar eliminadosSet desde localStorage
         const rawElim = localStorage.getItem('imss_paa_eliminados_2027');
@@ -5725,7 +5755,7 @@
       let c = null;
       try {
         c = localStorage.getItem(STORAGE_KEY_CURSOS);
-        if (!c || c === '[]') c = localStorage.getItem(STORAGE_BACKUP_CURSOS);
+        if (c === null || c === undefined) c = localStorage.getItem(STORAGE_BACKUP_CURSOS);
       } catch(e) {
         console.warn('Error accediendo a localStorage:', e);
       }
@@ -5735,24 +5765,25 @@
         try { loaded = JSON.parse(c); } catch(e){}
       }
 
-      if (Array.isArray(loaded) && loaded.length > 0) {
+      if (Array.isArray(loaded)) {
         cursosList = loaded.filter(item => item && item.id && !eliminadosSet.has(sanitizarClaveFirebase(item.id)));
       } else {
         cursosList = [];
       }
 
-      // 2. Cargar actividades complementarias con salvaguarda
+      // 2. Cargar actividades complementarias con salvaguarda y filtro de eliminados
       let comp = null;
       try {
         comp = localStorage.getItem(STORAGE_KEY_COMP);
-        if (!comp || comp === '[]') comp = localStorage.getItem(STORAGE_BACKUP_COMP);
+        if (comp === null || comp === undefined) comp = localStorage.getItem(STORAGE_BACKUP_COMP);
       } catch(e){}
       
       let loadedComp = null;
       if (comp && comp !== '[]') {
         try { loadedComp = JSON.parse(comp); } catch(e){}
       }
-      complementariasList = Array.isArray(loadedComp) ? loadedComp : (typeof DATOS_INICIALES_COMP !== 'undefined' ? [...DATOS_INICIALES_COMP] : []);
+      complementariasList = (Array.isArray(loadedComp) ? loadedComp : [])
+        .filter(a => a && a.id && !eliminadosSet.has(sanitizarClaveFirebase(a.id)));
 
       // 3. Cargar CECs y Diagnosticos
       try {
@@ -8474,7 +8505,7 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
             </td>
             <td style="padding: 7px 8px; border-right: 1px solid #cbd5e1;">
               <div style="font-weight: 800; color: #0f172a; font-size: 0.83rem;">4,741</div>
-              <div style="font-size: 0.67rem; color: #64748b;">${totCultProg.toLocaleString()} (${pctCultProg}%)</div>
+              <div style="font-size: 0.67rem; color: #64748b;">${totCultProg.toLocaleString()} (${pctCultTot}%)</div>
             </td>
             <td style="padding: 7px 8px; border-right: 1px solid #cbd5e1;">
               <div style="font-weight: 800; color: #0f172a; font-size: 0.83rem;">11,920</div>
