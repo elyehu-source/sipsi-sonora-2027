@@ -4509,7 +4509,26 @@
     let cursosOficialesCache = [];
     let compOficialesCache = [];
 
+    function verificarOrigenEnlace() {
+      const host = window.location.hostname;
+      const isIP = /^172\./.test(host) || /^192\.168\./.test(host) || /^10\./.test(host) || /^\d+\.\d+\.\d+\.\d+$/.test(host);
+      if (isIP) {
+        const div = document.createElement('div');
+        div.id = 'banner-aviso-ip-local';
+        div.style.cssText = 'background: linear-gradient(90deg, #991b1b, #dc2626); color: white; padding: 12px 20px; font-size: 13.5px; font-weight: 600; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 999999; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+        div.innerHTML = `
+          <div style="display:flex; align-items:center; gap:10px;">
+            <i class="fa-solid fa-triangle-exclamation" style="font-size:20px; color:#fef08a;"></i>
+            <span><strong>AVISO IMPORTANTE DE CONEXIÓN:</strong> Estás accediendo mediante la IP de una computadora local (${host}). Si esa computadora se apaga, no podrás guardar ni abrir la plataforma. Por favor entra al <strong>Enlace Oficial en la Nube 24/7</strong>:</span>
+          </div>
+          <a href="https://elyehu-source.github.io/sipsi-sonora-2027/" style="background:#ffffff; color:#991b1b; padding:7px 16px; border-radius:6px; font-weight:700; text-decoration:none; white-space:nowrap; margin-left:16px; box-shadow:0 2px 5px rgba(0,0,0,0.2);">Abrir Nube Oficial 24/7 &rarr;</a>
+        `;
+        document.body.prepend(div);
+      }
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
+      verificarOrigenEnlace();
       const fechaHoyEl = document.getElementById('rep-fecha-hoy');
       if (fechaHoyEl) {
         fechaHoyEl.textContent = new Date().toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -4783,11 +4802,32 @@
         const data = (Array.isArray(raw) ? raw.filter(Boolean) : Object.values(raw).filter(Boolean))
           .filter(c => c && c.id && !eliminadosSet.has(sanitizarClaveFirebase(c.id)) && UOPSI_CATALOGO[c.uopsiCve]);
 
+        // Mapa de cursos que vienen de la nube
+        const mapaNube = new Map();
+        data.forEach(c => {
+          if (c && c.id) mapaNube.set(sanitizarClaveFirebase(c.id), c);
+        });
+
+        // Salvaguarda bidireccional: si en la memoria local existen cursos recién capturados que aún
+        // no se reflejaban en este paquete de la nube, NUNCA borrarlos; preservarlos y subirlos.
+        let cursosLocalesRescatados = 0;
+        const listaFusionada = [...data];
+        (cursosList || []).forEach(localC => {
+          if (localC && localC.id) {
+            const k = sanitizarClaveFirebase(localC.id);
+            if (!eliminadosSet.has(k) && !mapaNube.has(k)) {
+              listaFusionada.push(localC);
+              mapaNube.set(k, localC);
+              cursosLocalesRescatados++;
+            }
+          }
+        });
+
         const strLocal = JSON.stringify(cursosList);
-        const strNube = JSON.stringify(data);
-        if (strLocal !== strNube) {
-          console.log(`[Firebase] 📥 Padrón sincronizado en vivo (${data.length} cursos recibidos).`);
-          cursosList = data;
+        const strFusionada = JSON.stringify(listaFusionada);
+        if (strLocal !== strFusionada) {
+          console.log(`[Firebase] 📥 Padrón sincronizado en vivo (${listaFusionada.length} cursos: ${data.length} de nube + ${cursosLocalesRescatados} locales protegidos).`);
+          cursosList = listaFusionada;
 
           try {
             localStorage.setItem('imss_paa_cursos_2027_v2', JSON.stringify(cursosList));
@@ -4795,6 +4835,12 @@
           } catch(e){}
 
           actualizarTodo();
+
+          // Si había cursos locales en tránsito, asegurarnos de que la nube los guarde
+          if (cursosLocalesRescatados > 0) {
+            const pendientes = listaFusionada.filter(c => !data.some(d => d.id === c.id));
+            sincronizarAltaCursosEnNube(pendientes);
+          }
         }
       }, (err) => {
         console.warn('[Firebase] Lectura de cursos:', err.message);
@@ -4961,7 +5007,7 @@
     const sincronizarConNube = sincronizarReemplazoTotalEnNube;
 
     function cargarDatosDesdeStorage() {
-      const APP_VERSION = '2027.4.0';
+      const APP_VERSION = '2027.4.1';
       try {
         // Cargar eliminadosSet desde localStorage
         const rawElim = localStorage.getItem('imss_paa_eliminados_2027');
@@ -4972,9 +5018,9 @@
 
         // Si la versión del cliente es diferente, purgar de raíz claves obsoletas
         if (localStorage.getItem('imss_sipsi_app_version') !== APP_VERSION) {
+          // Solo purgar versiones obsoletas anteriores (NUNCA tocar v2 ni backup activo)
           const clavesObsoletas = [
-            'imss_paa_cursos_2027', 'imss_paa_cursos_2027_v100', 'imss_paa_cursos_2027_v15',
-            'imss_paa_cursos_2027_v2', 'imss_paa_cursos_2027_backup'
+            'imss_paa_cursos_2027', 'imss_paa_cursos_2027_v100', 'imss_paa_cursos_2027_v15'
           ];
           clavesObsoletas.forEach(k => localStorage.removeItem(k));
           localStorage.setItem('imss_sipsi_app_version', APP_VERSION);
@@ -5152,17 +5198,11 @@
       if (ind) {
         const total = (cursosList ? cursosList.length : 0) + (complementariasList ? complementariasList.length : 0);
         const horaStr = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const iconoNube = estadoConexionNube ? '<i class="fa-solid fa-cloud" style="color:#4ade80;"></i> Nube en Vivo' : '<i class="fa-solid fa-cloud-arrow-up" style="color:#93c5fd;"></i> Guardado Local';
+        const iconoNube = estadoConexionNube ? '<i class="fa-solid fa-cloud" style="color:#4ade80;"></i> Nube Central 24/7 Activa' : '<i class="fa-solid fa-cloud-arrow-up" style="color:#fbbf24;"></i> Guardado Local (Sincronizando...)';
         ind.innerHTML = `${iconoNube} (${total} acts · ${horaStr})`;
         if (badge) {
-          badge.style.borderColor = '#4ade80';
-          badge.style.background = 'rgba(74, 222, 128, 0.2)';
-          setTimeout(() => {
-            if (badge) {
-              badge.style.borderColor = 'rgba(255,255,255,0.3)';
-              badge.style.background = 'rgba(255,255,255,0.15)';
-            }
-          }, 1500);
+          badge.style.borderColor = estadoConexionNube ? '#4ade80' : '#fbbf24';
+          badge.style.background = estadoConexionNube ? 'rgba(74, 222, 128, 0.2)' : 'rgba(251, 191, 36, 0.2)';
         }
       }
     }
