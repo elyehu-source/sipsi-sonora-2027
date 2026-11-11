@@ -1,1034 +1,2430 @@
 {
-  "Deporte": [
-    {
-      "clave": "43101",
-      "nombre": "Natación IMSS",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 15,
-      "edadMin": 4
-    },
-    {
-      "clave": "43102",
-      "nombre": "Polo Acuático IMSS",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 15,
-      "edadMin": 6
-    },
-    {
-      "clave": "43103",
-      "nombre": "AquaZumbIMSS",
-      "tipo": "Curso",
-      "horas": 20,
-      "cupoMin": 15,
-      "edadMin": 10
-    },
-    {
-      "clave": "43104",
-      "nombre": "Básquetbol IMSS",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 15,
-      "edadMin": 6
-    },
-    {
-      "clave": "43105",
-      "nombre": "Voleibol IMSS",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 12,
-      "edadMin": 6
-    },
-    {
-      "clave": "43106",
-      "nombre": "Fútbol IMSS",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 15,
-      "edadMin": 6
-    },
-    {
-      "clave": "43107",
-      "nombre": "Atletismo IMSS",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 10,
-      "edadMin": 6
-    },
-    {
-      "clave": "43108",
-      "nombre": "Taekwondo IMSS",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 15,
-      "edadMin": 4
-    },
-    {
-      "clave": "43109",
-      "nombre": "Béisbol IMSS",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 15,
-      "edadMin": 4
-    },
-    {
-      "clave": "43110",
-      "nombre": "Box IMSS",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 10,
-      "edadMin": 10
-    },
-    {
-      "clave": "41101",
-      "nombre": "Matrogimnasia IMSS",
-      "tipo": "Curso",
-      "horas": 20,
-      "cupoMin": 10,
-      "edadMin": 1
-    },
-    {
-      "clave": "41102",
-      "nombre": "Curso Vacacional Recreativo",
-      "tipo": "Curso",
-      "horas": 60,
-      "cupoMin": 20,
-      "edadMin": 6
-    },
-    {
-      "clave": "42101",
-      "nombre": "Oferta Comunitaria IMSS",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 15,
-      "edadMin": 6
-    },
-    {
-      "clave": "43111",
-      "nombre": "Yoga IMSS",
-      "tipo": "Curso",
-      "horas": 20,
-      "cupoMin": 15,
-      "edadMin": 6
-    },
-    {
-      "clave": "43112",
-      "nombre": "Tai Chi Chuan IMSS",
-      "tipo": "Curso",
-      "horas": 20,
-      "cupoMin": 15,
-      "edadMin": 20
-    },
-    {
-      "clave": "43113",
-      "nombre": "Cachibol IMSS",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 15,
-      "edadMin": 40
-    },
-    {
-      "clave": "43114",
-      "nombre": "Spinning IMSS",
-      "tipo": "Curso",
-      "horas": 20,
-      "cupoMin": 10,
-      "edadMin": 15
-    },
-    {
-      "clave": "43115",
-      "nombre": "ZumbIMSS",
-      "tipo": "Curso",
-      "horas": 20,
-      "cupoMin": 15,
-      "edadMin": 4
-    },
-    {
-      "clave": "43116",
-      "nombre": "Acondicionamiento Físico con Pesas IMSS",
-      "tipo": "Curso",
-      "horas": 20,
-      "cupoMin": 10,
-      "edadMin": 16
-    },
-    {
-      "clave": "43117",
-      "nombre": "Ajedrez IMSS",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 10,
-      "edadMin": 6
-    },
-    {
-      "clave": "43118",
-      "nombre": "Ejercicio Físico para Personas Mayores",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 10,
-      "edadMin": 60
-    },
-    {
-      "clave": "43120",
-      "nombre": "Fútbol sin correr",
-      "tipo": "Curso",
-      "horas": 120,
-      "cupoMin": 6,
-      "edadMin": 6
-    },
-    {
-      "clave": "43127",
-      "nombre": "Gimnasios Equipados HCT / Acondicionamiento con Pesas",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 15,
-      "edadMin": 16
-    },
-    {
-      "clave": "41103",
-      "nombre": "Escuela de Iniciación Deportiva de Básquetbol",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 12,
-      "edadMin": 6
-    },
-    {
-      "clave": "41104",
-      "nombre": "Escuela de Iniciación Deportiva de Natación",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 15,
-      "edadMin": 6
-    },
-    {
-      "clave": "41105",
-      "nombre": "Escuela de Iniciación Deportiva de Voleibol",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 15,
-      "edadMin": 6
-    },
-    {
-      "clave": "41106",
-      "nombre": "Escuela de Iniciación Deportiva de Fútbol",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 15,
-      "edadMin": 6
-    },
-    {
-      "clave": "41107",
-      "nombre": "Escuela de Iniciación Deportiva de Gimnasia Artística",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 10,
-      "edadMin": 4
-    },
-    {
-      "clave": "41108",
-      "nombre": "Escuela de Iniciación Deportiva de Gimnasia Rítmica",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 10,
-      "edadMin": 4
-    },
-    {
-      "clave": "41109",
-      "nombre": "Escuela de Iniciación Deportiva de Atletismo",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 10,
-      "edadMin": 6
-    },
-    {
-      "clave": "41112",
-      "nombre": "Escuela de Iniciación Deportiva de Taekwondo",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 15,
-      "edadMin": 4
-    },
-    {
-      "clave": "41114",
-      "nombre": "Escuela de Iniciación Deportiva de Béisbol",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 15,
-      "edadMin": 6
-    },
-    {
-      "clave": "41116",
-      "nombre": "Escuela de Iniciación Deportiva de Box",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 15,
-      "edadMin": 6
-    },
-    {
-      "clave": "43121",
-      "nombre": "Escuela de Especialización Deportiva de Voleibol",
-      "tipo": "Curso",
-      "horas": 60,
-      "cupoMin": 15,
-      "edadMin": 16
-    },
-    {
-      "clave": "43122",
-      "nombre": "Escuela de Especialización Deportiva de Fútbol",
-      "tipo": "Curso",
-      "horas": 60,
-      "cupoMin": 15,
-      "edadMin": 16
-    },
-    {
-      "clave": "43123",
-      "nombre": "Escuela de Especialización Deportiva de Natación",
-      "tipo": "Curso",
-      "horas": 60,
-      "cupoMin": 15,
-      "edadMin": 16
-    },
-    {
-      "clave": "43124",
-      "nombre": "Escuela de Especialización Deportiva de Taekwondo",
-      "tipo": "Curso",
-      "horas": 60,
-      "cupoMin": 15,
-      "edadMin": 16
-    },
-    {
-      "clave": "43125",
-      "nombre": "Escuela de Especialización Deportiva de Básquetbol",
-      "tipo": "Curso",
-      "horas": 60,
-      "cupoMin": 15,
-      "edadMin": 16
-    },
-    {
-      "clave": "44101",
-      "nombre": "Para Atletismo (Discapacidad)",
-      "tipo": "Curso",
-      "horas": 120,
-      "cupoMin": 6,
-      "edadMin": 6
-    },
-    {
-      "clave": "44102",
-      "nombre": "Para Natación (Discapacidad)",
-      "tipo": "Curso",
-      "horas": 120,
-      "cupoMin": 6,
-      "edadMin": 6
-    },
-    {
-      "clave": "44103",
-      "nombre": "Básquetbol en Silla de Ruedas",
-      "tipo": "Curso",
-      "horas": 120,
-      "cupoMin": 6,
-      "edadMin": 6
-    },
-    {
-      "clave": "42801",
-      "nombre": "ZumbIMSS",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 15,
-      "edadMin": 4
-    },
-    {
-      "clave": "42802",
-      "nombre": "Yoga",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 15,
-      "edadMin": 6
-    },
-    {
-      "clave": "42803",
-      "nombre": "Fútbol",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 15,
-      "edadMin": 6
-    },
-    {
-      "clave": "42804",
-      "nombre": "Básquetbol",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 15,
-      "edadMin": 6
-    },
-    {
-      "clave": "42805",
-      "nombre": "Voleibol",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 15,
-      "edadMin": 6
-    },
-    {
-      "clave": "42806",
-      "nombre": "Cachibol",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 15,
-      "edadMin": 40
-    },
-    {
-      "clave": "42807",
-      "nombre": "Activación Física para la Salud",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 15,
-      "edadMin": 6
-    },
-    {
-      "clave": "45801",
-      "nombre": "ZumbIMSS para Niñas, Niños y Adolescentes PASS",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 8,
-      "edadMin": 3
-    },
-    {
-      "clave": "45802",
-      "nombre": "Actívate para Niñas, Niños y Adolescentes PASS",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 8,
-      "edadMin": 3
-    },
-    {
-      "clave": "45804",
-      "nombre": "Ejercicio Físico para la Salud PASS",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 8,
-      "edadMin": 6
-    },
-    {
-      "clave": "45805",
-      "nombre": "Cuida tu espalda / Higiene de Columna PASS",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 8,
-      "edadMin": 20
-    },
-    {
-      "clave": "45806",
-      "nombre": "Yoga PASS",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 8,
-      "edadMin": 6
-    },
-    {
-      "clave": "45813",
-      "nombre": "ZumbIMSS PASS",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 8,
-      "edadMin": 6
-    },
-    {
-      "clave": "45814",
-      "nombre": "Tai Chi Chuan PASS",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 8,
-      "edadMin": 20
-    },
-    {
-      "clave": "45815",
-      "nombre": "Cachibol PASS",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 8,
-      "edadMin": 40
-    },
-    {
-      "clave": "45816",
-      "nombre": "ZumbIMSS PASS-ELSSA",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 8,
-      "edadMin": 18
-    },
-    {
-      "clave": "45817",
-      "nombre": "Yoga PASS-ELSSA",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 8,
-      "edadMin": 18
-    },
-    {
-      "clave": "45818",
-      "nombre": "Fútbol PASS-ELSSA",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 8,
-      "edadMin": 18
-    },
-    {
-      "clave": "45819",
-      "nombre": "Básquetbol PASS-ELSSA",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 8,
-      "edadMin": 18
-    },
-    {
-      "clave": "45820",
-      "nombre": "Voleibol PASS-ELSSA",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 8,
-      "edadMin": 18
-    },
-    {
-      "clave": "45821",
-      "nombre": "Cuida tu espalda PASS-ELSSA",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 8,
-      "edadMin": 18
-    },
-    {
-      "clave": "45822",
-      "nombre": "Natación PASS-ELSSA",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 8,
-      "edadMin": 18
-    },
-    {
-      "clave": "45823",
-      "nombre": "Ejercicio Físico para la Salud PASS-TIMSS",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 8,
-      "edadMin": 18
-    },
-    {
-      "clave": "45824",
-      "nombre": "Yoga PASS-TIMSS",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 8,
-      "edadMin": 18
-    },
-    {
-      "clave": "45825",
-      "nombre": "ZumbIMSS PASS-TIMSS",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 8,
-      "edadMin": 18
-    },
-    {
-      "clave": "45826",
-      "nombre": "Tai Chi Chuan PASS-TIMSS",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 8,
-      "edadMin": 18
-    },
-    {
-      "clave": "45827",
-      "nombre": "Fútbol PASS-TIMSS",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 8,
-      "edadMin": 18
-    },
-    {
-      "clave": "45828",
-      "nombre": "Natación PASS-TIMSS",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 8,
-      "edadMin": 18
-    }
-  ],
   "Salud": [
-    {
-      "clave": "13101",
-      "nombre": "Formación de Personas Voluntarias",
-      "tipo": "Curso",
-      "horas": 12,
-      "cupoMin": 8,
-      "edadMin": 18
-    },
-    {
-      "clave": "11101",
-      "nombre": "Alimentación Saludable IMSS",
-      "tipo": "Curso",
-      "horas": 24,
-      "cupoMin": 15,
-      "edadMin": 12
-    },
-    {
-      "clave": "11114",
-      "nombre": "Desarrollo de Habilidades Motrices",
-      "tipo": "Curso",
-      "horas": 24,
-      "cupoMin": 15,
-      "edadMin": 60
-    },
-    {
-      "clave": "11115",
-      "nombre": "Creatividad Funcional y Cognitiva",
-      "tipo": "Curso",
-      "horas": 24,
-      "cupoMin": 15,
-      "edadMin": 60
-    },
     {
       "clave": "13801",
       "nombre": "Alimentación Saludable y Sostenible",
       "tipo": "Taller",
+      "bloque": "Bloque 01: Educación para la salud",
       "horas": 12,
       "cupoMin": 15,
-      "edadMin": 12
+      "edadMin": 12,
+      "edadMax": 105
     },
     {
       "clave": "13802",
       "nombre": "Toma el Control de tu Peso",
       "tipo": "Taller",
+      "bloque": "Bloque 01: Educación para la salud",
       "horas": 20,
       "cupoMin": 15,
-      "edadMin": 12
+      "edadMin": 12,
+      "edadMax": 105
     },
     {
       "clave": "13803",
-      "nombre": "Decisión sin Adicción (Prevención Sustancias Psicoactivas)",
+      "nombre": "Decisión sin Adicción (Prevención de Dependencias a Sustancias Psicoactivas)",
       "tipo": "Taller",
+      "bloque": "Bloque 01: Educación para la salud",
       "horas": 8,
       "cupoMin": 15,
-      "edadMin": 10
+      "edadMin": 10,
+      "edadMax": 105
     },
     {
       "clave": "13804",
       "nombre": "Hablemos de Educación Sexual Integral",
       "tipo": "Taller",
+      "bloque": "Bloque 01: Educación para la salud",
       "horas": 8,
       "cupoMin": 15,
-      "edadMin": 10
+      "edadMin": 10,
+      "edadMax": 105
     },
     {
       "clave": "13805",
       "nombre": "Sonriendo a la Vida",
       "tipo": "Taller",
+      "bloque": "Bloque 01: Educación para la salud",
       "horas": 12,
       "cupoMin": 15,
-      "edadMin": 12
+      "edadMin": 12,
+      "edadMax": 105
     },
     {
       "clave": "13806",
       "nombre": "Prevención de Violencias en la Familia y la Comunidad",
       "tipo": "Taller",
+      "bloque": "Bloque 01: Educación para la salud",
       "horas": 8,
       "cupoMin": 20,
-      "edadMin": 15
+      "edadMin": 15,
+      "edadMax": 105
     },
     {
       "clave": "13807",
       "nombre": "Salud y Medio Ambiente",
       "tipo": "Taller",
+      "bloque": "Bloque 02: Salud y Medio Ambiente",
       "horas": 24,
       "cupoMin": 15,
-      "edadMin": 10
+      "edadMin": 10,
+      "edadMax": 105
     },
     {
       "clave": "13808",
       "nombre": "Mi Proyecto de Vida",
       "tipo": "Taller",
+      "bloque": "Bloque 03: Construyendo mi desarrollo personal",
       "horas": 8,
       "cupoMin": 15,
-      "edadMin": 10
+      "edadMin": 10,
+      "edadMax": 105
     },
     {
       "clave": "13809",
-      "nombre": "Habilidades y Valores para la Vida",
+      "nombre": "Habilidades y valores para la Vida",
       "tipo": "Taller",
+      "bloque": "Bloque 03: Construyendo mi desarrollo personal",
       "horas": 8,
       "cupoMin": 15,
-      "edadMin": 3
+      "edadMin": 3,
+      "edadMax": 105
+    },
+    {
+      "clave": "13101",
+      "nombre": "Formación de Personas Voluntarias",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Salud Comunitaria",
+      "horas": 12,
+      "cupoMin": 8,
+      "edadMin": 18,
+      "edadMax": 105
     },
     {
       "clave": "13810",
       "nombre": "Grupos de Ayuda Mutua",
       "tipo": "Taller",
+      "bloque": "Bloque 04: Salud Comunitaria",
       "horas": 20,
       "cupoMin": 15,
-      "edadMin": 20
+      "edadMin": 20,
+      "edadMax": 105
     },
     {
       "clave": "13811",
       "nombre": "Organización para la Salud y Participación Social",
       "tipo": "Taller",
+      "bloque": "Bloque 04: Salud Comunitaria",
       "horas": 8,
       "cupoMin": 15,
-      "edadMin": 15
+      "edadMin": 15,
+      "edadMax": 105
     },
     {
       "clave": "13812",
       "nombre": "Rediseño de Estilos de Vida Activa, Saludable y Productiva",
       "tipo": "Taller",
+      "bloque": "Bloque 05: Bienestar para la persona mayor",
       "horas": 20,
       "cupoMin": 15,
-      "edadMin": 18
+      "edadMin": 18,
+      "edadMax": 105
     },
     {
       "clave": "13813",
       "nombre": "Casa Segura",
       "tipo": "Taller",
+      "bloque": "Bloque 05: Bienestar para la persona mayor",
       "horas": 12,
       "cupoMin": 15,
-      "edadMin": 18
+      "edadMin": 18,
+      "edadMax": 105
     },
     {
       "clave": "13814",
       "nombre": "Manejo de Duelo",
       "tipo": "Taller",
+      "bloque": "Bloque 05: Bienestar para la persona mayor",
       "horas": 12,
       "cupoMin": 15,
-      "edadMin": 18
+      "edadMin": 18,
+      "edadMax": 105
     },
     {
       "clave": "13815",
       "nombre": "Depresión de la Persona Mayor",
       "tipo": "Taller",
+      "bloque": "Bloque 05: Bienestar para la persona mayor",
       "horas": 12,
       "cupoMin": 15,
-      "edadMin": 18
+      "edadMin": 18,
+      "edadMax": 105
     },
     {
       "clave": "13816",
       "nombre": "Formación de Cuidadores de Personas Mayores",
       "tipo": "Taller",
+      "bloque": "Bloque 05: Bienestar para la persona mayor",
       "horas": 48,
       "cupoMin": 8,
-      "edadMin": 18
+      "edadMin": 18,
+      "edadMax": 105
     },
     {
       "clave": "13817",
-      "nombre": "Organización, Vinculación y Gestión (Club Personas Mayores)",
+      "nombre": "Taller de Organización, Vinculación y Gestión (Club Modalidad Autogestiva)",
       "tipo": "Taller",
+      "bloque": "Bloque 06: Club de la persona mayor",
       "horas": 24,
       "cupoMin": 20,
-      "edadMin": 60
+      "edadMin": 60,
+      "edadMax": 105
     },
     {
       "clave": "13701",
-      "nombre": "Habilidades Motrices (Club Personas Mayores)",
+      "nombre": "Taller de Habilidades Motrices (Club Modalidad Estructurada)",
       "tipo": "Taller",
+      "bloque": "Bloque 06: Club de la persona mayor",
       "horas": 24,
       "cupoMin": 20,
-      "edadMin": 60
+      "edadMin": 60,
+      "edadMax": 105
     },
     {
       "clave": "13702",
-      "nombre": "Habilidades Cognoscitivas (Club Personas Mayores)",
+      "nombre": "Taller de Habilidades Cognoscitivas (Club Modalidad Estructurada)",
       "tipo": "Taller",
+      "bloque": "Bloque 06: Club de la persona mayor",
       "horas": 24,
       "cupoMin": 20,
-      "edadMin": 60
+      "edadMin": 60,
+      "edadMax": 105
     },
     {
       "clave": "13703",
-      "nombre": "Habilidades Sociales (Club Personas Mayores)",
+      "nombre": "Taller de Habilidades Sociales (Club Modalidad Estructurada)",
       "tipo": "Taller",
+      "bloque": "Bloque 06: Club de la persona mayor",
       "horas": 24,
       "cupoMin": 20,
-      "edadMin": 60
+      "edadMin": 60,
+      "edadMax": 105
     },
     {
       "clave": "13704",
-      "nombre": "Habilidades Emocionales (Club Personas Mayores)",
+      "nombre": "Taller de Habilidades Emocionales (Club Modalidad Estructurada)",
       "tipo": "Taller",
+      "bloque": "Bloque 06: Club de la persona mayor",
       "horas": 24,
       "cupoMin": 20,
-      "edadMin": 60
+      "edadMin": 60,
+      "edadMax": 105
     },
     {
       "clave": "13705",
-      "nombre": "Actividades de Participación Social (Club Personas Mayores)",
+      "nombre": "Taller de Actividades de Participación Social (Club Modalidad Autogestiva)",
       "tipo": "Taller",
+      "bloque": "Bloque 06: Club de la persona mayor",
       "horas": 24,
       "cupoMin": 20,
-      "edadMin": 60
+      "edadMin": 60,
+      "edadMax": 105
     },
     {
       "clave": "13818",
       "nombre": "Madres, Padres y Personas Cuidadoras por un Peso Saludable",
       "tipo": "Taller",
+      "bloque": "Bloque 07: Familias con propósito",
       "horas": 4,
       "cupoMin": 15,
-      "edadMin": 18
+      "edadMin": 18,
+      "edadMax": 105
     },
     {
       "clave": "13819",
       "nombre": "Crianza Positiva y Familias en Armonía",
       "tipo": "Taller",
+      "bloque": "Bloque 07: Familias con propósito",
       "horas": 12,
       "cupoMin": 15,
-      "edadMin": 15
+      "edadMin": 15,
+      "edadMax": 105
     },
     {
       "clave": "15801",
-      "nombre": "Alimentación en Enfermedades Crónicas PASS",
+      "nombre": "Alimentación en Enfermedades Crónicas",
       "tipo": "Taller",
+      "bloque": "Bloque 09: Alimentación y estilos de vida saludable (PASS)",
       "horas": 20,
       "cupoMin": 10,
-      "edadMin": 6
-    },
-    {
-      "clave": "15802",
-      "nombre": "Grupos de Autoayuda PASS",
-      "tipo": "Taller",
-      "horas": 12,
-      "cupoMin": 10,
-      "edadMin": 18
-    },
-    {
-      "clave": "15803",
-      "nombre": "Organización para la Salud y Participación Social PASS",
-      "tipo": "Taller",
-      "horas": 8,
-      "cupoMin": 10,
-      "edadMin": 18
+      "edadMin": 6,
+      "edadMax": 105
     },
     {
       "clave": "15810",
-      "nombre": "Alimentación Saludable y Sostenible para NNA PASS",
+      "nombre": "Alimentación Saludable y Sostenible para Niñas, Niños y Adolescentes",
       "tipo": "Taller",
+      "bloque": "Bloque 09: Alimentación y estilos de vida saludable (PASS)",
       "horas": 8,
       "cupoMin": 10,
-      "edadMin": 3
+      "edadMin": 3,
+      "edadMax": 19
     },
     {
       "clave": "15811",
-      "nombre": "Habilidades para la Vida para NNA PASS",
+      "nombre": "Habilidades para la Vida para Niñas, Niños y Adolescentes",
       "tipo": "Taller",
+      "bloque": "Bloque 09: Alimentación y estilos de vida saludable (PASS)",
       "horas": 8,
       "cupoMin": 10,
-      "edadMin": 3
-    },
-    {
-      "clave": "15814",
-      "nombre": "Educación para la Salud en Enfermedades Crónicas PASS",
-      "tipo": "Taller",
-      "horas": 12,
-      "cupoMin": 10,
-      "edadMin": 18
-    },
-    {
-      "clave": "15815",
-      "nombre": "Bienestar Emocional PASS",
-      "tipo": "Taller",
-      "horas": 12,
-      "cupoMin": 10,
-      "edadMin": 18
-    },
-    {
-      "clave": "15816",
-      "nombre": "Lanaterapia (Tejido Terapéutico) PASS",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 10,
-      "edadMin": 18
-    },
-    {
-      "clave": "15817",
-      "nombre": "Manualidades y Ocupación Terapéutica PASS",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 10,
-      "edadMin": 18
-    },
-    {
-      "clave": "15818",
-      "nombre": "Ocupación Terapéutica en el Rediseño de Estilos de Vida PASS",
-      "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 10,
-      "edadMin": 18
-    },
-    {
-      "clave": "15819",
-      "nombre": "Tanatología PASS",
-      "tipo": "Taller",
-      "horas": 12,
-      "cupoMin": 10,
-      "edadMin": 18
+      "edadMin": 3,
+      "edadMax": 19
     },
     {
       "clave": "15823",
       "nombre": "Alimentación Saludable y Sostenible PASS-ELSSA",
       "tipo": "Taller",
+      "bloque": "Bloque 10: PASS-ELSSA",
       "horas": 12,
       "cupoMin": 10,
-      "edadMin": 18
+      "edadMin": 18,
+      "edadMax": 105
     },
     {
       "clave": "15824",
       "nombre": "Toma el Control de tu Peso PASS-ELSSA",
       "tipo": "Taller",
+      "bloque": "Bloque 10: PASS-ELSSA",
       "horas": 20,
       "cupoMin": 10,
-      "edadMin": 18
+      "edadMin": 18,
+      "edadMax": 105
     },
     {
       "clave": "15825",
       "nombre": "Primeros Auxilios PASS-ELSSA",
       "tipo": "Taller",
+      "bloque": "Bloque 10: PASS-ELSSA",
       "horas": 12,
       "cupoMin": 10,
-      "edadMin": 18
+      "edadMin": 18,
+      "edadMax": 105
     },
     {
       "clave": "15827",
       "nombre": "Grupos de Autoayuda PASS-ELSSA",
       "tipo": "Taller",
+      "bloque": "Bloque 10: PASS-ELSSA",
       "horas": 6,
       "cupoMin": 10,
-      "edadMin": 18
+      "edadMin": 18,
+      "edadMax": 105
     },
     {
       "clave": "15828",
       "nombre": "Bienestar Emocional PASS-ELSSA",
       "tipo": "Taller",
+      "bloque": "Bloque 10: PASS-ELSSA",
       "horas": 12,
       "cupoMin": 10,
-      "edadMin": 18
+      "edadMin": 18,
+      "edadMax": 105
     },
     {
       "clave": "15830",
       "nombre": "Tanatología PASS-ELSSA",
       "tipo": "Taller",
+      "bloque": "Bloque 10: PASS-ELSSA",
       "horas": 12,
       "cupoMin": 10,
-      "edadMin": 18
+      "edadMin": 18,
+      "edadMax": 105
     },
     {
       "clave": "15822",
-      "nombre": "Educación para la Salud PASS-TIMSS",
+      "nombre": "Fortalecimiento del Bienestar Emocional en personas trabajadoras del IMSS PASS-TIMSS",
       "tipo": "Taller",
+      "bloque": "Bloque 11: PASS-TIMSS",
       "horas": 3,
       "cupoMin": 10,
-      "edadMin": 18
+      "edadMin": 18,
+      "edadMax": 105
     },
     {
       "clave": "15831",
-      "nombre": "Bienestar Emocional PASS-TIMSS",
+      "nombre": "Alimentación Saludable y Sostenible PASS-TIMSS",
       "tipo": "Taller",
+      "bloque": "Bloque 11: PASS-TIMSS",
       "horas": 3,
       "cupoMin": 10,
-      "edadMin": 18
+      "edadMin": 18,
+      "edadMax": 105
+    },
+    {
+      "clave": "15814",
+      "nombre": "Educación para la Salud en Enfermedades Crónicas",
+      "tipo": "Taller",
+      "bloque": "Bloque 12: Bienestar para la persona mayor (PASS)",
+      "horas": 12,
+      "cupoMin": 10,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "15815",
+      "nombre": "Bienestar Emocional",
+      "tipo": "Taller",
+      "bloque": "Bloque 12: Bienestar para la persona mayor (PASS)",
+      "horas": 12,
+      "cupoMin": 10,
+      "edadMin": 12,
+      "edadMax": 109
+    },
+    {
+      "clave": "15818",
+      "nombre": "Ocupación Terapéutica en el Rediseño de los Estilos de Vida Activa, Saludable y Productiva",
+      "tipo": "Taller",
+      "bloque": "Bloque 12: Bienestar para la persona mayor (PASS)",
+      "horas": 20,
+      "cupoMin": 10,
+      "edadMin": 18,
+      "edadMax": 105
+    },
+    {
+      "clave": "15819",
+      "nombre": "Tanatología",
+      "tipo": "Taller",
+      "bloque": "Bloque 12: Bienestar para la persona mayor (PASS)",
+      "horas": 12,
+      "cupoMin": 10,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "15802",
+      "nombre": "Grupos de Autoayuda",
+      "tipo": "Taller",
+      "bloque": "Bloque 13: Grupos de autoayuda (PASS)",
+      "horas": 12,
+      "cupoMin": 10,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "15803",
+      "nombre": "Organización para la Salud y Participación Social",
+      "tipo": "Taller",
+      "bloque": "Bloque 14: Salud comunitaria (PASS)",
+      "horas": 8,
+      "cupoMin": 10,
+      "edadMin": 6,
+      "edadMax": 105
     }
   ],
   "Cultura": [
     {
-      "clave": "31101",
-      "nombre": "Artes Plásticas (Dibujo y Pintura)",
+      "clave": "33101",
+      "nombre": "Dibujo y pintura",
       "tipo": "Curso",
+      "bloque": "Bloque 01: Artes plásticas y visuales",
       "horas": 40,
-      "cupoMin": 12,
-      "edadMin": 6
+      "cupoMin": 10,
+      "edadMin": 5,
+      "edadMax": 105
     },
     {
-      "clave": "31102",
-      "nombre": "Música Instrumental y Vocal (Guitarra, Teclado)",
+      "clave": "33102",
+      "nombre": "Escultura",
       "tipo": "Curso",
+      "bloque": "Bloque 01: Artes plásticas y visuales",
       "horas": 40,
-      "cupoMin": 12,
-      "edadMin": 6
+      "cupoMin": 10,
+      "edadMin": 5,
+      "edadMax": 105
     },
     {
-      "clave": "31103",
-      "nombre": "Teatro y Expresión Artística",
+      "clave": "33103",
+      "nombre": "Fotografía y video",
       "tipo": "Curso",
+      "bloque": "Bloque 01: Artes plásticas y visuales",
       "horas": 40,
-      "cupoMin": 12,
-      "edadMin": 6
+      "cupoMin": 10,
+      "edadMin": 5,
+      "edadMax": 105
     },
     {
-      "clave": "31117",
-      "nombre": "Danza Folclórica Mexicana",
+      "clave": "33104",
+      "nombre": "Grabado",
       "tipo": "Curso",
+      "bloque": "Bloque 01: Artes plásticas y visuales",
       "horas": 40,
-      "cupoMin": 15,
-      "edadMin": 6
+      "cupoMin": 10,
+      "edadMin": 5,
+      "edadMax": 105
+    },
+    {
+      "clave": "33105",
+      "nombre": "Artesanías en arcilla",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Artesanías",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 5,
+      "edadMax": 105
+    },
+    {
+      "clave": "33106",
+      "nombre": "Artesanías en cartón y papel",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Artesanías",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 5,
+      "edadMax": 105
+    },
+    {
+      "clave": "33107",
+      "nombre": "Artesanías en madera",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Artesanías",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 5,
+      "edadMax": 105
+    },
+    {
+      "clave": "33108",
+      "nombre": "Artesanías en metal",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Artesanías",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 5,
+      "edadMax": 105
+    },
+    {
+      "clave": "33109",
+      "nombre": "Artesanías en piel y cuero",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Artesanías",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 5,
+      "edadMax": 105
+    },
+    {
+      "clave": "33110",
+      "nombre": "Artesanías en textil",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Artesanías",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 5,
+      "edadMax": 105
+    },
+    {
+      "clave": "33111",
+      "nombre": "Artesanías en vidrio",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Artesanías",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 5,
+      "edadMax": 105
+    },
+    {
+      "clave": "33112",
+      "nombre": "Artesanías mixtas",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Artesanías",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 5,
+      "edadMax": 105
+    },
+    {
+      "clave": "33801",
+      "nombre": "Iniciación Artística",
+      "tipo": "Taller",
+      "bloque": "Bloque 04: Iniciación Artística",
+      "horas": 20,
+      "cupoMin": 10,
+      "edadMin": 5,
+      "edadMax": 105
+    },
+    {
+      "clave": "33118",
+      "nombre": "Música y canto",
+      "tipo": "Curso",
+      "bloque": "Bloque 05: Música",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 5,
+      "edadMax": 105
     },
     {
       "clave": "31801",
-      "nombre": "Iniciación Artística y Creativa",
+      "nombre": "Orquestas, ensambles y coros infantiles y juveniles IMSS",
       "tipo": "Taller",
+      "bloque": "Bloque 05: Música",
+      "horas": 492,
+      "cupoMin": 1,
+      "edadMin": 8,
+      "edadMax": 18
+    },
+    {
+      "clave": "33802",
+      "nombre": "Creación literaria",
+      "tipo": "Taller",
+      "bloque": "Bloque 06: Patrimonio, literatura y memoria",
       "horas": 20,
-      "cupoMin": 12,
-      "edadMin": 6
+      "cupoMin": 10,
+      "edadMin": 5,
+      "edadMax": 105
+    },
+    {
+      "clave": "33113",
+      "nombre": "Danza moderna",
+      "tipo": "Curso",
+      "bloque": "Bloque 07: Danza",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 5,
+      "edadMax": 105
+    },
+    {
+      "clave": "33114",
+      "nombre": "Danza clásica",
+      "tipo": "Curso",
+      "bloque": "Bloque 07: Danza",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 5,
+      "edadMax": 105
+    },
+    {
+      "clave": "33115",
+      "nombre": "Danza creativa",
+      "tipo": "Curso",
+      "bloque": "Bloque 07: Danza",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 5,
+      "edadMax": 105
+    },
+    {
+      "clave": "33116",
+      "nombre": "Danza folclórica",
+      "tipo": "Curso",
+      "bloque": "Bloque 07: Danza",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 5,
+      "edadMax": 105
+    },
+    {
+      "clave": "33117",
+      "nombre": "Ritmos afrolatinos y baile de salón",
+      "tipo": "Curso",
+      "bloque": "Bloque 07: Danza",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 5,
+      "edadMax": 105
+    },
+    {
+      "clave": "35802",
+      "nombre": "Danza PASS",
+      "tipo": "Taller",
+      "bloque": "Bloque 07: Danza",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 6,
+      "edadMax": 106
+    },
+    {
+      "clave": "35804",
+      "nombre": "Danza para niñas, niños y adolescentes",
+      "tipo": "Taller",
+      "bloque": "Bloque 07: Danza",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 3,
+      "edadMax": 19
+    },
+    {
+      "clave": "35806",
+      "nombre": "Danza PASS-TIMSS",
+      "tipo": "Taller",
+      "bloque": "Bloque 07: Danza",
+      "horas": 3,
+      "cupoMin": 8,
+      "edadMin": 18,
+      "edadMax": 105
+    },
+    {
+      "clave": "35808",
+      "nombre": "Danza PASS-ELSSA",
+      "tipo": "Taller",
+      "bloque": "Bloque 07: Danza",
+      "horas": 3,
+      "cupoMin": 8,
+      "edadMin": 18,
+      "edadMax": 105
+    },
+    {
+      "clave": "33119",
+      "nombre": "Teatro",
+      "tipo": "Curso",
+      "bloque": "Bloque 08: Arte y salud",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 5,
+      "edadMax": 105
+    },
+    {
+      "clave": "31802",
+      "nombre": "Verano entre Telones",
+      "tipo": "Taller",
+      "bloque": "Bloque 08: Arte y salud",
+      "horas": 10,
+      "cupoMin": 10,
+      "edadMin": 6,
+      "edadMax": 18
     },
     {
       "clave": "35801",
-      "nombre": "Arte y Salud Emocional PASS",
+      "nombre": "Arte y salud PASS",
       "tipo": "Taller",
+      "bloque": "Bloque 08: Arte y salud",
+      "horas": 12,
+      "cupoMin": 8,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "35803",
+      "nombre": "Arte y Salud para Niñas, Niños y Adolescentes",
+      "tipo": "Taller",
+      "bloque": "Bloque 08: Arte y salud",
+      "horas": 8,
+      "cupoMin": 8,
+      "edadMin": 3,
+      "edadMax": 19
+    },
+    {
+      "clave": "35805",
+      "nombre": "Arte y salud PASS-TIMSS",
+      "tipo": "Taller",
+      "bloque": "Bloque 08: Arte y salud",
+      "horas": 3,
+      "cupoMin": 8,
+      "edadMin": 18,
+      "edadMax": 105
+    },
+    {
+      "clave": "35807",
+      "nombre": "Arte y salud PASS-ELSSA",
+      "tipo": "Taller",
+      "bloque": "Bloque 08: Arte y salud",
+      "horas": 3,
+      "cupoMin": 8,
+      "edadMin": 18,
+      "edadMax": 105
+    },
+    {
+      "clave": "35809",
+      "nombre": "Lanaterapia (Tejido) PASS",
+      "tipo": "Taller",
+      "bloque": "Bloque 08: Arte y salud",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "35810",
+      "nombre": "Lanaterapia (Tejido) PASS-TIMSS",
+      "tipo": "Taller",
+      "bloque": "Bloque 08: Arte y salud",
+      "horas": 3,
+      "cupoMin": 8,
+      "edadMin": 18,
+      "edadMax": 105
+    },
+    {
+      "clave": "35811",
+      "nombre": "Manualidades y Ocupación Terapéutica (Manualidades y Decoración) PASS",
+      "tipo": "Taller",
+      "bloque": "Bloque 08: Arte y salud",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "35812",
+      "nombre": "Manualidades y Ocupación Terapéutica (Manualidades y Decoración) PASS-TIMSS",
+      "tipo": "Taller",
+      "bloque": "Bloque 08: Arte y salud",
+      "horas": 3,
+      "cupoMin": 8,
+      "edadMin": 18,
+      "edadMax": 105
+    },
+    {
+      "clave": "35813",
+      "nombre": "Manualidades y Ocupación Terapéutica (Manualidades y Decoración) PASS-ELSSA",
+      "tipo": "Taller",
+      "bloque": "Bloque 08: Arte y salud",
+      "horas": 6,
+      "cupoMin": 8,
+      "edadMin": 18,
+      "edadMax": 105
+    }
+  ],
+  "Deporte": [
+    {
+      "clave": "43101",
+      "nombre": "Natación IMSS (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 01: Actividades Acuáticas",
+      "horas": 40,
+      "cupoMin": 15,
+      "edadMin": 4,
+      "edadMax": 105
+    },
+    {
+      "clave": "43101",
+      "nombre": "Natación IMSS (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 01: Actividades Acuáticas",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 4,
+      "edadMax": 105
+    },
+    {
+      "clave": "43102",
+      "nombre": "Polo Acuático IMSS (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 01: Actividades Acuáticas",
+      "horas": 40,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "43102",
+      "nombre": "Polo Acuático IMSS (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 01: Actividades Acuáticas",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "43103",
+      "nombre": "AquaZumbIMSS (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 01: Actividades Acuáticas",
+      "horas": 20,
+      "cupoMin": 15,
+      "edadMin": 10,
+      "edadMax": 105
+    },
+    {
+      "clave": "43103",
+      "nombre": "AquaZumbIMSS (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 01: Actividades Acuáticas",
+      "horas": 40,
+      "cupoMin": 15,
+      "edadMin": 10,
+      "edadMax": 105
+    },
+    {
+      "clave": "43104",
+      "nombre": "Básquetbol IMSS (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Deporte Social",
+      "horas": 40,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "43104",
+      "nombre": "Básquetbol IMSS (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Deporte Social",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "43105",
+      "nombre": "Voleibol IMSS (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Deporte Social",
+      "horas": 40,
+      "cupoMin": 12,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "43105",
+      "nombre": "Voleibol IMSS (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Deporte Social",
+      "horas": 60,
+      "cupoMin": 12,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "43106",
+      "nombre": "Fútbol IMSS (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Deporte Social",
+      "horas": 40,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "43106",
+      "nombre": "Fútbol IMSS (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Deporte Social",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "43107",
+      "nombre": "Atletismo IMSS (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Deporte Social",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "43107",
+      "nombre": "Atletismo IMSS (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Deporte Social",
+      "horas": 60,
+      "cupoMin": 10,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "43108",
+      "nombre": "Taekwondo IMSS (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Deporte Social",
+      "horas": 40,
+      "cupoMin": 15,
+      "edadMin": 4,
+      "edadMax": 105
+    },
+    {
+      "clave": "43108",
+      "nombre": "Taekwondo IMSS (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Deporte Social",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 5,
+      "edadMax": 105
+    },
+    {
+      "clave": "43109",
+      "nombre": "Béisbol IMSS (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Deporte Social",
+      "horas": 40,
+      "cupoMin": 15,
+      "edadMin": 4,
+      "edadMax": 105
+    },
+    {
+      "clave": "43109",
+      "nombre": "Béisbol IMSS (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Deporte Social",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 5,
+      "edadMax": 105
+    },
+    {
+      "clave": "43110",
+      "nombre": "Box IMSS (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Deporte Social",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 10,
+      "edadMax": 105
+    },
+    {
+      "clave": "43110",
+      "nombre": "Box IMSS (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Deporte Social",
+      "horas": 60,
+      "cupoMin": 10,
+      "edadMin": 10,
+      "edadMax": 105
+    },
+    {
+      "clave": "41101",
+      "nombre": "Matrogimnasia IMSS (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
       "horas": 20,
       "cupoMin": 10,
-      "edadMin": 18
+      "edadMin": 1,
+      "edadMax": 2
+    },
+    {
+      "clave": "41101",
+      "nombre": "Matrogimnasia IMSS (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 2,
+      "edadMax": 5
+    },
+    {
+      "clave": "41102",
+      "nombre": "Curso Vacacional Recreativo (Modalidad 1)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 60,
+      "cupoMin": 20,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41102",
+      "nombre": "Curso Vacacional Recreativo (Modalidad 2)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 80,
+      "cupoMin": 20,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41102",
+      "nombre": "Curso Vacacional Recreativo (Modalidad 3)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 100,
+      "cupoMin": 20,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "42101",
+      "nombre": "Oferta Comunitaria IMSS (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 40,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "42101",
+      "nombre": "Oferta Comunitaria IMSS (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "43111",
+      "nombre": "Yoga IMSS (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 20,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "43111",
+      "nombre": "Yoga IMSS (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 40,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "43111",
+      "nombre": "Yoga IMSS (Nivel III)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "43112",
+      "nombre": "Tai Chi Chuan IMSS (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 20,
+      "cupoMin": 15,
+      "edadMin": 20,
+      "edadMax": 105
+    },
+    {
+      "clave": "43112",
+      "nombre": "Tai Chi Chuan IMSS (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 40,
+      "cupoMin": 15,
+      "edadMin": 20,
+      "edadMax": 105
+    },
+    {
+      "clave": "43112",
+      "nombre": "Tai Chi Chuan IMSS (Nivel III)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 40,
+      "edadMax": 105
+    },
+    {
+      "clave": "43113",
+      "nombre": "Cachibol IMSS (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 40,
+      "cupoMin": 15,
+      "edadMin": 40,
+      "edadMax": 105
+    },
+    {
+      "clave": "43113",
+      "nombre": "Cachibol IMSS (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 40,
+      "edadMax": 105
+    },
+    {
+      "clave": "43114",
+      "nombre": "Spinning IMSS (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 20,
+      "cupoMin": 10,
+      "edadMin": 15,
+      "edadMax": 105
+    },
+    {
+      "clave": "43114",
+      "nombre": "Spinning IMSS (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 15,
+      "edadMax": 105
+    },
+    {
+      "clave": "43115",
+      "nombre": "ZumbIMSS (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 20,
+      "cupoMin": 15,
+      "edadMin": 4,
+      "edadMax": 105
+    },
+    {
+      "clave": "43115",
+      "nombre": "ZumbIMSS (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 40,
+      "cupoMin": 15,
+      "edadMin": 4,
+      "edadMax": 105
+    },
+    {
+      "clave": "43116",
+      "nombre": "Acondicionamiento Físico con Pesas IMSS (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 20,
+      "cupoMin": 10,
+      "edadMin": 16,
+      "edadMax": 105
+    },
+    {
+      "clave": "43116",
+      "nombre": "Acondicionamiento Físico con Pesas IMSS (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 16,
+      "edadMax": 105
+    },
+    {
+      "clave": "43117",
+      "nombre": "Ajedrez IMSS (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "43117",
+      "nombre": "Ajedrez IMSS (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 60,
+      "cupoMin": 10,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "43118",
+      "nombre": "Ejercicio Físico para Personas Mayores",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 60,
+      "edadMax": 105
+    },
+    {
+      "clave": "43120",
+      "nombre": "Fútbol sin correr",
+      "tipo": "Curso",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 120,
+      "cupoMin": 6,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "42801",
+      "nombre": "ZumbIMSS",
+      "tipo": "Taller",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 20,
+      "cupoMin": 15,
+      "edadMin": 4,
+      "edadMax": 105
+    },
+    {
+      "clave": "42802",
+      "nombre": "Yoga",
+      "tipo": "Taller",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 20,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "42803",
+      "nombre": "Fútbol",
+      "tipo": "Taller",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 20,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "42804",
+      "nombre": "Básquetbol",
+      "tipo": "Taller",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 20,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "42805",
+      "nombre": "Voleibol",
+      "tipo": "Taller",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 20,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "42806",
+      "nombre": "Cachibol",
+      "tipo": "Taller",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 20,
+      "cupoMin": 15,
+      "edadMin": 40,
+      "edadMax": 105
+    },
+    {
+      "clave": "42807",
+      "nombre": "Activación Física para la Salud",
+      "tipo": "Taller",
+      "bloque": "Bloque 03: Deporte y Recreación",
+      "horas": 20,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "41103",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Básquetbol (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 40,
+      "cupoMin": 12,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41103",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Básquetbol (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 60,
+      "cupoMin": 12,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41104",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Natación (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 40,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41104",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Natación (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41105",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Voleibol (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 40,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41105",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Voleibol (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41106",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Fútbol (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 40,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41106",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Fútbol (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41107",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Gimnasia Artística (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 4,
+      "edadMax": 16
+    },
+    {
+      "clave": "41107",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Gimnasia Artística (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 60,
+      "cupoMin": 10,
+      "edadMin": 4,
+      "edadMax": 16
+    },
+    {
+      "clave": "41108",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Gimnasia Rítmica (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 4,
+      "edadMax": 16
+    },
+    {
+      "clave": "41108",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Gimnasia Rítmica (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 60,
+      "cupoMin": 10,
+      "edadMin": 4,
+      "edadMax": 16
+    },
+    {
+      "clave": "41109",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Atletismo (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41109",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Atletismo (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 60,
+      "cupoMin": 10,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41110",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Clavados (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41110",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Clavados (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 60,
+      "cupoMin": 10,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41111",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Polo Acuático (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 40,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41111",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Polo Acuático (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41112",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Taekwondo (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 40,
+      "cupoMin": 15,
+      "edadMin": 4,
+      "edadMax": 16
+    },
+    {
+      "clave": "41112",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Taekwondo (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 4,
+      "edadMax": 16
+    },
+    {
+      "clave": "41113",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Karate (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 40,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41113",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Karate (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41114",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Béisbol (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 40,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41114",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Béisbol (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41115",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Básquetbol 3x3 (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41115",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Básquetbol 3x3 (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 60,
+      "cupoMin": 10,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41116",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Box (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 40,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41116",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Box (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 6,
+      "edadMax": 16
+    },
+    {
+      "clave": "41117",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Fútbol de Salón (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 40,
+      "cupoMin": 12,
+      "edadMin": 9,
+      "edadMax": 16
+    },
+    {
+      "clave": "41117",
+      "nombre": "Escuela de Iniciación y Formación Deportiva de Fútbol de Salón (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 60,
+      "cupoMin": 12,
+      "edadMin": 9,
+      "edadMax": 16
+    },
+    {
+      "clave": "43121",
+      "nombre": "Escuela de Especialización Deportiva de Voleibol (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 16,
+      "edadMax": 30
+    },
+    {
+      "clave": "43121",
+      "nombre": "Escuela de Especialización Deportiva de Voleibol (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 80,
+      "cupoMin": 15,
+      "edadMin": 16,
+      "edadMax": 30
+    },
+    {
+      "clave": "43122",
+      "nombre": "Escuela de Especialización Deportiva de Fútbol (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 16,
+      "edadMax": 30
+    },
+    {
+      "clave": "43122",
+      "nombre": "Escuela de Especialización Deportiva de Fútbol (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 80,
+      "cupoMin": 15,
+      "edadMin": 16,
+      "edadMax": 30
+    },
+    {
+      "clave": "43123",
+      "nombre": "Escuela de Especialización Deportiva de Natación (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 16,
+      "edadMax": 30
+    },
+    {
+      "clave": "43123",
+      "nombre": "Escuela de Especialización Deportiva de Natación (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 80,
+      "cupoMin": 15,
+      "edadMin": 16,
+      "edadMax": 30
+    },
+    {
+      "clave": "43124",
+      "nombre": "Escuela de Especialización Deportiva de Taekwondo (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 16,
+      "edadMax": 30
+    },
+    {
+      "clave": "43124",
+      "nombre": "Escuela de Especialización Deportiva de Taekwondo (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 80,
+      "cupoMin": 15,
+      "edadMin": 16,
+      "edadMax": 30
+    },
+    {
+      "clave": "43125",
+      "nombre": "Escuela de Especialización Deportiva de Básquetbol (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 60,
+      "cupoMin": 15,
+      "edadMin": 16,
+      "edadMax": 30
+    },
+    {
+      "clave": "43125",
+      "nombre": "Escuela de Especialización Deportiva de Básquetbol (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 80,
+      "cupoMin": 15,
+      "edadMin": 16,
+      "edadMax": 30
+    },
+    {
+      "clave": "43126",
+      "nombre": "Escuela de Especialización Deportiva de Gimnasia Rítmica (Nivel I)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 60,
+      "cupoMin": 6,
+      "edadMin": 16,
+      "edadMax": 30
+    },
+    {
+      "clave": "43126",
+      "nombre": "Escuela de Especialización Deportiva de Gimnasia Rítmica (Nivel II)",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Escuelas Deportivas",
+      "horas": 80,
+      "cupoMin": 6,
+      "edadMin": 16,
+      "edadMax": 30
+    },
+    {
+      "clave": "45801",
+      "nombre": "ZumbIMSS para Niñas, Niños y Adolescentes PASS",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: PASS",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 3,
+      "edadMax": 19
+    },
+    {
+      "clave": "45802",
+      "nombre": "Actívate para Niñas, Niños y Adolescentes PASS",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: PASS",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 3,
+      "edadMax": 19
+    },
+    {
+      "clave": "45804",
+      "nombre": "Ejercicio Físico para la Salud PASS",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: PASS",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "45805",
+      "nombre": "Cuida tu espalda PASS",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: PASS",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 20,
+      "edadMax": 105
+    },
+    {
+      "clave": "45806",
+      "nombre": "Yoga PASS",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: PASS",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "45813",
+      "nombre": "ZumbIMSS PASS",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: PASS",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "45814",
+      "nombre": "Tai Chi Chuan PASS",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: PASS",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 20,
+      "edadMax": 105
+    },
+    {
+      "clave": "45815",
+      "nombre": "Cachibol PASS",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: PASS",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 40,
+      "edadMax": 105
+    },
+    {
+      "clave": "45816",
+      "nombre": "ZumbIMSS PASS-ELSSA",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: PASS",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 18,
+      "edadMax": 65
+    },
+    {
+      "clave": "45817",
+      "nombre": "Yoga PASS-ELSSA",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: PASS",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 18,
+      "edadMax": 65
+    },
+    {
+      "clave": "45818",
+      "nombre": "Fútbol PASS-ELSSA",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: PASS",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 18,
+      "edadMax": 65
+    },
+    {
+      "clave": "45819",
+      "nombre": "Básquetbol PASS-ELSSA",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: PASS",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 18,
+      "edadMax": 65
+    },
+    {
+      "clave": "45820",
+      "nombre": "Voleibol PASS-ELSSA",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: PASS",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 18,
+      "edadMax": 65
+    },
+    {
+      "clave": "45821",
+      "nombre": "Cuida tu espalda PASS-ELSSA",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: PASS",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 18,
+      "edadMax": 65
+    },
+    {
+      "clave": "45822",
+      "nombre": "Natación PASS-ELSSA",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: PASS",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 18,
+      "edadMax": 65
+    },
+    {
+      "clave": "45823",
+      "nombre": "Ejercicio Físico para la Salud PASS-TIMSS",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: PASS",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 18,
+      "edadMax": 65
+    },
+    {
+      "clave": "45824",
+      "nombre": "Yoga PASS-TIMSS",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: PASS",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 18,
+      "edadMax": 65
+    },
+    {
+      "clave": "45825",
+      "nombre": "ZumbIMSS PASS-TIMSS",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: PASS",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 18,
+      "edadMax": 65
+    },
+    {
+      "clave": "45826",
+      "nombre": "Tai Chi Chuan PASS-TIMSS",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: PASS",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 18,
+      "edadMax": 65
+    },
+    {
+      "clave": "45827",
+      "nombre": "Fútbol PASS-TIMSS",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: PASS",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 18,
+      "edadMax": 65
+    },
+    {
+      "clave": "45828",
+      "nombre": "Natación PASS-TIMSS",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: PASS",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 18,
+      "edadMax": 65
+    },
+    {
+      "clave": "44101",
+      "nombre": "Para Atletismo",
+      "tipo": "Curso",
+      "bloque": "Bloque 06: Personas con Discapacidad",
+      "horas": 120,
+      "cupoMin": 6,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "44102",
+      "nombre": "Para Natación",
+      "tipo": "Curso",
+      "bloque": "Bloque 06: Personas con Discapacidad",
+      "horas": 120,
+      "cupoMin": 6,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "44103",
+      "nombre": "Básquetbol en Silla de Ruedas",
+      "tipo": "Curso",
+      "bloque": "Bloque 06: Personas con Discapacidad",
+      "horas": 120,
+      "cupoMin": 6,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "44104",
+      "nombre": "Oferta Comunitaria IMSS para Personas con Discapacidad",
+      "tipo": "Curso",
+      "bloque": "Bloque 06: Personas con Discapacidad",
+      "horas": 120,
+      "cupoMin": 6,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "44105",
+      "nombre": "Fútbol para personas ciegas",
+      "tipo": "Curso",
+      "bloque": "Bloque 06: Personas con Discapacidad",
+      "horas": 120,
+      "cupoMin": 6,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "44106",
+      "nombre": "Fútbol IMSS T21",
+      "tipo": "Curso",
+      "bloque": "Bloque 06: Personas con Discapacidad",
+      "horas": 120,
+      "cupoMin": 6,
+      "edadMin": 6,
+      "edadMax": 105
     }
   ],
   "Capacitación": [
     {
-      "clave": "51101",
-      "nombre": "Corte y Confección de Ropa",
+      "clave": "53101",
+      "nombre": "Computación en ambiente Windows",
       "tipo": "Curso",
-      "horas": 60,
-      "cupoMin": 15,
-      "edadMin": 15
+      "bloque": "Bloque 01: Computación e Idiomas",
+      "horas": 30,
+      "cupoMin": 10,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "53102",
+      "nombre": "Inglés para el contexto laboral",
+      "tipo": "Curso",
+      "bloque": "Bloque 01: Computación e Idiomas",
+      "horas": 30,
+      "cupoMin": 10,
+      "edadMin": 8,
+      "edadMax": 105
+    },
+    {
+      "clave": "53801",
+      "nombre": "Paquetería Básica de Computación",
+      "tipo": "Taller",
+      "bloque": "Bloque 01: Computación e Idiomas",
+      "horas": 20,
+      "cupoMin": 10,
+      "edadMin": 6,
+      "edadMax": 105
+    },
+    {
+      "clave": "53802",
+      "nombre": "Inglés básico",
+      "tipo": "Taller",
+      "bloque": "Bloque 01: Computación e Idiomas",
+      "horas": 20,
+      "cupoMin": 10,
+      "edadMin": 8,
+      "edadMax": 105
+    },
+    {
+      "clave": "53803",
+      "nombre": "Herramientas digitales para crear: documentos de texto, bases de datos y presentaciones visuales",
+      "tipo": "Taller",
+      "bloque": "Bloque 01: Computación e Idiomas",
+      "horas": 20,
+      "cupoMin": 10,
+      "edadMin": 8,
+      "edadMax": 105
+    },
+    {
+      "clave": "53804",
+      "nombre": "Escuela virtual (aula de cómputo)",
+      "tipo": "Taller",
+      "bloque": "Bloque 01: Computación e Idiomas",
+      "horas": 5,
+      "cupoMin": 10,
+      "edadMin": 13,
+      "edadMax": 105
+    },
+    {
+      "clave": "53805",
+      "nombre": "Introducción a la Inteligencia Artificial para todas y todos",
+      "tipo": "Taller",
+      "bloque": "Bloque 01: Computación e Idiomas",
+      "horas": 6,
+      "cupoMin": 10,
+      "edadMin": 13,
+      "edadMax": 105
+    },
+    {
+      "clave": "53103",
+      "nombre": "Alfabetización",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Educación",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 15,
+      "edadMax": 105
+    },
+    {
+      "clave": "53104",
+      "nombre": "Primaria INEA",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Educación",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 15,
+      "edadMax": 105
+    },
+    {
+      "clave": "53105",
+      "nombre": "Secundaria INEA",
+      "tipo": "Curso",
+      "bloque": "Bloque 02: Educación",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 15,
+      "edadMax": 105
+    },
+    {
+      "clave": "51801",
+      "nombre": "Desarrollo Humano y Superación Personal ASUME (12 a 15 años)",
+      "tipo": "Taller",
+      "bloque": "Bloque 02: Educación",
+      "horas": 32,
+      "cupoMin": 10,
+      "edadMin": 12,
+      "edadMax": 15
+    },
+    {
+      "clave": "51802",
+      "nombre": "Preparatoria Abierta",
+      "tipo": "Taller",
+      "bloque": "Bloque 02: Educación",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 15,
+      "edadMax": 105
+    },
+    {
+      "clave": "51803",
+      "nombre": "Alfabetización en Hospitales",
+      "tipo": "Taller",
+      "bloque": "Bloque 02: Educación",
+      "horas": 80,
+      "cupoMin": 10,
+      "edadMin": 6,
+      "edadMax": 17
+    },
+    {
+      "clave": "51804",
+      "nombre": "Primaria en Hospitales",
+      "tipo": "Taller",
+      "bloque": "Bloque 02: Educación",
+      "horas": 80,
+      "cupoMin": 10,
+      "edadMin": 6,
+      "edadMax": 17
+    },
+    {
+      "clave": "51805",
+      "nombre": "Secundaria en Hospitales",
+      "tipo": "Taller",
+      "bloque": "Bloque 02: Educación",
+      "horas": 80,
+      "cupoMin": 10,
+      "edadMin": 10,
+      "edadMax": 17
+    },
+    {
+      "clave": "51806",
+      "nombre": "Apoyo Escolar en Hospitales",
+      "tipo": "Taller",
+      "bloque": "Bloque 02: Educación",
+      "horas": 80,
+      "cupoMin": 10,
+      "edadMin": 3,
+      "edadMax": 17
+    },
+    {
+      "clave": "51807",
+      "nombre": "Preescolar en Hospitales",
+      "tipo": "Taller",
+      "bloque": "Bloque 02: Educación",
+      "horas": 80,
+      "cupoMin": 10,
+      "edadMin": 3,
+      "edadMax": 7
+    },
+    {
+      "clave": "51808",
+      "nombre": "Club Escolar",
+      "tipo": "Taller",
+      "bloque": "Bloque 02: Educación",
+      "horas": 20,
+      "cupoMin": 5,
+      "edadMin": 6,
+      "edadMax": 12
+    },
+    {
+      "clave": "53806",
+      "nombre": "Desarrollo Humano y Superación Personal ASUME",
+      "tipo": "Taller",
+      "bloque": "Bloque 02: Educación",
+      "horas": 26,
+      "cupoMin": 10,
+      "edadMin": 20,
+      "edadMax": 105
+    },
+    {
+      "clave": "53807",
+      "nombre": "E-learning",
+      "tipo": "Taller",
+      "bloque": "Bloque 02: Educación",
+      "horas": 10,
+      "cupoMin": 50,
+      "edadMin": 15,
+      "edadMax": 105
+    },
+    {
+      "clave": "52801",
+      "nombre": "Emprendimiento básico de negocios",
+      "tipo": "Taller",
+      "bloque": "Bloque 03: Emprendimiento Básico",
+      "horas": 20,
+      "cupoMin": 5,
+      "edadMin": 12,
+      "edadMax": 105
+    },
+    {
+      "clave": "52802",
+      "nombre": "Introducción al emprendimiento para el Bienestar Social",
+      "tipo": "Taller",
+      "bloque": "Bloque 03: Emprendimiento Básico",
+      "horas": 4,
+      "cupoMin": 5,
+      "edadMin": 12,
+      "edadMax": 105
+    },
+    {
+      "clave": "51101",
+      "nombre": "Arte en Uñas: Curso de Diseño y Aplicación",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Oficios",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 15,
+      "edadMax": 105
     },
     {
       "clave": "51102",
-      "nombre": "Computación e Informática Básica",
+      "nombre": "Tendencias de Maquillaje",
       "tipo": "Curso",
+      "bloque": "Bloque 04: Oficios",
       "horas": 40,
-      "cupoMin": 12,
-      "edadMin": 12
+      "cupoMin": 10,
+      "edadMin": 15,
+      "edadMax": 105
     },
     {
       "clave": "51103",
-      "nombre": "Belleza y Estilismo Integral",
+      "nombre": "Cortes y peinados del cabello (Estilismo)",
       "tipo": "Curso",
-      "horas": 60,
-      "cupoMin": 15,
-      "edadMin": 15
+      "bloque": "Bloque 04: Oficios",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 15,
+      "edadMax": 105
+    },
+    {
+      "clave": "51104",
+      "nombre": "Estilismo y barbería",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Oficios",
+      "horas": 40,
+      "cupoMin": 5,
+      "edadMin": 18,
+      "edadMax": 105
+    },
+    {
+      "clave": "52101",
+      "nombre": "Oferta Comunitaria",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Oficios",
+      "horas": 20,
+      "cupoMin": 10,
+      "edadMin": 15,
+      "edadMax": 105
+    },
+    {
+      "clave": "53106",
+      "nombre": "Cocina Saludable",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Oficios",
+      "horas": 40,
+      "cupoMin": 5,
+      "edadMin": 15,
+      "edadMax": 105
+    },
+    {
+      "clave": "53107",
+      "nombre": "Panadería y Repostería",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Oficios",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 15,
+      "edadMax": 105
+    },
+    {
+      "clave": "53108",
+      "nombre": "Arte y Diseño en Bisutería",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Oficios",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 13,
+      "edadMax": 105
+    },
+    {
+      "clave": "53109",
+      "nombre": "Diseño de moda y costura",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Oficios",
+      "horas": 40,
+      "cupoMin": 10,
+      "edadMin": 15,
+      "edadMax": 105
+    },
+    {
+      "clave": "53110",
+      "nombre": "Carpintería",
+      "tipo": "Curso",
+      "bloque": "Bloque 04: Oficios",
+      "horas": 40,
+      "cupoMin": 5,
+      "edadMin": 15,
+      "edadMax": 105
+    },
+    {
+      "clave": "51809",
+      "nombre": "Estilismo básico (presencial)",
+      "tipo": "Taller",
+      "bloque": "Bloque 04: Oficios",
+      "horas": 20,
+      "cupoMin": 10,
+      "edadMin": 13,
+      "edadMax": 105
+    },
+    {
+      "clave": "51810",
+      "nombre": "Estilismo básico mixto (semipresencial) Fundamentos teóricos (en línea)",
+      "tipo": "Taller",
+      "bloque": "Bloque 04: Oficios",
+      "horas": 5,
+      "cupoMin": 10,
+      "edadMin": 13,
+      "edadMax": 105
+    },
+    {
+      "clave": "51811",
+      "nombre": "Estilismo básico mixto (semipresencial) práctica (presencial)",
+      "tipo": "Taller",
+      "bloque": "Bloque 04: Oficios",
+      "horas": 10,
+      "cupoMin": 10,
+      "edadMin": 13,
+      "edadMax": 105
+    },
+    {
+      "clave": "51812",
+      "nombre": "Corte y Barbería básico",
+      "tipo": "Taller",
+      "bloque": "Bloque 04: Oficios",
+      "horas": 20,
+      "cupoMin": 10,
+      "edadMin": 15,
+      "edadMax": 105
+    },
+    {
+      "clave": "52803",
+      "nombre": "Oferta Comunitaria 20",
+      "tipo": "Taller",
+      "bloque": "Bloque 04: Oficios",
+      "horas": 20,
+      "cupoMin": 8,
+      "edadMin": 13,
+      "edadMax": 105
+    },
+    {
+      "clave": "53808",
+      "nombre": "Cocina",
+      "tipo": "Taller",
+      "bloque": "Bloque 04: Oficios",
+      "horas": 20,
+      "cupoMin": 5,
+      "edadMin": 13,
+      "edadMax": 105
     },
     {
       "clave": "53809",
-      "nombre": "Cocina Saludable y Nutritiva",
+      "nombre": "Patronaje de Prendas",
       "tipo": "Taller",
+      "bloque": "Bloque 04: Oficios",
       "horas": 20,
-      "cupoMin": 15,
-      "edadMin": 15
+      "cupoMin": 10,
+      "edadMin": 16,
+      "edadMax": 105
+    },
+    {
+      "clave": "53810",
+      "nombre": "Conoce y disfruta de las Prestaciones Sociales del IMSS",
+      "tipo": "Taller",
+      "bloque": "Bloque 05: Difusión y Capacitación",
+      "horas": 4,
+      "cupoMin": 10,
+      "edadMin": 10,
+      "edadMax": 105
+    },
+    {
+      "clave": "55801",
+      "nombre": "Elaboración de Platillos Saludables",
+      "tipo": "Taller",
+      "bloque": "Bloque 06: PASS (Capacitación)",
+      "horas": 24,
+      "cupoMin": 5,
+      "edadMin": 15,
+      "edadMax": 105
     },
     {
       "clave": "55802",
-      "nombre": "Cuidados de Piel, Manos y Pies PASS",
+      "nombre": "Cuidados de Piel, Manos y Pies",
       "tipo": "Taller",
-      "horas": 20,
-      "cupoMin": 10,
-      "edadMin": 18
+      "bloque": "Bloque 06: PASS (Capacitación)",
+      "horas": 24,
+      "cupoMin": 8,
+      "edadMin": 15,
+      "edadMax": 105
     },
     {
-      "clave": "53132",
-      "nombre": "Opción Local de Capacitación para el Trabajo",
-      "tipo": "Curso",
-      "horas": 40,
-      "cupoMin": 15,
-      "edadMin": 15
+      "clave": "55803",
+      "nombre": "Cuidados de Piel, Manos y Pies PASS-ELSSA",
+      "tipo": "Taller",
+      "bloque": "Bloque 07: PASS-ELSSA",
+      "horas": 24,
+      "cupoMin": 8,
+      "edadMin": 15,
+      "edadMax": 105
     }
   ]
 }
