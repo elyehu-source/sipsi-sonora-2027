@@ -186,7 +186,7 @@
       <span><strong>Días Hábiles:</strong> 353</span>
       <span><strong>Cobertura:</strong> 6 CSS Oficiales</span>
       <span class="badge badge-cumple" id="tb-badge-pass">PASS: 6/6 Acreditadas</span>
-      <span class="badge" style="background:#0284c7; color:#ffffff; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px;" title="Versión de Sistema Oficial">v2027.4.7</span>
+      <span class="badge" style="background:#0284c7; color:#ffffff; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px;" title="Versión de Sistema Oficial">v2027.4.8</span>
     </div>
     <div class="toolbar-group" style="gap: 0.65rem; align-items: center;">
       <!-- SELECTOR DE PERFIL / MODO DE TRABAJO -->
@@ -5225,6 +5225,34 @@
       }
       cargarDatosDesdeStorage();
       inicializarFirebase();
+
+      // Precarga REST ultra rápida de eliminados para purga atómica en arranque/F5
+      try {
+        fetch('https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2/eliminados.json')
+          .then(r => r.json())
+          .then(raw => {
+            if (raw && typeof raw === 'object') {
+              let added = false;
+              Object.keys(raw).forEach(k => {
+                if (!eliminadosSet.has(k)) {
+                  eliminadosSet.add(k);
+                  added = true;
+                }
+              });
+              if (added) {
+                try { localStorage.setItem('imss_paa_eliminados_2027', JSON.stringify([...eliminadosSet])); } catch(e){}
+                const nC = cursosList.length;
+                cursosList = cursosList.filter(c => c && c.id && !eliminadosSet.has(sanitizarClaveFirebase(c.id)));
+                complementariasList = complementariasList.filter(a => a && a.id && !eliminadosSet.has(sanitizarClaveFirebase(a.id)));
+                if (cursosList.length !== nC) {
+                  guardarEnStorage();
+                  actualizarTodo();
+                }
+              }
+            }
+          }).catch(() => {});
+      } catch(e){}
+
       cargarCursosSegunEje();
       alCambiarUopsi();
       recalcularCursoPrevio();
@@ -5724,7 +5752,7 @@
     const sincronizarConNube = sincronizarReemplazoTotalEnNube;
 
     function cargarDatosDesdeStorage() {
-      const APP_VERSION = '2027.4.7';
+      const APP_VERSION = '2027.4.8';
       try {
         // Cargar eliminadosSet desde localStorage
         const rawElim = localStorage.getItem('imss_paa_eliminados_2027');
@@ -7164,40 +7192,39 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
       const item = cursosList.find(c => c.id === id);
       if (!item) return;
 
-      if (item.grupoSerieId) {
-        const totalSerie = cursosList.filter(c => c.grupoSerieId === item.grupoSerieId).length;
-        const resp = confirm(`Este curso forma parte de una secuencia continua de ${totalSerie} grupos (${item.curso}).
+      const totalSerie = item.grupoSerieId ? cursosList.filter(c => c.grupoSerieId === item.grupoSerieId).length : 0;
 
-¿Desea eliminar TODA la serie de ${totalSerie} grupos continuos?
-
-• Aceptar: Eliminará TODOS los ${totalSerie} grupos de la serie.
-• Cancelar: No eliminará la serie (podrá retirar solo este grupo individual).`);
+      if (totalSerie > 1) {
+        const resp = confirm(`Este curso forma parte de una secuencia continua de ${totalSerie} grupos (${item.curso}).\n\n¿Desea eliminar TODA la serie de ${totalSerie} grupos continuos?\n\n• Aceptar: Eliminará TODOS los ${totalSerie} grupos continuos de la serie.\n• Cancelar: Eliminar ÚNICAMENTE este grupo (${item.nombreGrupo || 'Grupo ' + item.grupo}).`);
         if (resp) {
           const idsABorrar = cursosList.filter(c => c.grupoSerieId === item.grupoSerieId).map(c => c.id);
+          // 1. SINCRONIZAR BAJA EN NUBE Y LISTA NEGRA DE RAÍZ (Garantía absoluta antes de cualquier render)
+          sincronizarBajaCursosEnNube(idsABorrar);
           cursosList = cursosList.filter(c => c.grupoSerieId !== item.grupoSerieId);
           guardarEnStorage();
-          actualizarTodo();
-          sincronizarBajaCursosEnNube(idsABorrar);
-          mostrarToast(`Serie completa de ${totalSerie} grupos eliminada.`, "warning");
+          try { actualizarTodo(); } catch(e){ console.warn(e); }
+          mostrarToast(`Serie completa de ${totalSerie} grupos eliminada permanentemente.`, "warning");
           return;
         } else {
-          if (confirm(`¿Desea eliminar ÚNICAMENTE el ${item.nombreGrupo || 'Grupo ' + item.grupo}?`)) {
+          if (confirm(`¿Confirmar retiro individual del ${item.nombreGrupo || 'Grupo ' + item.grupo} (${item.curso})?`)) {
+            // 1. SINCRONIZAR BAJA EN NUBE Y LISTA NEGRA DE RAÍZ
+            sincronizarBajaCursosEnNube(id);
             cursosList = cursosList.filter(c => c.id !== id);
             guardarEnStorage();
-            actualizarTodo();
-            sincronizarBajaCursosEnNube(id);
-            mostrarToast(`${item.nombreGrupo || 'Grupo ' + item.grupo} eliminado.`, "warning");
+            try { actualizarTodo(); } catch(e){ console.warn(e); }
+            mostrarToast(`${item.nombreGrupo || 'Grupo ' + item.grupo} eliminado permanentemente.`, "warning");
           }
           return;
         }
       }
 
       if (confirm(`¿Retirar actividad "${item.curso}" (${item.nombreGrupo || 'Grupo ' + (item.grupo || 1)}) de la programación?`)) {
+        // 1. SINCRONIZAR BAJA EN NUBE Y LISTA NEGRA DE RAÍZ (Garantía absoluta antes de cualquier render)
+        sincronizarBajaCursosEnNube(id);
         cursosList = cursosList.filter(c => c.id !== id);
         guardarEnStorage();
-        actualizarTodo();
-        sincronizarBajaCursosEnNube(id);
-        mostrarToast("Actividad retirada con éxito de la nube.", "warning");
+        try { actualizarTodo(); } catch(e){ console.warn(e); }
+        mostrarToast("Actividad retirada permanentemente de la nube central.", "warning");
       }
     }
 
@@ -7907,12 +7934,13 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
     }
 
     function eliminarComplementaria(id) {
-      if (confirm("¿Eliminar actividad complementaria?")) {
+      if (confirm("¿Eliminar actividad complementaria de la programación?")) {
+        // 1. NUBE Y TOMBSTONES PRIMERO (Garantía absoluta antes de cualquier render)
+        sincronizarBajaCompEnNube(id);
         complementariasList = complementariasList.filter(a => a.id !== id);
         guardarEnStorage();
-        actualizarTodo();
-        sincronizarBajaCompEnNube(id);
-        mostrarToast("Actividad eliminada.", "warning");
+        try { actualizarTodo(); } catch(e){ console.warn(e); }
+        mostrarToast("Actividad complementaria eliminada permanentemente.", "warning");
       }
     }
 
