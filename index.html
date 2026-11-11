@@ -5471,12 +5471,11 @@
         }
       });
 
-      // 2. Escuchar cambios de cursos en tiempo real de todas las unidades
+      // 2. Escuchar cambios de cursos en tiempo real de todas las unidades (Nube = Fuente de Verdad Única)
       const refCursos = firebaseDb.ref('sipsi_sonora_2027_v2/cursos');
       refCursos.on('value', (snapshot) => {
         if (sincronizandoConNube) return;
         if (modoTrabajoActual === 'simulacion') {
-          // En modo simulación, actualizar solo el caché de respaldo oficial sin tocar la simulación activa
           const raw = snapshot.val();
           if (raw) {
             cursosOficialesCache = (Array.isArray(raw) ? raw.filter(Boolean) : Object.values(raw).filter(Boolean))
@@ -5487,36 +5486,15 @@
         const raw = snapshot.val();
         if (raw === null || raw === undefined) return;
 
-        // Convierte array u objeto asociativo y filtra inmediatamente cualquier curso eliminado
+        // La base de datos central en la nube manda de forma autoritativa
         const data = (Array.isArray(raw) ? raw.filter(Boolean) : Object.values(raw).filter(Boolean))
           .filter(c => c && c.id && !eliminadosSet.has(sanitizarClaveFirebase(c.id)) && UOPSI_CATALOGO[c.uopsiCve]);
 
-        // Mapa de cursos que vienen de la nube
-        const mapaNube = new Map();
-        data.forEach(c => {
-          if (c && c.id) mapaNube.set(sanitizarClaveFirebase(c.id), c);
-        });
-
-        // Salvaguarda bidireccional: si en la memoria local existen cursos recién capturados que aún
-        // no se reflejaban en este paquete de la nube, NUNCA borrarlos; preservarlos y subirlos.
-        let cursosLocalesRescatados = 0;
-        const listaFusionada = [...data];
-        (cursosList || []).forEach(localC => {
-          if (localC && localC.id) {
-            const k = sanitizarClaveFirebase(localC.id);
-            if (!eliminadosSet.has(k) && !mapaNube.has(k)) {
-              listaFusionada.push(localC);
-              mapaNube.set(k, localC);
-              cursosLocalesRescatados++;
-            }
-          }
-        });
-
         const strLocal = JSON.stringify(cursosList);
-        const strFusionada = JSON.stringify(listaFusionada);
-        if (strLocal !== strFusionada) {
-          console.log(`[Firebase] 📥 Padrón sincronizado en vivo (${listaFusionada.length} cursos: ${data.length} de nube + ${cursosLocalesRescatados} locales protegidos).`);
-          cursosList = listaFusionada;
+        const strData = JSON.stringify(data);
+        if (strLocal !== strData) {
+          console.log(`[Firebase] 📥 Padrón oficial sincronizado en vivo desde la nube (${data.length} cursos activos).`);
+          cursosList = data;
 
           try {
             localStorage.setItem('imss_paa_cursos_2027_v2', JSON.stringify(cursosList));
@@ -5524,12 +5502,6 @@
           } catch(e){}
 
           actualizarTodo();
-
-          // Si había cursos locales en tránsito, asegurarnos de que la nube los guarde
-          if (cursosLocalesRescatados > 0) {
-            const pendientes = listaFusionada.filter(c => !data.some(d => d.id === c.id));
-            sincronizarAltaCursosEnNube(pendientes);
-          }
         }
       }, (err) => {
         console.warn('[Firebase] Lectura de cursos:', err.message);
@@ -5564,22 +5536,23 @@
       });
     }
 
-    // ALTA GRANULAR: Sube únicamente los cursos nuevos creados en este momento sin tocar lo demás
+    // ALTA Y EDICIÓN ATÓMICA EN NUBE: Sube o actualiza cursos directamente en Firebase
     function sincronizarAltaCursosEnNube(nuevosCursos) {
-      if (modoTrabajoActual === 'simulacion') return; // En simulación privada NO se altera la nube
+      if (modoTrabajoActual === 'simulacion') return;
       if (!firebaseDb) return;
+      const lista = Array.isArray(nuevosCursos) ? nuevosCursos : [nuevosCursos];
+      if (!lista.length) return;
+
       sincronizandoConNube = true;
       const updates = {};
-      const lista = Array.isArray(nuevosCursos) ? nuevosCursos : [nuevosCursos];
       let agregados = 0;
       lista.forEach(c => {
         if (c && c.id) {
           const k = sanitizarClaveFirebase(c.id);
-          // Si el ID estaba en eliminados, NO se sube
-          if (!eliminadosSet.has(k)) {
-            updates['cursos/' + k] = c;
-            agregados++;
-          }
+          eliminadosSet.delete(k); // Si estaba marcado como eliminado, se desmarca porque el usuario lo guardó expresamente
+          updates['cursos/' + k] = JSON.parse(JSON.stringify(c)); // Limpia cualquier undefined que pudiera rechazar Firebase
+          updates['eliminados/' + k] = null;
+          agregados++;
         }
       });
       if (agregados === 0) {
@@ -5590,10 +5563,12 @@
 
       firebaseDb.ref('sipsi_sonora_2027_v2').update(updates).then(() => {
         setTimeout(() => { sincronizandoConNube = false; }, 300);
-        console.log(`[Firebase] 🟢 ${agregados} curso(s) sincronizado(s) en la nube de forma granular.`);
+        console.log(`[Firebase] 🟢 ${agregados} curso(s) guardado(s)/actualizado(s) con éxito en la nube.`);
+        actualizarIndicadorGuardado();
       }).catch(err => {
         sincronizandoConNube = false;
         console.warn('[Firebase] Error al guardar en nube:', err.message);
+        mostrarToast('Error al conectar con la nube: ' + err.message, 'error');
       });
     }
 
@@ -5696,7 +5671,7 @@
     const sincronizarConNube = sincronizarReemplazoTotalEnNube;
 
     function cargarDatosDesdeStorage() {
-      const APP_VERSION = '2027.4.4';
+      const APP_VERSION = '2027.4.5';
       try {
         // Cargar eliminadosSet desde localStorage
         const rawElim = localStorage.getItem('imss_paa_eliminados_2027');
@@ -5814,20 +5789,7 @@
       // Guardar de inmediato en storage permanente para consolidar
       guardarEnStorage();
 
-      // Si localStorage estuviera vacio o tuviera menos datos y hay servidor local activo, restaurar
-      if (typeof fetch === 'function') {
-        fetch('/api/cargar-cursos')
-          .then(r => r.json())
-          .then(data => {
-            if (Array.isArray(data) && data.length > cursosList.length) {
-              console.log(`[Sincronizacion] Servidor local proveyo ${data.length} cursos. Actualizando memoria.`);
-              cursosList = data.filter(item => UOPSI_CATALOGO[item.uopsiCve]);
-              guardarEnStorage();
-              actualizarTodo();
-            }
-          })
-          .catch(() => {});
-      }
+// Sincronización gobernada 100% por Firebase Realtime Database
     }
 
     function guardarEnStorage() {
