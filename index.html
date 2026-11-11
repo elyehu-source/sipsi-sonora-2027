@@ -1462,14 +1462,14 @@
             <label style="display: block; font-weight: 600; font-size: 0.82rem; color: #1e293b; margin-bottom: 0.35rem;">
               <i class="fa-regular fa-clock"></i> Hora Inicio:
             </label>
-            <input type="time" id="edit-hora-ini" class="form-control" onchange="recalcularEdicionEnVivo()" style="font-size: 0.85rem;">
+            <input type="time" id="edit-hora-ini" class="form-control" onchange="recalcularEdicionEnVivo()" oninput="recalcularEdicionEnVivo()" style="font-size: 0.85rem;">
           </div>
 
           <div>
             <label style="display: block; font-weight: 600; font-size: 0.82rem; color: #1e293b; margin-bottom: 0.35rem;">
               <i class="fa-regular fa-clock"></i> Hora Fin:
             </label>
-            <input type="time" id="edit-hora-fin" class="form-control" onchange="recalcularEdicionEnVivo()" style="font-size: 0.85rem;">
+            <input type="time" id="edit-hora-fin" class="form-control" onchange="recalcularEdicionEnVivo()" oninput="recalcularEdicionEnVivo()" style="font-size: 0.85rem;">
           </div>
 
           <div style="background: #f1f5f9; border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.75rem; border: 1px solid #e2e8f0;">
@@ -1488,20 +1488,49 @@
           </div>
         </div>
 
-        <!-- Fila 6: Fechas del Periodo -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.5rem;">
-          <div>
-            <label style="display: block; font-weight: 600; font-size: 0.82rem; color: #1e293b; margin-bottom: 0.35rem;">
-              <i class="fa-regular fa-calendar"></i> Fecha Inicio:
-            </label>
-            <input type="date" id="edit-fec-ini" class="form-control" onchange="recalcularEdicionEnVivo()" style="font-size: 0.82rem;">
+        <!-- Fila 6: Horas Norma y Fechas del Periodo (con auto-cálculo de Fecha Fin) -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 0.65rem;">
+          <div style="display: grid; grid-template-columns: 1fr 1.1fr 1.3fr; gap: 0.85rem; align-items: flex-end;">
+            <div>
+              <label style="display: block; font-weight: 600; font-size: 0.82rem; color: #1e293b; margin-bottom: 0.35rem;">
+                <i class="fa-solid fa-hourglass-half"></i> Horas del Curso:
+              </label>
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <input type="number" id="edit-horas-norma" class="form-control" min="1" max="500" oninput="recalcularEdicionEnVivo()" onchange="recalcularEdicionEnVivo()" style="font-size: 0.85rem; font-weight: 700; color: #1e3a8a;">
+                <span style="font-size: 0.78rem; font-weight: 600; color: #64748b;">hrs</span>
+              </div>
+            </div>
+
+            <div>
+              <label style="display: block; font-weight: 600; font-size: 0.82rem; color: #1e293b; margin-bottom: 0.35rem;">
+                <i class="fa-regular fa-calendar"></i> Fecha Inicio:
+              </label>
+              <input type="date" id="edit-fec-ini" class="form-control" onchange="recalcularEdicionEnVivo()" oninput="recalcularEdicionEnVivo()" style="font-size: 0.82rem;">
+            </div>
+
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                <label style="font-weight: 600; font-size: 0.82rem; color: #1e293b; margin: 0;">
+                  <i class="fa-regular fa-calendar-check"></i> Fecha Fin:
+                </label>
+                <label style="font-size: 0.72rem; color: #0284c7; cursor: pointer; display: flex; align-items: center; gap: 4px; font-weight: 600; margin: 0;" title="Calcular la fecha de término automáticamente al modificar días, horario o duración">
+                  <input type="checkbox" id="chk-auto-calcular-fechas" checked onchange="recalcularEdicionEnVivo()" style="accent-color: #0284c7;">
+                  <span>Auto-calcular</span>
+                </label>
+              </div>
+              <div style="display: flex; gap: 5px;">
+                <input type="date" id="edit-fec-fin" class="form-control" onchange="onManualFechaFinChange()" style="font-size: 0.82rem;">
+                <button type="button" class="btn btn-sm btn-outline" onclick="forzarRecalcularFechaFin()" title="Recalcular fecha fin automáticamente según horario y días" style="white-space: nowrap; font-size: 0.75rem; color: #0284c7; border-color: #bae6fd; background: #f0f9ff; padding: 0.35rem 0.6rem;">
+                  <i class="fa-solid fa-calculator"></i>
+                </button>
+              </div>
+            </div>
           </div>
 
-          <div>
-            <label style="display: block; font-weight: 600; font-size: 0.82rem; color: #1e293b; margin-bottom: 0.35rem;">
-              <i class="fa-regular fa-calendar-check"></i> Fecha Fin:
-            </label>
-            <input type="date" id="edit-fec-fin" class="form-control" onchange="recalcularEdicionEnVivo()" style="font-size: 0.82rem;">
+          <!-- Banner Informativo del Cálculo Automático -->
+          <div id="edit-fechas-calc-info" style="margin-top: 0.55rem; font-size: 0.75rem; color: #047857; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 6px; padding: 0.4rem 0.65rem; display: flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-calendar-check" style="color: #059669;"></i>
+            <span id="edit-fechas-calc-info-txt">Calculado automáticamente: 4 sesiones de 1.0 hr · 4 semanas · 4 hrs totales</span>
           </div>
         </div>
 
@@ -5664,7 +5693,7 @@
     const sincronizarConNube = sincronizarReemplazoTotalEnNube;
 
     function cargarDatosDesdeStorage() {
-      const APP_VERSION = '2027.4.3';
+      const APP_VERSION = '2027.4.4';
       try {
         // Cargar eliminadosSet desde localStorage
         const rawElim = localStorage.getItem('imss_paa_eliminados_2027');
@@ -7380,13 +7409,19 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
       document.getElementById('edit-hora-ini').value = c.horaIni || '08:00';
       document.getElementById('edit-hora-fin').value = c.horaFin || '10:00';
 
-      // 8. Fechas
+      // 8. Horas Norma y Fechas
+      const horasNormaCurso = c.horasNormaBase || c.horasNorma || c.horasTotales || 40;
+      const inputHorasNorma = document.getElementById('edit-horas-norma');
+      if (inputHorasNorma) inputHorasNorma.value = horasNormaCurso;
+      const chkAuto = document.getElementById('chk-auto-calcular-fechas');
+      if (chkAuto) chkAuto.checked = true;
+
       const fIni = c.fecIni || c.fechaIni || '2027-01-18';
       const fFin = c.fecFin || c.fechaFin || '2027-03-12';
       document.getElementById('edit-fec-ini').value = fIni;
       document.getElementById('edit-fec-fin').value = fFin;
 
-      // Recalcular métricas en vivo
+      // Recalcular métricas y fecha fin en vivo
       recalcularEdicionEnVivo();
 
       // Abrir modal
@@ -7496,6 +7531,24 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
       return Array.from(btns).map(b => b.getAttribute('data-dia'));
     }
 
+    function onManualFechaFinChange() {
+      const chk = document.getElementById('chk-auto-calcular-fechas');
+      if (chk) chk.checked = false;
+      const infoFechasEl = document.getElementById('edit-fechas-calc-info');
+      const infoFechasTxt = document.getElementById('edit-fechas-calc-info-txt');
+      if (infoFechasEl && infoFechasTxt) {
+        infoFechasTxt.innerHTML = `<i class="fa-solid fa-pen" style="color:#0284c7;"></i> Fecha fin ajustada manualmente.`;
+      }
+      recalcularEdicionEnVivo();
+    }
+
+    function forzarRecalcularFechaFin() {
+      const chk = document.getElementById('chk-auto-calcular-fechas');
+      if (chk) chk.checked = true;
+      recalcularEdicionEnVivo();
+      mostrarToast("Fecha de término calculada automáticamente.", "info");
+    }
+
     function recalcularEdicionEnVivo() {
       const c = cursosList.find(x => x.id === cursoEditandoId);
       if (!c) return;
@@ -7527,12 +7580,43 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
         valleBadge.style.display = esValle ? 'inline-block' : 'none';
       }
 
-      // Cupo y Meta SIPSI
+      // Auto-cálculo de Fecha Fin según Días, Horario y Horas del Curso
+      const fIni = document.getElementById('edit-fec-ini')?.value;
+      const chkAutoFecha = document.getElementById('chk-auto-calcular-fechas');
+      const infoFechasEl = document.getElementById('edit-fechas-calc-info');
+      const infoFechasTxt = document.getElementById('edit-fechas-calc-info-txt');
+      const horasNormaInput = parseFloat(document.getElementById('edit-horas-norma')?.value);
+      const horasNorma = (!isNaN(horasNormaInput) && horasNormaInput > 0)
+        ? horasNormaInput
+        : (c.horasNormaBase || c.horasNorma || c.horasTotales || 40);
+
+      let sesionesEfectivas = c.sesionesTotales || 10;
+
+      if (fIni && dias.length > 0 && dur > 0) {
+        const calcCal = calcularCalendarioCurso(fIni, dias, dur, horasNorma, 0, c.grupo || 1, horasNorma);
+        if (calcCal && calcCal.grupos && calcCal.grupos.length) {
+          const g = calcCal.grupos[0];
+          sesionesEfectivas = g.sesionesTotales;
+
+          if (chkAutoFecha && chkAutoFecha.checked) {
+            const fecFinInput = document.getElementById('edit-fec-fin');
+            if (fecFinInput) fecFinInput.value = g.fechaFin;
+          }
+
+          if (infoFechasEl && infoFechasTxt) {
+            infoFechasEl.style.display = 'flex';
+            infoFechasTxt.innerHTML = `Calculado automáticamente: <strong>${g.sesionesTotales} sesiones</strong> (${dur.toFixed(1)}h/ses) · <strong>${g.duracionSem} sem</strong> · Término: <strong>${formatFechaMx(g.fechaFin)}</strong> (${g.horasTotales} hrs totales)`;
+          }
+        }
+      } else if (infoFechasEl) {
+        infoFechasEl.style.display = 'none';
+      }
+
+      // Cupo y Meta SIPSI (calculada con las sesiones efectivas)
       const cupo = parseInt(document.getElementById('edit-cupo')?.value) || 0;
-      const sesiones = c.sesionesTotales || 10;
-      const metaSipsi = cupo * sesiones;
+      const metaSipsi = cupo * sesionesEfectivas;
       if (metaLive) metaLive.textContent = `${metaSipsi.toLocaleString()} asistencias`;
-      if (metaFormula) metaFormula.textContent = `Cupo (${cupo}) × ${sesiones} sesiones totales`;
+      if (metaFormula) metaFormula.textContent = `Cupo (${cupo}) × ${sesionesEfectivas} sesiones totales`;
 
       // Detección de Colisiones
       let aula = document.getElementById('edit-aula')?.value || '';
@@ -7669,6 +7753,25 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
       const esValle = comprobarHorarioValle(horaIni, horaFin);
       const horasSemana = Math.round(dur * dias.length * 10) / 10;
 
+      const horasNormaInput = parseFloat(document.getElementById('edit-horas-norma')?.value);
+      const horasNormaFinal = (!isNaN(horasNormaInput) && horasNormaInput > 0)
+        ? horasNormaInput
+        : (c.horasNormaBase || c.horasNorma || c.horasTotales || 40);
+
+      // Calcular sesiones y término
+      let sesionesFinales = c.sesionesTotales || 10;
+      let horasTotalesFinales = c.horasTotales || horasNormaFinal;
+      let durSemFinal = c.duracionSem || 5;
+
+      if (fecIni && dias.length > 0 && dur > 0) {
+        const calcCal = calcularCalendarioCurso(fecIni, dias, dur, horasNormaFinal, 0, c.grupo || 1, horasNormaFinal);
+        if (calcCal && calcCal.grupos && calcCal.grupos.length) {
+          sesionesFinales = calcCal.grupos[0].sesionesTotales;
+          horasTotalesFinales = calcCal.grupos[0].horasTotales;
+          durSemFinal = calcCal.grupos[0].duracionSem;
+        }
+      }
+
       targets.forEach(target => {
         target.aula = aula;
         target.cveCec = cveCec;
@@ -7681,15 +7784,22 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
         target.horaFin = horaFin;
         target.esValle = esValle;
         target.horasSemana = horasSemana;
+        target.horasNorma = horasNormaFinal;
+        target.horasNormaBase = horasNormaFinal;
+        target.horasObjetivo = horasNormaFinal;
 
         if (!aplicarATodaLaSerie) {
           if (fecIni) { target.fecIni = fecIni; target.fechaIni = fecIni; }
           if (fecFin) { target.fecFin = fecFin; target.fechaFin = fecFin; }
+          target.sesionesTotales = sesionesFinales;
+          target.horasTotales = horasTotalesFinales;
+          target.duracionSem = durSemFinal;
+          target.metaSipsi = cupo * sesionesFinales;
+        } else {
+          const ses = target.sesionesTotales || sesionesFinales;
+          target.horasTotales = Math.round(dur * ses * 10) / 10;
+          target.metaSipsi = cupo * ses;
         }
-
-        const sesiones = target.sesionesTotales || 10;
-        target.horasTotales = Math.round(dur * sesiones * 10) / 10;
-        target.metaSipsi = cupo * sesiones;
       });
 
       // Persistir en LocalStorage
