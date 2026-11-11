@@ -186,6 +186,7 @@
       <span><strong>Días Hábiles:</strong> 353</span>
       <span><strong>Cobertura:</strong> 6 CSS Oficiales</span>
       <span class="badge badge-cumple" id="tb-badge-pass">PASS: 6/6 Acreditadas</span>
+      <span class="badge" style="background:#0284c7; color:#ffffff; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px;" title="Versión de Sistema Oficial">v2027.4.6</span>
     </div>
     <div class="toolbar-group" style="gap: 0.65rem; align-items: center;">
       <!-- SELECTOR DE PERFIL / MODO DE TRABAJO -->
@@ -5486,6 +5487,16 @@
         const raw = snapshot.val();
         if (raw === null || raw === undefined) return;
 
+        // Purgar inmediatamente en Firebase cualquier curso marcado como eliminado
+        // (impide de raíz que cualquier cliente o pestaña vieja intente resucitar cursos borrados)
+        if (raw && typeof raw === 'object') {
+          Object.keys(raw).forEach(k => {
+            if (eliminadosSet.has(k)) {
+              try { firebaseDb.ref('sipsi_sonora_2027_v2/cursos/' + k).remove().catch(() => {}); } catch(e){}
+            }
+          });
+        }
+
         // La base de datos central en la nube manda de forma autoritativa
         const data = (Array.isArray(raw) ? raw.filter(Boolean) : Object.values(raw).filter(Boolean))
           .filter(c => c && c.id && !eliminadosSet.has(sanitizarClaveFirebase(c.id)) && UOPSI_CATALOGO[c.uopsiCve]);
@@ -5597,13 +5608,18 @@
           const k = sanitizarClaveFirebase(id);
           updates['cursos/' + k] = null;
           updates['eliminados/' + k] = nowIso;
+          // Doble garantía directa: borrar nodo atómicamente en Firebase
+          try {
+            firebaseDb.ref('sipsi_sonora_2027_v2/cursos/' + k).remove().catch(() => {});
+            firebaseDb.ref('sipsi_sonora_2027_v2/eliminados/' + k).set(nowIso).catch(() => {});
+          } catch(e){}
         }
       });
       updates['ultimaActualizacion'] = nowIso;
 
       firebaseDb.ref('sipsi_sonora_2027_v2').update(updates).then(() => {
         setTimeout(() => { sincronizandoConNube = false; }, 300);
-        console.log(`[Firebase] 🗑️ ${lista.length} curso(s) eliminado(s) permanentemente de la nube y registrado(s) en eliminados.`);
+        console.log(`[Firebase] 🗑️ ${lista.length} curso(s) eliminado(s) permanentemente de la nube.`);
       }).catch(err => {
         sincronizandoConNube = false;
         console.warn('[Firebase] Error al eliminar en nube:', err.message);
@@ -5628,6 +5644,7 @@
 
     function sincronizarBajaCompEnNube(id) {
       if (!id) return;
+      if (modoTrabajoActual === 'simulacion') return;
       const k = sanitizarClaveFirebase(id);
       eliminadosSet.add(k);
       try {
@@ -5636,11 +5653,17 @@
 
       if (!firebaseDb) return;
       sincronizandoConNube = true;
+      const nowIso = new Date().toISOString();
       const updates = {
         ['complementarias/' + k]: null,
-        ['eliminados/' + k]: new Date().toISOString(),
-        ultimaActualizacion: new Date().toISOString()
+        ['eliminados/' + k]: nowIso,
+        ultimaActualizacion: nowIso
       };
+      try {
+        firebaseDb.ref('sipsi_sonora_2027_v2/complementarias/' + k).remove().catch(() => {});
+        firebaseDb.ref('sipsi_sonora_2027_v2/eliminados/' + k).set(nowIso).catch(() => {});
+      } catch(e){}
+
       firebaseDb.ref('sipsi_sonora_2027_v2').update(updates).then(() => {
         setTimeout(() => { sincronizandoConNube = false; }, 300);
       }).catch(() => { sincronizandoConNube = false; });
@@ -5671,7 +5694,7 @@
     const sincronizarConNube = sincronizarReemplazoTotalEnNube;
 
     function cargarDatosDesdeStorage() {
-      const APP_VERSION = '2027.4.5';
+      const APP_VERSION = '2027.4.6';
       try {
         // Cargar eliminadosSet desde localStorage
         const rawElim = localStorage.getItem('imss_paa_eliminados_2027');
@@ -7138,12 +7161,12 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
         }
       }
 
-      if (confirm(`¿Retirar actividad "${item.curso}" de la programación?`)) {
+      if (confirm(`¿Retirar actividad "${item.curso}" (${item.nombreGrupo || 'Grupo ' + (item.grupo || 1)}) de la programación?`)) {
         cursosList = cursosList.filter(c => c.id !== id);
         guardarEnStorage();
         actualizarTodo();
         sincronizarBajaCursosEnNube(id);
-        mostrarToast("Actividad retirada.", "warning");
+        mostrarToast("Actividad retirada con éxito de la nube.", "warning");
       }
     }
 
