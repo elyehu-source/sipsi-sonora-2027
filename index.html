@@ -1324,6 +1324,213 @@
     </div>
   </div>
 
+  <!-- MODAL: EDITAR CURSO DIRECTO EN PADRÓN -->
+  <div id="modal-editar-curso" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(3px);">
+    <div style="background: #ffffff; border-radius: 12px; max-width: 760px; width: 95%; max-height: 92vh; display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden;">
+      
+      <!-- Modal Header -->
+      <div style="background: linear-gradient(135deg, #0284c7, #0369a1); color: white; padding: 1.1rem 1.4rem; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="background: rgba(255,255,255,0.2); font-size: 0.72rem; font-weight: 700; padding: 2px 7px; border-radius: 4px; text-transform: uppercase;" id="edit-badge-uopsi">CSS CIUDAD OBREGÓN</span>
+            <span style="background: #e0f2fe; color: #0369a1; font-size: 0.72rem; font-weight: 700; padding: 2px 7px; border-radius: 4px;" id="edit-badge-grupo">GRUPO 1</span>
+            <span style="background: rgba(255,255,255,0.2); font-size: 0.72rem; font-weight: 600; padding: 2px 7px; border-radius: 4px;" id="edit-badge-eje">DEPORTE</span>
+          </div>
+          <h3 style="font-size: 1.12rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; margin: 0.35rem 0 0 0;" id="edit-curso-titulo">
+            <i class="fa-solid fa-pen-to-square"></i> [42807] Activación Física para la Salud
+          </h3>
+        </div>
+        <button type="button" onclick="cerrarModalEditarCurso()" style="background: rgba(255,255,255,0.15); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+      </div>
+
+      <!-- Modal Body -->
+      <div style="padding: 1.25rem 1.5rem; overflow-y: auto; flex: 1;">
+        
+        <!-- Banner Serie Continua (si aplica) -->
+        <div id="edit-box-serie" style="display: none; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 1.15rem;">
+          <div style="font-weight: 700; color: #166534; font-size: 0.84rem; display: flex; align-items: center; gap: 6px; margin-bottom: 0.4rem;">
+            <i class="fa-solid fa-arrows-spin"></i> Actividad en Secuencia Continua (<span id="edit-serie-count">5</span> grupos bimestrales en el año)
+          </div>
+          <div style="display: flex; gap: 1.2rem; font-size: 0.82rem; color: #14532d; flex-wrap: wrap;">
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 600;">
+              <input type="radio" name="edit-modo-serie" id="edit-serie-solo-este" value="solo_este" checked onchange="recalcularEdicionEnVivo()" style="accent-color: #16a34a;">
+              <span>Modificar <strong>únicamente este grupo</strong> (<span id="edit-serie-nombre-este">Grupo 1</span>)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 600;">
+              <input type="radio" name="edit-modo-serie" id="edit-serie-todos" value="toda_la_serie" onchange="recalcularEdicionEnVivo()" style="accent-color: #16a34a;">
+              <span>Aplicar cambios a <strong>toda la serie continua</strong> (<span id="edit-serie-total-grupos">5</span> grupos)</span>
+            </label>
+          </div>
+          <small style="display: block; color: #15803d; font-size: 0.72rem; margin-top: 0.35rem;">
+            💡 Si cambias de instructor, aula o cupo para todo el ciclo anual, elige "toda la serie continua" para mantener la consistencia en los bimestres.
+          </small>
+        </div>
+
+        <!-- Fila 1: Sede / CEC y Aula / Espacio Físico -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+          <div>
+            <label style="display: block; font-weight: 600; font-size: 0.82rem; color: #1e293b; margin-bottom: 0.35rem;">
+              <i class="fa-solid fa-map-pin"></i> Sede / CEC Comunitario:
+            </label>
+            <select id="edit-cec" class="form-select" onchange="alCambiarCecEdicion()" style="font-size: 0.84rem; width: 100%;">
+            </select>
+          </div>
+
+          <div>
+            <label style="display: block; font-weight: 600; font-size: 0.82rem; color: #1e293b; margin-bottom: 0.35rem;">
+              <i class="fa-solid fa-door-open"></i> Aula / Espacio Físico:
+            </label>
+            <select id="edit-aula" class="form-select" onchange="alCambiarAulaEdicion()" style="font-size: 0.84rem; width: 100%;">
+            </select>
+            <div id="box-edit-aula-nueva" style="display: none; margin-top: 0.35rem;">
+              <input type="text" id="edit-aula-nueva" class="form-control" placeholder="Escriba nombre del nuevo espacio físico..." oninput="recalcularEdicionEnVivo()" style="font-size: 0.82rem;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Fila 2: Instructor y Tipo de Contratación -->
+        <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+          <div>
+            <label style="display: block; font-weight: 600; font-size: 0.82rem; color: #1e293b; margin-bottom: 0.35rem;">
+              <i class="fa-solid fa-chalkboard-user"></i> Instructor / Responsable:
+            </label>
+            <select id="edit-instructor" class="form-select" onchange="alCambiarInstructorEdicion()" style="font-size: 0.84rem; width: 100%;">
+            </select>
+            <div id="box-edit-inst-nuevo" style="display: none; margin-top: 0.35rem;">
+              <input type="text" id="edit-instructor-nuevo" class="form-control" placeholder="Nombre completo del nuevo instructor..." oninput="recalcularEdicionEnVivo()" style="font-size: 0.82rem;">
+            </div>
+          </div>
+
+          <div>
+            <label style="display: block; font-weight: 600; font-size: 0.82rem; color: #1e293b; margin-bottom: 0.35rem;">
+              <i class="fa-solid fa-id-badge"></i> Tipo de Contratación:
+            </label>
+            <select id="edit-tipo-inst" class="form-select" onchange="recalcularEdicionEnVivo()" style="font-size: 0.84rem; width: 100%;">
+              <option value="Docente">Docente Titular</option>
+              <option value="Voluntario">Trabajador Voluntario</option>
+              <option value="Prestador">Prestador de Serv. Social</option>
+              <option value="Contrato">Honorarios / Contrato</option>
+              <option value="TS">Trabajo Social</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Fila 3: Cupo y Meta SIPSI (con recálculo dinámico en vivo) -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 1rem;">
+          <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 1rem; align-items: center;">
+            <div>
+              <label style="display: block; font-weight: 600; font-size: 0.82rem; color: #1e293b; margin-bottom: 0.35rem;">
+                <i class="fa-solid fa-users"></i> Cupo de Alumnos (Inscritos):
+              </label>
+              <input type="number" id="edit-cupo" class="form-control" min="1" max="250" oninput="recalcularEdicionEnVivo()" style="font-size: 0.95rem; font-weight: 700; color: #1e3a8a;">
+              <small style="color: #64748b; font-size: 0.72rem; display: block; margin-top: 0.2rem;" id="edit-meta-min-info">
+                Meta mínima institucional: 10 alumnos
+              </small>
+            </div>
+
+            <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0.6rem 0.85rem; text-align: center;">
+              <div style="font-size: 0.72rem; color: #64748b; text-transform: uppercase; font-weight: 600;">Meta SIPSI Calculada</div>
+              <div style="font-size: 1.35rem; font-weight: 800; color: #15803d; line-height: 1.2;" id="edit-meta-sipsi-live">
+                100 asistencias
+              </div>
+              <div style="font-size: 0.72rem; color: #475569;" id="edit-meta-formula-live">
+                Cupo (10) × 10 sesiones totales
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fila 4: Días de la Semana -->
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; font-weight: 600; font-size: 0.82rem; color: #1e293b; margin-bottom: 0.4rem;">
+            <i class="fa-solid fa-calendar-week"></i> Días de Impartición:
+          </label>
+          <div style="display: flex; gap: 0.45rem; flex-wrap: wrap;" id="edit-dias-container">
+            <button type="button" class="btn btn-sm btn-outline edit-dia-btn" data-dia="Lun" onclick="toggleDiaEdicion(this)">Lun</button>
+            <button type="button" class="btn btn-sm btn-outline edit-dia-btn" data-dia="Mar" onclick="toggleDiaEdicion(this)">Mar</button>
+            <button type="button" class="btn btn-sm btn-outline edit-dia-btn" data-dia="Mie" onclick="toggleDiaEdicion(this)">Mie</button>
+            <button type="button" class="btn btn-sm btn-outline edit-dia-btn" data-dia="Jue" onclick="toggleDiaEdicion(this)">Jue</button>
+            <button type="button" class="btn btn-sm btn-outline edit-dia-btn" data-dia="Vie" onclick="toggleDiaEdicion(this)">Vie</button>
+            <button type="button" class="btn btn-sm btn-outline edit-dia-btn" data-dia="Sab" onclick="toggleDiaEdicion(this)">Sab</button>
+            <button type="button" class="btn btn-sm btn-outline edit-dia-btn" data-dia="Dom" onclick="toggleDiaEdicion(this)">Dom</button>
+          </div>
+        </div>
+
+        <!-- Fila 5: Horario (Inicio y Fin) y Métricas en vivo -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 0.85rem; align-items: flex-end; margin-bottom: 1rem;">
+          <div>
+            <label style="display: block; font-weight: 600; font-size: 0.82rem; color: #1e293b; margin-bottom: 0.35rem;">
+              <i class="fa-regular fa-clock"></i> Hora Inicio:
+            </label>
+            <input type="time" id="edit-hora-ini" class="form-control" onchange="recalcularEdicionEnVivo()" style="font-size: 0.85rem;">
+          </div>
+
+          <div>
+            <label style="display: block; font-weight: 600; font-size: 0.82rem; color: #1e293b; margin-bottom: 0.35rem;">
+              <i class="fa-regular fa-clock"></i> Hora Fin:
+            </label>
+            <input type="time" id="edit-hora-fin" class="form-control" onchange="recalcularEdicionEnVivo()" style="font-size: 0.85rem;">
+          </div>
+
+          <div style="background: #f1f5f9; border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.75rem; border: 1px solid #e2e8f0;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+              <span style="color: #64748b;">Duración sesión:</span>
+              <strong id="edit-duracion-sesion" style="color: #0f172a;">2.0 hrs</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+              <span style="color: #64748b;">Horas / semana:</span>
+              <strong id="edit-horas-semana" style="color: #0f172a;">4.0 hrs/sem</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: #64748b;">Horario Valle:</span>
+              <span id="edit-badge-valle" class="badge" style="display: none; background: #fef3c7; color: #b45309; font-size: 0.65rem; padding: 1px 5px;">Valle</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fila 6: Fechas del Periodo -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.5rem;">
+          <div>
+            <label style="display: block; font-weight: 600; font-size: 0.82rem; color: #1e293b; margin-bottom: 0.35rem;">
+              <i class="fa-regular fa-calendar"></i> Fecha Inicio:
+            </label>
+            <input type="date" id="edit-fec-ini" class="form-control" onchange="recalcularEdicionEnVivo()" style="font-size: 0.82rem;">
+          </div>
+
+          <div>
+            <label style="display: block; font-weight: 600; font-size: 0.82rem; color: #1e293b; margin-bottom: 0.35rem;">
+              <i class="fa-regular fa-calendar-check"></i> Fecha Fin:
+            </label>
+            <input type="date" id="edit-fec-fin" class="form-control" onchange="recalcularEdicionEnVivo()" style="font-size: 0.82rem;">
+          </div>
+        </div>
+
+        <!-- Alerta de Colisión en Vivo -->
+        <div id="edit-alerta-colision" style="display: none; background: #fff1f2; border: 1px solid #fecdd3; border-radius: 8px; padding: 0.75rem 1rem; margin-top: 0.85rem; color: #9f1239; font-size: 0.78rem;">
+          <div style="font-weight: 700; display: flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-triangle-exclamation" style="color: #e11d48;"></i> Conflicto de Horario o Espacio Detectado
+          </div>
+          <div id="edit-colision-texto" style="margin-top: 0.25rem;">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div style="padding: 0.85rem 1.5rem; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 0.74rem; color: #64748b;">
+          <i class="fa-solid fa-shield-halved" style="color: #0284c7;"></i> Los cambios se guardan al instante y se sincronizan en la nube.
+        </span>
+        <div style="display: flex; gap: 0.65rem;">
+          <button type="button" class="btn btn-outline" onclick="cerrarModalEditarCurso()">Cancelar</button>
+          <button type="button" class="btn btn-primary" style="background: #0284c7; border-color: #0284c7; font-weight: 600; padding: 0.45rem 1.1rem;" onclick="guardarEdicionCurso()">
+            <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
 
   <div id="toast-container"></div>
 
@@ -5457,7 +5664,7 @@
     const sincronizarConNube = sincronizarReemplazoTotalEnNube;
 
     function cargarDatosDesdeStorage() {
-      const APP_VERSION = '2027.4.2';
+      const APP_VERSION = '2027.4.3';
       try {
         // Cargar eliminadosSet desde localStorage
         const rawElim = localStorage.getItem('imss_paa_eliminados_2027');
@@ -6234,7 +6441,7 @@
       return s;
     }
 
-    function detectarColision(cNuevo) {
+    function detectarColision(cNuevo, idsExcluir = []) {
       if (!cNuevo.dias || !cNuevo.dias.length || !cNuevo.horaIni || !cNuevo.horaFin) return null;
       const hIniNuevo = parseHoras(cNuevo.horaIni);
       const hFinNuevo = parseHoras(cNuevo.horaFin);
@@ -6243,6 +6450,9 @@
       const diasNuevosNorm = cNuevo.dias.map(normalizarDia);
 
       for (let c of cursosList) {
+        if (idsExcluir && (Array.isArray(idsExcluir) ? idsExcluir.includes(c.id) : idsExcluir === c.id)) {
+          continue;
+        }
         if (c.uopsiCve === cNuevo.uopsiCve) {
           // 1. ¿Coinciden en algún día de la semana?
           const diasExistentesNorm = (c.dias || []).map(normalizarDia);
@@ -6943,7 +7153,564 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
       }
     }
 
-    // 2. MÓDULO COMPLEMENTARIAS
+    // =========================================================
+    // EDICIÓN EN VIVO DE CURSOS PAA 2027 (SIN BORRAR ACTIVIDAD)
+    // =========================================================
+    let cursoEditandoId = null;
+
+    function abrirModalEditarCurso(id) {
+      const c = cursosList.find(x => x.id === id);
+      if (!c) {
+        mostrarToast("No se encontró el curso seleccionado.", "error");
+        return;
+      }
+      cursoEditandoId = id;
+
+      const modal = document.getElementById('modal-editar-curso');
+      if (!modal) return;
+
+      const u = UOPSI_CATALOGO[c.uopsiCve] || { nombre: c.uopsiNombre || c.uopsiCve };
+      document.getElementById('edit-badge-uopsi').textContent = u.nombre;
+      document.getElementById('edit-badge-grupo').textContent = c.nombreGrupo || ('GRUPO ' + (c.grupo || 1));
+      document.getElementById('edit-badge-eje').textContent = (c.eje || 'REGULAR').toUpperCase();
+      document.getElementById('edit-curso-titulo').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${c.curso || 'Curso PAA'}`;
+
+      // Configuración de Serie Continua
+      const boxSerie = document.getElementById('edit-box-serie');
+      if (c.grupoSerieId) {
+        const serieCursos = cursosList.filter(x => x.grupoSerieId === c.grupoSerieId);
+        boxSerie.style.display = 'block';
+        document.getElementById('edit-serie-count').textContent = serieCursos.length;
+        document.getElementById('edit-serie-total-grupos').textContent = serieCursos.length;
+        document.getElementById('edit-serie-nombre-este').textContent = c.nombreGrupo || ('Grupo ' + (c.grupo || 1));
+        document.getElementById('edit-serie-solo-este').checked = true;
+      } else {
+        boxSerie.style.display = 'none';
+      }
+
+      // 1. Cargar CECs de la unidad
+      const selectCec = document.getElementById('edit-cec');
+      selectCec.innerHTML = '';
+      const optPrincipal = document.createElement('option');
+      optPrincipal.value = '0';
+      optPrincipal.textContent = '🏢 Sede Principal CSS (Sin CEC / Intramuros)';
+      optPrincipal.setAttribute('data-nombre', 'Sede Principal CSS');
+      selectCec.appendChild(optPrincipal);
+
+      const listaCecs = (cecsList && cecsList.length) ? cecsList.filter(x => x.uopsiCve === c.uopsiCve) : (DATOS_INICIALES_CECS || []).filter(x => x.uopsiCve === c.uopsiCve);
+      if (listaCecs.length > 0) {
+        const grp = document.createElement('optgroup');
+        grp.label = `Centros de Extensión Comunitarios (${listaCecs.length})`;
+        listaCecs.forEach(cec => {
+          const opt = document.createElement('option');
+          opt.value = String(cec.claveCec || cec.id);
+          opt.textContent = `📍 [${cec.claveCec || 'CEC'}] ${cec.nombre} (${cec.alianza || 'Extramuros'})`;
+          opt.setAttribute('data-nombre', cec.nombre);
+          opt.setAttribute('data-clave', String(cec.claveCec || ''));
+          grp.appendChild(opt);
+        });
+        selectCec.appendChild(grp);
+      }
+      selectCec.value = String(c.cveCec || '0');
+
+      // 2. Cargar Aulas de la unidad
+      const selectAula = document.getElementById('edit-aula');
+      selectAula.innerHTML = '';
+      let listaAulas = [];
+      if (typeof AULAS_SONORA !== 'undefined' && AULAS_SONORA[c.uopsiCve]) {
+        listaAulas = AULAS_SONORA[c.uopsiCve];
+      } else {
+        listaAulas = ["ALBERCA SEMIOLÍMPICA", "AULA DE COMPUTACIÓN", "GIMNASIO DE USOS MÚLTIPLES", "SALÓN DE BAILE", "TALLER DE COCINA"];
+      }
+
+      const grpIntra = document.createElement('optgroup');
+      grpIntra.label = `🏢 Instalaciones Intramuros CSS (${listaAulas.length})`;
+      listaAulas.forEach(a => {
+        const opt = document.createElement('option');
+        opt.value = a;
+        opt.textContent = a;
+        opt.setAttribute('data-tipo', 'intramuros');
+        grpIntra.appendChild(opt);
+      });
+      selectAula.appendChild(grpIntra);
+
+      if (listaCecs.length > 0) {
+        const grpCecs = document.createElement('optgroup');
+        grpCecs.label = `📍 Centros de Extensión Comunitarios (${listaCecs.length} CECs)`;
+        listaCecs.forEach(cec => {
+          const opt = document.createElement('option');
+          opt.value = `CEC [${cec.claveCec || 'CEC'}] ${cec.nombre}`;
+          opt.textContent = `📍 [${cec.claveCec || 'CEC'}] ${cec.nombre} (${cec.alianza || 'Extramuros'})`;
+          opt.setAttribute('data-tipo', 'cec');
+          opt.setAttribute('data-cve-cec', String(cec.claveCec || ''));
+          grpCecs.appendChild(opt);
+        });
+        selectAula.appendChild(grpCecs);
+      }
+
+      const grpExt = document.createElement('optgroup');
+      grpExt.label = '🌐 Modalidad Flexible';
+      const optSin = document.createElement('option');
+      optSin.value = "SIN INSTALACION / CAMPO ABIERTO";
+      optSin.textContent = "SIN INSTALACION / CAMPO ABIERTO";
+      grpExt.appendChild(optSin);
+      const optVirt = document.createElement('option');
+      optVirt.value = "PLATAFORMA VIRTUAL / EN LÍNEA";
+      optVirt.textContent = "PLATAFORMA VIRTUAL / EN LÍNEA";
+      grpExt.appendChild(optVirt);
+      selectAula.appendChild(grpExt);
+
+      const optNueva = document.createElement('option');
+      optNueva.value = '__NUEVA__';
+      optNueva.style.color = 'var(--imss-green)';
+      optNueva.style.fontWeight = 'bold';
+      optNueva.textContent = '+ [+ Escribir otra Aula / Espacio / Sede...]';
+      selectAula.appendChild(optNueva);
+
+      // Preseleccionar aula del curso
+      const aulaActual = (c.aula || '').trim();
+      let aulaEncontrada = false;
+      for (let i = 0; i < selectAula.options.length; i++) {
+        if (selectAula.options[i].value.toLowerCase() === aulaActual.toLowerCase()) {
+          selectAula.selectedIndex = i;
+          aulaEncontrada = true;
+          break;
+        }
+      }
+      const boxAulaNueva = document.getElementById('box-edit-aula-nueva');
+      const inputAulaNueva = document.getElementById('edit-aula-nueva');
+      if (aulaEncontrada) {
+        boxAulaNueva.style.display = 'none';
+        if (inputAulaNueva) inputAulaNueva.value = '';
+      } else {
+        selectAula.value = '__NUEVA__';
+        boxAulaNueva.style.display = 'block';
+        if (inputAulaNueva) inputAulaNueva.value = aulaActual;
+      }
+
+      // 3. Cargar Instructores
+      const selectInst = document.getElementById('edit-instructor');
+      selectInst.innerHTML = '';
+      const mapInst = new Map();
+
+      if (typeof INSTRUCTORES_SONORA !== 'undefined' && INSTRUCTORES_SONORA[c.uopsiCve]) {
+        const uInst = INSTRUCTORES_SONORA[c.uopsiCve];
+        Object.keys(uInst).forEach(area => {
+          const grp = document.createElement('optgroup');
+          grp.label = `Docentes de ${area}`;
+          const docentes = uInst[area];
+          Object.keys(docentes).forEach(nom => {
+            const tipo = docentes[nom];
+            mapInst.set(nom.toLowerCase().trim(), { nom, tipo });
+            const opt = document.createElement('option');
+            opt.value = nom;
+            opt.textContent = `${nom} (${tipo})`;
+            opt.setAttribute('data-tipo', tipo);
+            grp.appendChild(opt);
+          });
+          selectInst.appendChild(grp);
+        });
+      }
+
+      // Agregar otros instructores que ya estén en cursos de la unidad
+      cursosList.filter(x => x.uopsiCve === c.uopsiCve && x.instructor).forEach(x => {
+        const k = x.instructor.toLowerCase().trim();
+        if (!mapInst.has(k)) {
+          mapInst.set(k, { nom: x.instructor, tipo: x.tipoInst || 'Docente' });
+          const opt = document.createElement('option');
+          opt.value = x.instructor;
+          opt.textContent = `${x.instructor} (${x.tipoInst || 'Docente'})`;
+          opt.setAttribute('data-tipo', x.tipoInst || 'Docente');
+          selectInst.appendChild(opt);
+        }
+      });
+
+      const optInstNuevo = document.createElement('option');
+      optInstNuevo.value = '__NUEVO__';
+      optInstNuevo.style.color = 'var(--imss-green)';
+      optInstNuevo.style.fontWeight = 'bold';
+      optInstNuevo.textContent = '+ [+ Escribir otro Instructor...]';
+      selectInst.appendChild(optInstNuevo);
+
+      // Preseleccionar instructor
+      const instActual = (c.instructor || '').trim();
+      let instEncontrado = false;
+      for (let i = 0; i < selectInst.options.length; i++) {
+        if (selectInst.options[i].value.toLowerCase() === instActual.toLowerCase()) {
+          selectInst.selectedIndex = i;
+          instEncontrado = true;
+          break;
+        }
+      }
+      const boxInstNuevo = document.getElementById('box-edit-inst-nuevo');
+      const inputInstNuevo = document.getElementById('edit-instructor-nuevo');
+      if (instEncontrado) {
+        boxInstNuevo.style.display = 'none';
+        if (inputInstNuevo) inputInstNuevo.value = '';
+      } else {
+        selectInst.value = '__NUEVO__';
+        boxInstNuevo.style.display = 'block';
+        if (inputInstNuevo) inputInstNuevo.value = instActual;
+      }
+
+      // 4. Tipo de Instructor
+      document.getElementById('edit-tipo-inst').value = c.tipoInst || 'Docente';
+
+      // 5. Cupo y Meta mínima info
+      document.getElementById('edit-cupo').value = c.cupo || 20;
+      const metaMin = obtenerMetaMinimaCurso(c);
+      document.getElementById('edit-meta-min-info').textContent = `Meta mínima institucional CTPAA: ${metaMin} alumnos inscritos`;
+
+      // 6. Días
+      const diasArr = Array.isArray(c.dias) ? c.dias : String(c.dias || '').split(',').map(s => s.trim()).filter(Boolean);
+      const diasBtns = document.querySelectorAll('.edit-dia-btn');
+      diasBtns.forEach(btn => {
+        const dia = btn.getAttribute('data-dia');
+        const activo = diasArr.some(d => normalizarDia(d) === normalizarDia(dia));
+        if (activo) {
+          btn.classList.add('btn-primary');
+          btn.classList.remove('btn-outline');
+        } else {
+          btn.classList.remove('btn-primary');
+          btn.classList.add('btn-outline');
+        }
+      });
+
+      // 7. Horario
+      document.getElementById('edit-hora-ini').value = c.horaIni || '08:00';
+      document.getElementById('edit-hora-fin').value = c.horaFin || '10:00';
+
+      // 8. Fechas
+      const fIni = c.fecIni || c.fechaIni || '2027-01-18';
+      const fFin = c.fecFin || c.fechaFin || '2027-03-12';
+      document.getElementById('edit-fec-ini').value = fIni;
+      document.getElementById('edit-fec-fin').value = fFin;
+
+      // Recalcular métricas en vivo
+      recalcularEdicionEnVivo();
+
+      // Abrir modal
+      modal.style.display = 'flex';
+    }
+
+    function cerrarModalEditarCurso() {
+      const modal = document.getElementById('modal-editar-curso');
+      if (modal) modal.style.display = 'none';
+      cursoEditandoId = null;
+    }
+
+    function alCambiarCecEdicion() {
+      const selectCec = document.getElementById('edit-cec');
+      const selectAula = document.getElementById('edit-aula');
+      if (!selectCec || !selectAula) return;
+
+      const val = selectCec.value;
+      if (val !== '0') {
+        const optCec = selectCec.options[selectCec.selectedIndex];
+        const nombreCec = optCec ? (optCec.getAttribute('data-nombre') || optCec.text) : '';
+        const cveCec = optCec ? (optCec.getAttribute('data-clave') || val) : val;
+
+        let encontrada = false;
+        for (let i = 0; i < selectAula.options.length; i++) {
+          const o = selectAula.options[i];
+          if (o.getAttribute('data-cve-cec') === cveCec || o.value.includes(nombreCec)) {
+            selectAula.selectedIndex = i;
+            encontrada = true;
+            break;
+          }
+        }
+        if (!encontrada) {
+          const opt = document.createElement('option');
+          opt.value = `CEC [${cveCec}] ${nombreCec}`;
+          opt.textContent = `📍 [${cveCec}] ${nombreCec}`;
+          opt.setAttribute('data-tipo', 'cec');
+          opt.setAttribute('data-cve-cec', cveCec);
+          selectAula.insertBefore(opt, selectAula.firstChild);
+          selectAula.selectedIndex = 0;
+        }
+      }
+      alCambiarAulaEdicion();
+    }
+
+    function alCambiarAulaEdicion() {
+      const selectAula = document.getElementById('edit-aula');
+      const boxNueva = document.getElementById('box-edit-aula-nueva');
+      const selectCec = document.getElementById('edit-cec');
+      if (!selectAula) return;
+
+      if (selectAula.value === '__NUEVA__') {
+        if (boxNueva) {
+          boxNueva.style.display = 'block';
+          document.getElementById('edit-aula-nueva')?.focus();
+        }
+      } else {
+        if (boxNueva) {
+          boxNueva.style.display = 'none';
+        }
+        const optSelected = selectAula.options[selectAula.selectedIndex];
+        if (optSelected && optSelected.getAttribute('data-tipo') === 'cec') {
+          const cveCec = optSelected.getAttribute('data-cve-cec');
+          if (selectCec && cveCec) selectCec.value = cveCec;
+        } else if (optSelected && optSelected.getAttribute('data-tipo') === 'intramuros') {
+          if (selectCec) selectCec.value = '0';
+        }
+      }
+      recalcularEdicionEnVivo();
+    }
+
+    function alCambiarInstructorEdicion() {
+      const selectInst = document.getElementById('edit-instructor');
+      const boxNuevo = document.getElementById('box-edit-inst-nuevo');
+      const selectTipo = document.getElementById('edit-tipo-inst');
+      if (!selectInst) return;
+
+      if (selectInst.value === '__NUEVO__') {
+        if (boxNuevo) {
+          boxNuevo.style.display = 'block';
+          document.getElementById('edit-instructor-nuevo')?.focus();
+        }
+      } else {
+        if (boxNuevo) boxNuevo.style.display = 'none';
+        const optSelected = selectInst.options[selectInst.selectedIndex];
+        const tipo = optSelected ? optSelected.getAttribute('data-tipo') : null;
+        if (tipo && selectTipo) {
+          selectTipo.value = tipo;
+        }
+      }
+      recalcularEdicionEnVivo();
+    }
+
+    function toggleDiaEdicion(btn) {
+      if (btn.classList.contains('btn-primary')) {
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-outline');
+      } else {
+        btn.classList.add('btn-primary');
+        btn.classList.remove('btn-outline');
+      }
+      recalcularEdicionEnVivo();
+    }
+
+    function obtenerDiasSeleccionadosEdicion() {
+      const btns = document.querySelectorAll('.edit-dia-btn.btn-primary');
+      return Array.from(btns).map(b => b.getAttribute('data-dia'));
+    }
+
+    function recalcularEdicionEnVivo() {
+      const c = cursosList.find(x => x.id === cursoEditandoId);
+      if (!c) return;
+
+      const hIni = document.getElementById('edit-hora-ini')?.value || '';
+      const hFin = document.getElementById('edit-hora-fin')?.value || '';
+      const durEl = document.getElementById('edit-duracion-sesion');
+      const semEl = document.getElementById('edit-horas-semana');
+      const valleBadge = document.getElementById('edit-badge-valle');
+      const metaLive = document.getElementById('edit-meta-sipsi-live');
+      const metaFormula = document.getElementById('edit-meta-formula-live');
+
+      const dur = (hIni && hFin) ? (parseHoras(hFin) - parseHoras(hIni)) : 0;
+      const dias = obtenerDiasSeleccionadosEdicion();
+
+      if (dur > 0 && durEl) {
+        durEl.textContent = `${dur.toFixed(1)} hrs`;
+      } else if (durEl) {
+        durEl.textContent = '--';
+      }
+
+      const hrsSemana = (dur > 0 && dias.length > 0) ? Math.round(dur * dias.length * 10) / 10 : 0;
+      if (semEl) {
+        semEl.textContent = `${hrsSemana.toFixed(1)} hrs/sem`;
+      }
+
+      const esValle = (hIni && hFin && dur > 0) ? comprobarHorarioValle(hIni, hFin) : false;
+      if (valleBadge) {
+        valleBadge.style.display = esValle ? 'inline-block' : 'none';
+      }
+
+      // Cupo y Meta SIPSI
+      const cupo = parseInt(document.getElementById('edit-cupo')?.value) || 0;
+      const sesiones = c.sesionesTotales || 10;
+      const metaSipsi = cupo * sesiones;
+      if (metaLive) metaLive.textContent = `${metaSipsi.toLocaleString()} asistencias`;
+      if (metaFormula) metaFormula.textContent = `Cupo (${cupo}) × ${sesiones} sesiones totales`;
+
+      // Detección de Colisiones
+      let aula = document.getElementById('edit-aula')?.value || '';
+      if (aula === '__NUEVA__') aula = document.getElementById('edit-aula-nueva')?.value.trim() || '';
+
+      let inst = document.getElementById('edit-instructor')?.value || '';
+      if (inst === '__NUEVO__') inst = document.getElementById('edit-instructor-nuevo')?.value.trim() || '';
+
+      const alertaCol = document.getElementById('edit-alerta-colision');
+      const textoCol = document.getElementById('edit-colision-texto');
+
+      if (!dias.length || !hIni || !hFin || dur <= 0) {
+        if (alertaCol) alertaCol.style.display = 'none';
+        return;
+      }
+
+      const aplicarATodaLaSerie = c.grupoSerieId && document.getElementById('edit-serie-todos')?.checked;
+      const idsExcluir = aplicarATodaLaSerie
+        ? cursosList.filter(x => x.grupoSerieId === c.grupoSerieId).map(x => x.id)
+        : [c.id];
+
+      const col = detectarColision({
+        uopsiCve: c.uopsiCve,
+        aula,
+        instructor: inst,
+        horaIni: hIni,
+        horaFin: hFin,
+        dias,
+        fecIni: document.getElementById('edit-fec-ini')?.value,
+        fecFin: document.getElementById('edit-fec-fin')?.value
+      }, idsExcluir);
+
+      if (col && alertaCol && textoCol) {
+        alertaCol.style.display = 'block';
+        textoCol.textContent = col.msg;
+      } else if (alertaCol) {
+        alertaCol.style.display = 'none';
+      }
+    }
+
+    function guardarEdicionCurso() {
+      const c = cursosList.find(x => x.id === cursoEditandoId);
+      if (!c) {
+        mostrarToast("No se encontró el curso a modificar.", "error");
+        return;
+      }
+
+      // Validar Aula
+      let aula = document.getElementById('edit-aula').value;
+      if (aula === '__NUEVA__') {
+        aula = (document.getElementById('edit-aula-nueva').value || '').trim();
+      }
+      if (!aula) {
+        mostrarToast("Especifique el aula o espacio físico.", "warning");
+        return;
+      }
+
+      // Validar Instructor
+      let instructor = document.getElementById('edit-instructor').value;
+      if (instructor === '__NUEVO__') {
+        instructor = (document.getElementById('edit-instructor-nuevo').value || '').trim();
+      }
+      if (!instructor) {
+        mostrarToast("Especifique el instructor.", "warning");
+        return;
+      }
+
+      const tipoInst = document.getElementById('edit-tipo-inst').value;
+
+      // Validar Cupo
+      const cupo = parseInt(document.getElementById('edit-cupo').value);
+      if (isNaN(cupo) || cupo <= 0) {
+        mostrarToast("El cupo de alumnos debe ser mayor a 0.", "warning");
+        document.getElementById('edit-cupo').focus();
+        return;
+      }
+
+      // Validar Días
+      const dias = obtenerDiasSeleccionadosEdicion();
+      if (!dias.length) {
+        mostrarToast("Seleccione al menos un día de impartición.", "warning");
+        return;
+      }
+
+      // Validar Horario
+      const horaIni = document.getElementById('edit-hora-ini').value;
+      const horaFin = document.getElementById('edit-hora-fin').value;
+      if (!horaIni || !horaFin) {
+        mostrarToast("Indique las horas de inicio y fin.", "warning");
+        return;
+      }
+      const dur = parseHoras(horaFin) - parseHoras(horaIni);
+      if (dur <= 0) {
+        mostrarToast("La hora fin debe ser posterior a la hora de inicio.", "warning");
+        return;
+      }
+
+      // Sede / CEC
+      const selectCec = document.getElementById('edit-cec');
+      const cveCec = (selectCec && selectCec.value) ? selectCec.value : '0';
+      const desCec = (selectCec && selectCec.value !== '0' && selectCec.options && selectCec.options[selectCec.selectedIndex])
+        ? (selectCec.options[selectCec.selectedIndex].getAttribute('data-nombre') || selectCec.options[selectCec.selectedIndex].text)
+        : 'Sede Principal CSS';
+
+      // Fechas
+      const fecIni = document.getElementById('edit-fec-ini').value;
+      const fecFin = document.getElementById('edit-fec-fin').value;
+
+      // Determinar si aplica a toda la serie o individual
+      const aplicarATodaLaSerie = c.grupoSerieId && document.getElementById('edit-serie-todos')?.checked;
+      const targets = aplicarATodaLaSerie
+        ? cursosList.filter(x => x.grupoSerieId === c.grupoSerieId)
+        : [c];
+
+      // Verificación de colisión antes de guardar
+      const idsExcluir = targets.map(x => x.id);
+      const col = detectarColision({
+        uopsiCve: c.uopsiCve,
+        aula,
+        instructor,
+        horaIni,
+        horaFin,
+        dias,
+        fecIni,
+        fecFin
+      }, idsExcluir);
+
+      if (col) {
+        if (!confirm(`Conflicto detectado: ${col.msg}\n\n¿Desea guardar los cambios de todas formas?`)) {
+          return;
+        }
+      }
+
+      const esValle = comprobarHorarioValle(horaIni, horaFin);
+      const horasSemana = Math.round(dur * dias.length * 10) / 10;
+
+      targets.forEach(target => {
+        target.aula = aula;
+        target.cveCec = cveCec;
+        target.desCec = desCec;
+        target.instructor = instructor;
+        target.tipoInst = tipoInst;
+        target.cupo = cupo;
+        target.dias = dias;
+        target.horaIni = horaIni;
+        target.horaFin = horaFin;
+        target.esValle = esValle;
+        target.horasSemana = horasSemana;
+
+        if (!aplicarATodaLaSerie) {
+          if (fecIni) { target.fecIni = fecIni; target.fechaIni = fecIni; }
+          if (fecFin) { target.fecFin = fecFin; target.fechaFin = fecFin; }
+        }
+
+        const sesiones = target.sesionesTotales || 10;
+        target.horasTotales = Math.round(dur * sesiones * 10) / 10;
+        target.metaSipsi = cupo * sesiones;
+      });
+
+      // Persistir en LocalStorage
+      guardarEnStorage();
+
+      // Sincronizar en Firebase
+      sincronizarAltaCursosEnNube(targets);
+
+      // Re-renderizar UI
+      actualizarTodo();
+
+      // Cerrar modal
+      cerrarModalEditarCurso();
+
+      const msg = aplicarATodaLaSerie
+        ? `Se actualizaron con éxito los ${targets.length} grupos continuos de la serie.`
+        : `Curso actualizado con éxito: ${c.curso}.`;
+      mostrarToast(msg, "success");
+    }
+
+        // 2. MÓDULO COMPLEMENTARIAS
     function aplicarEfemerideInstitucional() {
       const k = document.getElementById('ac-efemeride').value;
       if (!k || !EFEMERIDES_IMSS[k]) return;
@@ -7387,6 +8154,7 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
             <div style="font-size:0.65rem; color:#64748b;">asistencias</div>
           </td>
           <td style="text-align:center; white-space:nowrap;">
+            <button class="btn-icon" onclick="abrirModalEditarCurso('${c.id}')" title="Editar curso (Horario, Aula, Cupo, Docente)" style="color:#0284c7; background:#e0f2fe; margin-right:4px;"><i class="fa-solid fa-pen-to-square"></i></button>
             <button class="btn-icon" onclick="verAgendaDocente('${instEscaped}', '${c.uopsiCve}')" title="Ver en Agenda Docente (Calendario Mensual)" style="color:#1d4ed8; background:#eff6ff; margin-right:4px;"><i class="fa-solid fa-calendar-days"></i></button>
             <button class="btn-icon btn-icon-del" onclick="eliminarCurso('${c.id}')" title="Eliminar"><i class="fa-solid fa-trash-can"></i></button>
           </td>
