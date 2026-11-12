@@ -186,7 +186,7 @@
       <span><strong>Días Hábiles:</strong> 353</span>
       <span><strong>Cobertura:</strong> 6 CSS Oficiales</span>
       <span class="badge badge-cumple" id="tb-badge-pass">PASS: 6/6 Acreditadas</span>
-      <span class="badge" style="background:#0284c7; color:#ffffff; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px;" title="Versión de Sistema Oficial">v2027.4.9</span>
+      <span class="badge" style="background:#0284c7; color:#ffffff; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px;" title="Versión de Sistema Oficial">v2027.4.10</span>
     </div>
     <div class="toolbar-group" style="gap: 0.65rem; align-items: center;">
       <!-- SELECTOR DE PERFIL / MODO DE TRABAJO -->
@@ -5624,26 +5624,27 @@
           updates['eliminados/' + k] = null;
           agregados++;
 
-          // GARANTÍA 1: Petición REST con keepalive:true (Garantía instantánea a nivel red)
-          try {
-            fetch(`https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2/cursos/${k}.json`, {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(cLimpio),
-              keepalive: true
-            }).catch(() => {});
-            fetch(`https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2/eliminados/${k}.json`, {
-              method: 'DELETE',
-              keepalive: true
-            }).catch(() => {});
-          } catch(e){}
-
-          // GARANTÍA 2: Set directo vía WebSocket SDK
-          if (firebaseDb) {
+          // Para listas cortas (<= 5), llamadas REST individuales inmediatas
+          if (lista.length <= 5) {
             try {
-              firebaseDb.ref('sipsi_sonora_2027_v2/cursos/' + k).set(cLimpio).catch(() => {});
-              firebaseDb.ref('sipsi_sonora_2027_v2/eliminados/' + k).remove().catch(() => {});
+              fetch(`https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2/cursos/${k}.json`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(cLimpio),
+                keepalive: true
+              }).catch(() => {});
+              fetch(`https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2/eliminados/${k}.json`, {
+                method: 'DELETE',
+                keepalive: true
+              }).catch(() => {});
             } catch(e){}
+
+            if (firebaseDb) {
+              try {
+                firebaseDb.ref('sipsi_sonora_2027_v2/cursos/' + k).set(cLimpio).catch(() => {});
+                firebaseDb.ref('sipsi_sonora_2027_v2/eliminados/' + k).remove().catch(() => {});
+              } catch(e){}
+            }
           }
         }
       });
@@ -5655,9 +5656,33 @@
       if (agregados === 0) return;
       updates['ultimaActualizacion'] = nowIso;
 
+      // GARANTÍA REST MULTI-PATH ATÓMICA: Transmite en lotes de hasta 150 items por PATCH directamente a Firebase RTDB
+      const updateKeys = Object.keys(updates);
+      for (let i = 0; i < updateKeys.length; i += 150) {
+        const sliceKeys = updateKeys.slice(i, i + 150);
+        const subUpdates = {};
+        sliceKeys.forEach(sk => subUpdates[sk] = updates[sk]);
+        try {
+          fetch('https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2.json', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(subUpdates),
+            keepalive: true
+          }).catch(() => {});
+        } catch(e){}
+      }
+
+      // GARANTÍA SDK WEBSOCKET EN VIVO (Para todas las PCs conectadas)
       if (firebaseDb) {
         sincronizandoConNube = true;
-        firebaseDb.ref('sipsi_sonora_2027_v2').update(updates).then(() => {
+        const promises = [];
+        for (let i = 0; i < updateKeys.length; i += 150) {
+          const sliceKeys = updateKeys.slice(i, i + 150);
+          const subUpdates = {};
+          sliceKeys.forEach(sk => subUpdates[sk] = updates[sk]);
+          promises.push(firebaseDb.ref('sipsi_sonora_2027_v2').update(subUpdates));
+        }
+        Promise.all(promises).then(() => {
           setTimeout(() => { sincronizandoConNube = false; }, 300);
           console.log(`[Firebase] 🟢 ${agregados} curso(s) transmitido(s) en vivo a todas las PCs.`);
           actualizarIndicadorGuardado();
@@ -5690,35 +5715,60 @@
           updates['cursos/' + k] = null;
           updates['eliminados/' + k] = nowIso;
 
-          // GARANTÍA 1: Petición REST con keepalive:true (Sobrevive a F5, recargas y cierre de pestañas)
-          try {
-            fetch(`https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2/cursos/${k}.json`, {
-              method: 'DELETE',
-              keepalive: true
-            }).catch(() => {});
-            fetch(`https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2/eliminados/${k}.json`, {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(nowIso),
-              keepalive: true
-            }).catch(() => {});
-          } catch(e){}
-
-          // GARANTÍA 2: Borrado directo atómico vía SDK WebSocket
-          if (firebaseDb) {
+          // Para listas cortas (<= 5), llamadas REST individuales inmediatas
+          if (lista.length <= 5) {
             try {
-              firebaseDb.ref('sipsi_sonora_2027_v2/cursos/' + k).remove().catch(() => {});
-              firebaseDb.ref('sipsi_sonora_2027_v2/eliminados/' + k).set(nowIso).catch(() => {});
+              fetch(`https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2/cursos/${k}.json`, {
+                method: 'DELETE',
+                keepalive: true
+              }).catch(() => {});
+              fetch(`https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2/eliminados/${k}.json`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(nowIso),
+                keepalive: true
+              }).catch(() => {});
             } catch(e){}
+
+            if (firebaseDb) {
+              try {
+                firebaseDb.ref('sipsi_sonora_2027_v2/cursos/' + k).remove().catch(() => {});
+                firebaseDb.ref('sipsi_sonora_2027_v2/eliminados/' + k).set(nowIso).catch(() => {});
+              } catch(e){}
+            }
           }
         }
       });
+
+      // GARANTÍA REST MULTI-PATH ATÓMICA: Transmite en lotes de hasta 150 items por PATCH
+      const updateKeys = Object.keys(updates);
+      for (let i = 0; i < updateKeys.length; i += 150) {
+        const sliceKeys = updateKeys.slice(i, i + 150);
+        const subUpdates = {};
+        sliceKeys.forEach(sk => subUpdates[sk] = updates[sk]);
+        try {
+          fetch('https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2.json', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(subUpdates),
+            keepalive: true
+          }).catch(() => {});
+        } catch(e){}
+      }
 
       if (!firebaseDb) return;
       sincronizandoConNube = true;
       updates['ultimaActualizacion'] = nowIso;
 
-      firebaseDb.ref('sipsi_sonora_2027_v2').update(updates).then(() => {
+      const promises = [];
+      for (let i = 0; i < updateKeys.length; i += 150) {
+        const sliceKeys = updateKeys.slice(i, i + 150);
+        const subUpdates = {};
+        sliceKeys.forEach(sk => subUpdates[sk] = updates[sk]);
+        promises.push(firebaseDb.ref('sipsi_sonora_2027_v2').update(subUpdates));
+      }
+
+      Promise.all(promises).then(() => {
         setTimeout(() => { sincronizandoConNube = false; }, 300);
         console.log(`[Firebase] 🗑️ ${lista.length} curso(s) eliminado(s) permanentemente de la nube.`);
       }).catch(err => {
@@ -5871,7 +5921,7 @@
     const sincronizarConNube = sincronizarReemplazoTotalEnNube;
 
     function cargarDatosDesdeStorage() {
-      const APP_VERSION = '2027.4.9';
+      const APP_VERSION = '2027.4.10';
       try {
         // Cargar eliminadosSet desde localStorage
         const rawElim = localStorage.getItem('imss_paa_eliminados_2027');
@@ -9855,6 +9905,8 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
       const c_cupo = findCol(['CAN_CUPO', 'CUPO']);
       const c_clases = findCol(['CAN_CLASES', 'SESIONES', 'CLASES']);
       const c_asist = findCol(['CAN_ASISTENCIAS', 'ASISTENCIAS', 'META_SIPSI', 'META']);
+      const c_grupo = findCol(['GRUPO', 'NUM_GRUPO', 'CVE_GRUPO', 'NUMERO_GRUPO']);
+      const c_cec = findCol(['CEC', 'CENTRO_EXTENSION', 'DES_CEC', 'CVE_CEC']);
 
       const uopsiMap = {
         '102': '2601', 'HERMOSILLO': '2601', '2601': '2601',
@@ -9928,11 +9980,30 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
         else if (areaStr.includes('CULTUR')) eje = 'Cultura';
         else if (areaStr.includes('CAPACIT') || areaStr.includes('ADIEST')) eje = 'Capacitación';
 
+        let numGrupo = 1;
+        if (c_grupo !== -1 && row[c_grupo] !== undefined && row[c_grupo] !== null) {
+          const parsedG = parseInt(row[c_grupo]);
+          if (!isNaN(parsedG) && parsedG > 0) numGrupo = parsedG;
+        }
+
+        let cveCec = '0';
+        let desCec = 'Sede Principal CSS';
+        if (c_cec !== -1 && row[c_cec]) {
+          const valCec = String(row[c_cec]).trim();
+          if (valCec && valCec !== '0') {
+            cveCec = valCec;
+            desCec = `CEC ${valCec}`;
+          }
+        }
+
+        const uniqueId = 'C-IMP-' + Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 6) + '-' + String(parsedCursos.length + 1).padStart(3, '0');
+
         parsedCursos.push({
-          id: 'C-IMP-' + Date.now().toString().slice(-4) + '-' + parsedCursos.length,
+          id: uniqueId,
           uopsiCve: cveU,
           uopsiNombre: UOPSI_CATALOGO[cveU] ? UOPSI_CATALOGO[cveU].nombre : 'CSS',
           curso: nomCurso,
+          clave: String(row[c_cveAct] || '').trim(),
           claveAct: String(row[c_cveAct] || '').trim(),
           eje: eje,
           aula: String(row[c_aula] || 'Aula General').trim(),
@@ -9943,9 +10014,24 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
           horaFin: hFin,
           fecIni: fIni2027,
           fecFin: fFin2027,
+          fechaIni: fIni2027,
+          fechaFin: fFin2027,
           fecIniOrig: String(fIniRaw || '').slice(0, 10),
           fecFinOrig: String(fFinRaw || '').slice(0, 10),
           cupo: cupo,
+          grupo: numGrupo,
+          nombreGrupo: `Grupo ${numGrupo}`,
+          cveCec: cveCec,
+          desCec: desCec,
+          tipoAct: 'Curso',
+          tipoActividad: 'Curso',
+          esContinuo: false,
+          grupoSerieId: null,
+          esAjusteTolerancia: false,
+          pctAjuste: 0,
+          horasNorma: hTot,
+          horasNormaBase: hTot,
+          horasObjetivo: hTot,
           duracionSem: durSem,
           esValle: comprobarHorarioValle(hIni, hFin),
           horasSemana: hSem,
@@ -10013,30 +10099,85 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
       const unidadFijada = document.getElementById('imp-unidad-destino').value;
       const cant = cursosImportadosBuffer.length;
 
-      if (modo === 'reemplazar_todo') {
-        if (!confirm(`¿Confirmas reemplazar TODA la programación actual con estos ${cant.toLocaleString()} cursos convertidos al 2027?`)) return;
-        cursosList = [...cursosImportadosBuffer];
-      } else if (modo === 'reemplazar_unidad') {
-        const targetUopsi = unidadFijada !== 'auto' ? unidadFijada : (cursosImportadosBuffer[0] ? cursosImportadosBuffer[0].uopsiCve : null);
-        if (!targetUopsi) {
-          mostrarToast("Selecciona una unidad específica para reemplazar.", "warning");
-          return;
+      const btnConfirmar = document.getElementById('btn-confirmar-import');
+      if (btnConfirmar) {
+        btnConfirmar.disabled = true;
+        btnConfirmar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando en la nube...';
+      }
+
+      try {
+        let nuevosParaNube = [];
+        let idsABorrarNube = [];
+
+        if (modo === 'reemplazar_todo') {
+          if (!confirm(`¿Confirmas reemplazar TODA la programación actual con estos ${cant.toLocaleString()} cursos convertidos al 2027?`)) {
+            if (btnConfirmar) {
+              btnConfirmar.disabled = false;
+              btnConfirmar.innerHTML = '<i class="fa-solid fa-circle-check"></i> Confirmar e Incorporar a la Programación';
+            }
+            return;
+          }
+          idsABorrarNube = cursosList.map(c => c.id).filter(Boolean);
+          cursosList = [...cursosImportadosBuffer];
+          nuevosParaNube = [...cursosImportadosBuffer];
+
+        } else if (modo === 'reemplazar_unidad') {
+          const targetUopsi = unidadFijada !== 'auto' ? unidadFijada : (cursosImportadosBuffer[0] ? cursosImportadosBuffer[0].uopsiCve : null);
+          if (!targetUopsi) {
+            mostrarToast("Selecciona una unidad específica para reemplazar.", "warning");
+            if (btnConfirmar) {
+              btnConfirmar.disabled = false;
+              btnConfirmar.innerHTML = '<i class="fa-solid fa-circle-check"></i> Confirmar e Incorporar a la Programación';
+            }
+            return;
+          }
+          const nomUopsi = UOPSI_CATALOGO[targetUopsi] ? UOPSI_CATALOGO[targetUopsi].nombre : targetUopsi;
+          if (!confirm(`¿Confirmas reemplazar los cursos de '${nomUopsi}' con estos ${cant.toLocaleString()} cursos?`)) {
+            if (btnConfirmar) {
+              btnConfirmar.disabled = false;
+              btnConfirmar.innerHTML = '<i class="fa-solid fa-circle-check"></i> Confirmar e Incorporar a la Programación';
+            }
+            return;
+          }
+          idsABorrarNube = cursosList.filter(c => c.uopsiCve === targetUopsi).map(c => c.id).filter(Boolean);
+          cursosList = cursosList.filter(c => c.uopsiCve !== targetUopsi).concat(cursosImportadosBuffer);
+          nuevosParaNube = [...cursosImportadosBuffer];
+
+        } else {
+          // Agregar a la programación actual
+          cursosList = cursosList.concat(cursosImportadosBuffer);
+          nuevosParaNube = [...cursosImportadosBuffer];
         }
-        if (!confirm(`¿Confirmas reemplazar los cursos de '${UOPSI_CATALOGO[targetUopsi].nombre}' con estos ${cant.toLocaleString()} cursos?`)) return;
-        cursosList = cursosList.filter(c => c.uopsiCve !== targetUopsi).concat(cursosImportadosBuffer);
-      } else {
-        // Agregar
-        cursosList = cursosList.concat(cursosImportadosBuffer);
-      }
 
-      guardarEnStorage();
-      actualizarTodo();
-      if (typeof inicializarAgendaDocente === 'function') {
-        inicializarAgendaDocente();
-      }
+        // 1. SINCRONIZACIÓN ATÓMICA EN NUBE FIREBASE (GARANTIZA QUE NO SE BORREN AL DAR F5)
+        if (idsABorrarNube.length > 0) {
+          sincronizarBajaCursosEnNube(idsABorrarNube);
+        }
+        if (nuevosParaNube.length > 0) {
+          sincronizarAltaCursosEnNube(nuevosParaNube);
+        }
 
-      cerrarModalImportador();
-      mostrarToast(`¡Éxito! Se han incorporado ${cant.toLocaleString()} cursos convertidos al Calendario 2027.`, "success");
+        // 2. Persistir localmente en Storage
+        guardarEnStorage();
+
+        // 3. Re-renderizar toda la UI y Agenda Docente
+        actualizarTodo();
+        if (typeof inicializarAgendaDocente === 'function') {
+          inicializarAgendaDocente();
+        }
+
+        cerrarModalImportador();
+        mostrarToast(`¡Éxito! Se han incorporado ${cant.toLocaleString()} cursos y guardado permanentemente en la nube para todas las PCs.`, "success");
+
+      } catch(err) {
+        console.error("Error al confirmar importación:", err);
+        mostrarToast("Ocurrió un error al guardar la importación: " + err.message, "danger");
+      } finally {
+        if (btnConfirmar) {
+          btnConfirmar.disabled = false;
+          btnConfirmar.innerHTML = '<i class="fa-solid fa-circle-check"></i> Confirmar e Incorporar a la Programación';
+        }
+      }
     }
 
   </script>
