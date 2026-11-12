@@ -8277,6 +8277,7 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
     }
 
     function eliminarComplementaria(id) {
+      if (!requerirPinCoordinador("eliminar esta actividad complementaria")) return;
       if (confirm("¿Eliminar actividad complementaria de la programación?")) {
         // 1. NUBE Y TOMBSTONES PRIMERO (Garantía absoluta antes de cualquier render)
         sincronizarBajaCompEnNube(id);
@@ -8359,6 +8360,7 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
     }
 
     function eliminarCEC(id) {
+      if (!requerirPinCoordinador("dar de baja este Centro de Extensión")) return;
       if (confirm("¿Dar de baja este Centro de Extensión?")) {
         sincronizarBajaCECEnNube(id);
         cecsList = cecsList.filter(c => c.id !== id);
@@ -10327,6 +10329,16 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
       try {
         let nuevosParaNube = [];
         let idsABorrarNube = [];
+
+        if (modo === 'reemplazar_todo' || modo === 'reemplazar_unidad') {
+          if (!requerirPinCoordinador(`reemplazar cursos existentes (${modo === 'reemplazar_todo' ? 'Toda la programación' : 'Unidad específica'})`)) {
+            if (btnConfirmar) {
+              btnConfirmar.disabled = false;
+              btnConfirmar.innerHTML = '<i class="fa-solid fa-circle-check"></i> Confirmar e Incorporar a la Programación';
+            }
+            return;
+          }
+        }
 
         if (modo === 'reemplazar_todo') {
           if (!confirm(`¿Confirmas reemplazar TODA la programación actual con estos ${cant.toLocaleString()} cursos convertidos al 2027?`)) {
