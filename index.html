@@ -186,9 +186,15 @@
       <span><strong>Días Hábiles:</strong> 353</span>
       <span><strong>Cobertura:</strong> 6 CSS Oficiales</span>
       <span class="badge badge-cumple" id="tb-badge-pass">PASS: 6/6 Acreditadas</span>
-      <span class="badge" style="background:#0284c7; color:#ffffff; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px;" title="Versión de Sistema Oficial">v2027.4.10</span>
+      <span class="badge" style="background:#0284c7; color:#ffffff; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px;" title="Versión de Sistema Oficial">v2027.4.11</span>
     </div>
     <div class="toolbar-group" style="gap: 0.65rem; align-items: center;">
+      <!-- CANDADO DE COORDINACIÓN -->
+      <button type="button" id="btn-candado-coord" onclick="toggleCandadoCoordinacion()" style="border: none; border-radius: 16px; padding: 4px 11px; cursor: pointer; transition: all 0.2s; background: #f1f5f9; color: #475569; display: flex; align-items: center; gap: 5px; font-size: 0.73rem; font-weight: 700; border: 1px solid #cbd5e1;" title="Activar modo Coordinador para autorizar bajas con PIN">
+        <i class="fa-solid fa-lock" id="icon-candado-coord" style="color: #64748b;"></i>
+        <span id="txt-candado-coord">Coordinación (PIN)</span>
+      </button>
+
       <!-- SELECTOR DE PERFIL / MODO DE TRABAJO -->
       <div style="display: inline-flex; background: #e2e8f0; padding: 2px; border-radius: 20px; font-size: 0.73rem; font-weight: 700; border: 1px solid #cbd5e1; box-shadow: inset 0 1px 2px rgba(0,0,0,0.06);">
         <button type="button" id="btn-modo-oficial" onclick="cambiarModoTrabajo('oficial')" style="border: none; border-radius: 16px; padding: 4px 11px; cursor: pointer; transition: all 0.2s; background: #15803d; color: #ffffff; display: flex; align-items: center; gap: 5px;">
@@ -552,6 +558,9 @@
           <div class="card-header">
             <h2><i class="fa-solid fa-table-list"></i> Padrón de Cursos Regulares PAA 2027</h2>
             <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
+              <button type="button" id="btn-filtro-pendientes-baja" class="btn btn-sm" onclick="toggleFiltroPendientesBaja()" style="display:none; font-size: 0.76rem; border: 1px solid #ea580c; color: #ea580c; font-weight: 700; background: #fff7ed; padding: 0.25rem 0.6rem; border-radius: 4px; align-items: center; gap: 5px; cursor: pointer;" title="Filtrar cursos con solicitud de baja pendiente de autorización">
+                <i class="fa-solid fa-hourglass-half"></i> Pendientes de Baja: <span id="badge-count-pendientes-baja" style="background:#ea580c; color:#fff; padding:1px 6px; border-radius:10px; font-size:0.7rem;">0</span>
+              </button>
               <select id="filtro-uopsi-curso" class="form-select" style="font-size: 0.78rem; padding: 0.25rem 0.5rem;" onchange="renderizarTablaCursos()">
                 <option value="todos">Todos los CSS Sonora (6)</option>
                 <option value="2601">CSS Hermosillo (Meta: 12,479)</option>
@@ -5921,7 +5930,7 @@
     const sincronizarConNube = sincronizarReemplazoTotalEnNube;
 
     function cargarDatosDesdeStorage() {
-      const APP_VERSION = '2027.4.10';
+      const APP_VERSION = '2027.4.11';
       try {
         // Cargar eliminadosSet desde localStorage
         const rawElim = localStorage.getItem('imss_paa_eliminados_2027');
@@ -7358,44 +7367,207 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
       }
     }
 
+    // =========================================================
+    // CONTROL DE BAJAS Y AUTORIZACIÓN VISUAL DE COORDINACIÓN
+    // =========================================================
+    const PIN_COORDINACION_SIPSI = '2027';
+    let filtroSoloPendientesBaja = false;
+
+    function esCoordinadorAutorizado() {
+      try {
+        return sessionStorage.getItem('imss_sipsi_coord_auth') === 'true';
+      } catch(e) {
+        return false;
+      }
+    }
+
+    function actualizarBotonCandadoCoord() {
+      const btn = document.getElementById('btn-candado-coord');
+      const icon = document.getElementById('icon-candado-coord');
+      const txt = document.getElementById('txt-candado-coord');
+      if (!btn || !icon || !txt) return;
+
+      if (esCoordinadorAutorizado()) {
+        btn.style.background = '#dcfce7';
+        btn.style.color = '#15803d';
+        btn.style.borderColor = '#86efac';
+        icon.className = 'fa-solid fa-lock-open';
+        icon.style.color = '#15803d';
+        txt.textContent = 'Coordinador Autorizado';
+        btn.title = 'Modo Coordinador activo (clic para cerrar sesión de autorización)';
+      } else {
+        btn.style.background = '#f1f5f9';
+        btn.style.color = '#475569';
+        btn.style.borderColor = '#cbd5e1';
+        icon.className = 'fa-solid fa-lock';
+        icon.style.color = '#64748b';
+        txt.textContent = 'Coordinación (PIN)';
+        btn.title = 'Activar modo Coordinador para autorizar bajas con PIN';
+      }
+    }
+
+    function toggleCandadoCoordinacion() {
+      if (esCoordinadorAutorizado()) {
+        if (confirm("¿Deseas cerrar la sesión de autorización de Coordinador en este equipo?")) {
+          sessionStorage.removeItem('imss_sipsi_coord_auth');
+          actualizarBotonCandadoCoord();
+          actualizarTodo();
+          mostrarToast("Modo Coordinador desactivado.", "info");
+        }
+        return;
+      }
+
+      const pin = prompt("🔒 AUTORIZACIÓN DE COORDINACIÓN\n\nIngrese el PIN de Coordinador:");
+      if (!pin) return;
+      if (pin.trim() === PIN_COORDINACION_SIPSI) {
+        sessionStorage.setItem('imss_sipsi_coord_auth', 'true');
+        actualizarBotonCandadoCoord();
+        actualizarTodo();
+        mostrarToast("Modo Coordinador activado con éxito.", "success");
+      } else {
+        alert("❌ PIN incorrecto. Acceso de Coordinador denegado.");
+      }
+    }
+
+    function requerirPinCoordinador(accionTexto = 'esta acción') {
+      if (esCoordinadorAutorizado()) return true;
+      const pin = prompt(`🔒 AUTORIZACIÓN DE COORDINACIÓN\n\nSe requiere autorización de la Coordinación para ${accionTexto}.\n\nIngrese el PIN de Coordinador:`);
+      if (!pin) return false;
+      if (pin.trim() === PIN_COORDINACION_SIPSI) {
+        sessionStorage.setItem('imss_sipsi_coord_auth', 'true');
+        actualizarBotonCandadoCoord();
+        mostrarToast("Autorización concedida.", "success");
+        return true;
+      } else {
+        alert("❌ PIN incorrecto. Acción no autorizada.");
+        return false;
+      }
+    }
+
+    function toggleFiltroPendientesBaja() {
+      filtroSoloPendientesBaja = !filtroSoloPendientesBaja;
+      renderizarTablaCursos();
+      if (filtroSoloPendientesBaja) {
+        mostrarToast("Mostrando únicamente actividades marcadas con solicitud de baja.", "info");
+      }
+    }
+
+    // Solicitud o eliminación de curso (con marcado visual multi-PC)
     function eliminarCurso(id) {
       const item = cursosList.find(c => c.id === id);
       if (!item) return;
 
       const totalSerie = item.grupoSerieId ? cursosList.filter(c => c.grupoSerieId === item.grupoSerieId).length : 0;
+      let aplicarATodaLaSerie = false;
 
       if (totalSerie > 1) {
-        const resp = confirm(`Este curso forma parte de una secuencia continua de ${totalSerie} grupos (${item.curso}).\n\n¿Desea eliminar TODA la serie de ${totalSerie} grupos continuos?\n\n• Aceptar: Eliminará TODOS los ${totalSerie} grupos continuos de la serie.\n• Cancelar: Eliminar ÚNICAMENTE este grupo (${item.nombreGrupo || 'Grupo ' + item.grupo}).`);
-        if (resp) {
-          const idsABorrar = cursosList.filter(c => c.grupoSerieId === item.grupoSerieId).map(c => c.id);
-          // 1. SINCRONIZAR BAJA EN NUBE Y LISTA NEGRA DE RAÍZ (Garantía absoluta antes de cualquier render)
+        const resp = confirm(`Este curso forma parte de una secuencia continua de ${totalSerie} grupos (${item.curso}).\n\n¿Desea aplicar a TODA la serie de ${totalSerie} grupos continuos?\n\n• Aceptar: Toda la serie de ${totalSerie} grupos.\n• Cancelar: ÚNICAMENTE este grupo (${item.nombreGrupo || 'Grupo ' + item.grupo}).`);
+        aplicarATodaLaSerie = resp;
+      }
+
+      // Si el usuario ya está autenticado como Coordinador, ofrecer eliminación directa o marcado
+      if (esCoordinadorAutorizado()) {
+        const opcion = confirm(`Modo Coordinador Activo:\n\n¿Deseas ELIMINAR DEFINITIVAMENTE este curso de la nube ahora mismo?\n\n• Aceptar: Eliminar de raíz en todas las PCs.\n• Cancelar: Dejarlo marcado con solicitud de baja para revisión.`);
+        if (opcion) {
+          const idsABorrar = aplicarATodaLaSerie
+            ? cursosList.filter(c => c.grupoSerieId === item.grupoSerieId).map(c => c.id)
+            : [item.id];
           sincronizarBajaCursosEnNube(idsABorrar);
-          cursosList = cursosList.filter(c => c.grupoSerieId !== item.grupoSerieId);
+          cursosList = cursosList.filter(c => !idsABorrar.includes(c.id));
           guardarEnStorage();
-          try { actualizarTodo(); } catch(e){ console.warn(e); }
-          mostrarToast(`Serie completa de ${totalSerie} grupos eliminada permanentemente.`, "warning");
-          return;
-        } else {
-          if (confirm(`¿Confirmar retiro individual del ${item.nombreGrupo || 'Grupo ' + item.grupo} (${item.curso})?`)) {
-            // 1. SINCRONIZAR BAJA EN NUBE Y LISTA NEGRA DE RAÍZ
-            sincronizarBajaCursosEnNube(id);
-            cursosList = cursosList.filter(c => c.id !== id);
-            guardarEnStorage();
-            try { actualizarTodo(); } catch(e){ console.warn(e); }
-            mostrarToast(`${item.nombreGrupo || 'Grupo ' + item.grupo} eliminado permanentemente.`, "warning");
-          }
+          try { actualizarTodo(); } catch(e){}
+          mostrarToast(`🗑️ ${idsABorrar.length} curso(s) eliminado(s) permanentemente de la nube.`, "warning");
           return;
         }
       }
 
-      if (confirm(`¿Retirar actividad "${item.curso}" (${item.nombreGrupo || 'Grupo ' + (item.grupo || 1)}) de la programación?`)) {
-        // 1. SINCRONIZAR BAJA EN NUBE Y LISTA NEGRA DE RAÍZ (Garantía absoluta antes de cualquier render)
-        sincronizarBajaCursosEnNube(id);
-        cursosList = cursosList.filter(c => c.id !== id);
-        guardarEnStorage();
-        try { actualizarTodo(); } catch(e){ console.warn(e); }
-        mostrarToast("Actividad retirada permanentemente de la nube central.", "warning");
+      // Para usuarios normales (o si el coordinador prefiere marcarlo para revisión):
+      const motivo = prompt(
+        `⚠️ SOLICITUD DE BAJA / MARCA DE RETIRO\n\n` +
+        `Actividad: ${item.curso} (${item.nombreGrupo || 'Grupo ' + (item.grupo || 1)})\n` +
+        `Unidad: ${UOPSI_CATALOGO[item.uopsiCve] ? UOPSI_CATALOGO[item.uopsiCve].nombre : item.uopsiCve}\n\n` +
+        `Escriba el motivo de la baja para que la Coordinación lo autorice (ej. Cancelado, Duplicado, Cambio de Horario):`,
+        "Cancelación solicitada por unidad"
+      );
+
+      if (motivo === null) return; // Canceló
+
+      const targets = aplicarATodaLaSerie
+        ? cursosList.filter(c => c.grupoSerieId === item.grupoSerieId)
+        : [item];
+
+      const nowIso = new Date().toISOString();
+      targets.forEach(t => {
+        t.solicitudBaja = true;
+        t.motivoBaja = (motivo || 'Solicitud de baja para revisión').trim();
+        t.fechaSolicitudBaja = nowIso;
+      });
+
+      // Transmisión inmediata de la marca a Firebase para que todas las PCs lo vean en naranja
+      sincronizarAltaCursosEnNube(targets);
+      guardarEnStorage();
+      try { actualizarTodo(); } catch(e){}
+
+      mostrarToast(`⚠️ Curso marcado con solicitud de baja. La Coordinación revisará y autorizará su eliminación.`, "warning");
+    }
+
+    // AUTORIZAR Y BORRAR DEFINITIVAMENTE (Solo con PIN o Coordinador activo)
+    function aprobarBajaCurso(id) {
+      const item = cursosList.find(c => c.id === id);
+      if (!item) return;
+
+      if (!requerirPinCoordinador("autorizar la baja definitiva")) return;
+
+      const totalSerie = item.grupoSerieId ? cursosList.filter(c => c.grupoSerieId === item.grupoSerieId && c.solicitudBaja).length : 0;
+      let targets = [item];
+
+      if (totalSerie > 1) {
+        const resp = confirm(`Hay ${totalSerie} grupos continuos de esta serie con solicitud de baja.\n\n¿Autorizar la eliminación de TODOS los ${totalSerie} grupos de la serie?`);
+        if (resp) {
+          targets = cursosList.filter(c => c.grupoSerieId === item.grupoSerieId && c.solicitudBaja);
+        }
+      } else {
+        if (!confirm(`¿Confirmas AUTORIZAR LA BAJA DEFINITIVA de:\n"${item.curso}" (${item.nombreGrupo || 'Grupo ' + (item.grupo || 1)})?\n\nEsta acción lo retirará permanentemente de la nube central en todas las PCs.`)) {
+          return;
+        }
       }
+
+      const idsABorrar = targets.map(c => c.id);
+      sincronizarBajaCursosEnNube(idsABorrar);
+      cursosList = cursosList.filter(c => !idsABorrar.includes(c.id));
+      guardarEnStorage();
+      try { actualizarTodo(); } catch(e){}
+
+      mostrarToast(`🗑️ Baja autorizada: ${idsABorrar.length} curso(s) eliminado(s) permanentemente de la nube.`, "danger");
+    }
+
+    // RECHAZAR SOLICITUD DE BAJA Y RESTAURAR A ACTIVO NORMAL
+    function rechazarSolicitudBajaCurso(id) {
+      const item = cursosList.find(c => c.id === id);
+      if (!item) return;
+
+      const totalSerie = item.grupoSerieId ? cursosList.filter(c => c.grupoSerieId === item.grupoSerieId && c.solicitudBaja).length : 0;
+      let targets = [item];
+
+      if (totalSerie > 1) {
+        const resp = confirm(`Hay ${totalSerie} grupos de esta serie con solicitud de baja.\n\n¿Rechazar la baja para TODA la serie y mantenerlos todos activos?`);
+        if (resp) {
+          targets = cursosList.filter(c => c.grupoSerieId === item.grupoSerieId);
+        }
+      }
+
+      targets.forEach(t => {
+        t.solicitudBaja = false;
+        delete t.motivoBaja;
+        delete t.fechaSolicitudBaja;
+      });
+
+      // Transmitir a la nube para que se desmarque en todas las PCs
+      sincronizarAltaCursosEnNube(targets);
+      guardarEnStorage();
+      try { actualizarTodo(); } catch(e){}
+
+      mostrarToast(`✅ Solicitud de baja rechazada: La actividad continúa activa en la programación.`, "success");
     }
 
     // =========================================================
@@ -8399,13 +8571,36 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
       if (!tbody) return;
       tbody.innerHTML = '';
 
+      // Contador dinámico y filtro de cursos marcados con solicitud de baja
+      const pendientesBajaTotal = cursosList.filter(c => c && c.solicitudBaja).length;
+      const btnFiltroBaja = document.getElementById('btn-filtro-pendientes-baja');
+      const badgeCountBaja = document.getElementById('badge-count-pendientes-baja');
+      if (btnFiltroBaja && badgeCountBaja) {
+        if (pendientesBajaTotal > 0) {
+          btnFiltroBaja.style.display = 'inline-flex';
+          badgeCountBaja.textContent = pendientesBajaTotal;
+          if (filtroSoloPendientesBaja) {
+            btnFiltroBaja.style.background = '#ea580c';
+            btnFiltroBaja.style.color = '#ffffff';
+          } else {
+            btnFiltroBaja.style.background = '#fff7ed';
+            btnFiltroBaja.style.color = '#ea580c';
+          }
+        } else {
+          btnFiltroBaja.style.display = 'none';
+          filtroSoloPendientesBaja = false;
+        }
+      }
+
       const filtrados = cursosList.filter(c => {
+        if (filtroSoloPendientesBaja && !c.solicitudBaja) return false;
         if (filtro !== 'todos' && c.uopsiCve !== filtro) return false;
         if (q) {
           const txtCurso = (c.curso || '').toLowerCase();
           const txtInst = (c.instructor || '').toLowerCase();
           const txtAula = (c.aula || '').toLowerCase();
-          if (!txtCurso.includes(q) && !txtInst.includes(q) && !txtAula.includes(q)) return false;
+          const txtMotivo = (c.motivoBaja || '').toLowerCase();
+          if (!txtCurso.includes(q) && !txtInst.includes(q) && !txtAula.includes(q) && !txtMotivo.includes(q)) return false;
         }
         return true;
       });
@@ -8425,6 +8620,10 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
       filtrados.forEach(c => {
         const u = UOPSI_CATALOGO[c.uopsiCve] || { nombre: c.uopsiNombre || c.uopsiCve };
         const tr = document.createElement('tr');
+        if (c.solicitudBaja) {
+          tr.style.background = '#fff7ed';
+          tr.style.borderLeft = '4px solid #ea580c';
+        }
 
         const formatFechaDMY = (fStr) => {
           if (!fStr) return '';
@@ -8451,6 +8650,16 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
               ${c.grupo ? `<span style="background:#dbeafe; color:#1e40af; font-size:0.68rem; font-weight:700; padding:1px 6px; border-radius:3px;"><i class="fa-solid fa-layer-group"></i> ${c.nombreGrupo || 'G' + c.grupo}</span>` : ''}
               <strong style="color: #0f172a;">${c.curso || 'Sin Nombre'}</strong>
             </div>
+            ${c.solicitudBaja ? `
+              <div style="margin-top: 4px; display: inline-flex; align-items: center; gap: 5px; background: #ffedd5; padding: 2px 7px; border-radius: 4px; border: 1px solid #fed7aa; flex-wrap: wrap;">
+                <span style="color: #c2410c; font-weight: 800; font-size: 0.68rem;">
+                  <i class="fa-solid fa-hourglass-half"></i> SOLICITUD DE BAJA
+                </span>
+                <span style="color: #9a3412; font-size: 0.68rem;">
+                  · Motivo: <em>${c.motivoBaja || 'Por autorizar'}</em>
+                </span>
+              </div>
+            ` : ''}
             <div style="font-size:0.72rem;color:var(--text-muted); margin-top: 3px; display:flex; align-items:center; gap:5px; flex-wrap:wrap;">
               ${c.eje ? `<span style="font-weight:600; color:#0284c7;">${c.eje}</span> · ` : ''}
               <span>Cupo: <strong>${c.cupo || 0}</strong></span>
@@ -8487,9 +8696,18 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
             <div style="font-size:0.65rem; color:#64748b;">asistencias</div>
           </td>
           <td style="text-align:center; white-space:nowrap;">
+            ${c.solicitudBaja ? `
+              <button class="btn-icon" onclick="aprobarBajaCurso('${c.id}')" title="Autorizar Baja Definitiva (Requiere PIN Coordinador)" style="color:#15803d; background:#dcfce7; border: 1px solid #86efac; margin-right:4px; font-weight: bold;">
+                <i class="fa-solid fa-check"></i>
+              </button>
+              <button class="btn-icon" onclick="rechazarSolicitudBajaCurso('${c.id}')" title="Rechazar Baja y Mantener Activo" style="color:#b91c1c; background:#fee2e2; border: 1px solid #fca5a5; margin-right:4px;">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            ` : `
+              <button class="btn-icon btn-icon-del" onclick="eliminarCurso('${c.id}')" title="Solicitar Baja"><i class="fa-solid fa-trash-can"></i></button>
+            `}
             <button class="btn-icon" onclick="abrirModalEditarCurso('${c.id}')" title="Editar curso (Horario, Aula, Cupo, Docente)" style="color:#0284c7; background:#e0f2fe; margin-right:4px;"><i class="fa-solid fa-pen-to-square"></i></button>
             <button class="btn-icon" onclick="verAgendaDocente('${instEscaped}', '${c.uopsiCve}')" title="Ver en Agenda Docente (Calendario Mensual)" style="color:#1d4ed8; background:#eff6ff; margin-right:4px;"><i class="fa-solid fa-calendar-days"></i></button>
-            <button class="btn-icon btn-icon-del" onclick="eliminarCurso('${c.id}')" title="Eliminar"><i class="fa-solid fa-trash-can"></i></button>
           </td>
         `;
         fragment.appendChild(tr);
@@ -8526,6 +8744,7 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
     }
 
     function actualizarTodo() {
+      actualizarBotonCandadoCoord();
       renderizarTablaCursos();
       renderizarTablaComp();
       renderizarTablaDiagnosticos();
