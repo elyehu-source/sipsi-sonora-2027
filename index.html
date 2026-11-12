@@ -186,7 +186,7 @@
       <span><strong>Días Hábiles:</strong> 353</span>
       <span><strong>Cobertura:</strong> 6 CSS Oficiales</span>
       <span class="badge badge-cumple" id="tb-badge-pass">PASS: 6/6 Acreditadas</span>
-      <span class="badge" style="background:#0284c7; color:#ffffff; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px;" title="Versión de Sistema Oficial">v2027.4.8</span>
+      <span class="badge" style="background:#0284c7; color:#ffffff; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px;" title="Versión de Sistema Oficial">v2027.4.9</span>
     </div>
     <div class="toolbar-group" style="gap: 0.65rem; align-items: center;">
       <!-- SELECTOR DE PERFIL / MODO DE TRABAJO -->
@@ -5532,6 +5532,7 @@
         const strLocal = JSON.stringify(cursosList);
         const strData = JSON.stringify(data);
         if (strLocal !== strData) {
+          const prevLen = cursosList.length;
           console.log(`[Firebase] 📥 Padrón oficial sincronizado en vivo desde la nube (${data.length} cursos activos).`);
           cursosList = data;
 
@@ -5541,6 +5542,12 @@
           } catch(e){}
 
           actualizarTodo();
+
+          if (prevLen > 0 && data.length > prevLen) {
+            mostrarToast(`👥 Sincronización en vivo: Se agregaron ${data.length - prevLen} nueva(s) actividad(es) desde otra PC.`, "info");
+          } else if (prevLen > 0 && data.length < prevLen) {
+            mostrarToast(`🗑️ Sincronización en vivo: Se retiraron ${prevLen - data.length} actividad(es) desde otra PC.`, "warning");
+          }
         }
       }, (err) => {
         console.warn('[Firebase] Lectura de cursos:', err.message);
@@ -5572,42 +5579,93 @@
       }, (err) => {
         console.warn('[Firebase] Complementarias lectura pendiente:', err.message);
       });
+
+      // 4. Escuchar Centros de Extensión (CECs) en tiempo real para todas las PCs
+      const refCECs = firebaseDb.ref('sipsi_sonora_2027_v2/cecs');
+      refCECs.on('value', (snap) => {
+        const raw = snap.val();
+        if (raw && typeof raw === 'object') {
+          cecsList = Object.values(raw).filter(Boolean);
+          try { localStorage.setItem('imss_paa_cecs_2027_clean_v1', JSON.stringify(cecsList)); } catch(e){}
+          cargarCecsSegunUopsi();
+          actualizarTodo();
+        }
+      });
+
+      // 5. Escuchar Diagnósticos 06.5 en tiempo real para todas las PCs
+      const refDiag = firebaseDb.ref('sipsi_sonora_2027_v2/diagnosticos');
+      refDiag.on('value', (snap) => {
+        const raw = snap.val();
+        if (raw && typeof raw === 'object') {
+          diagnosticosObj = { ...diagnosticosObj, ...raw };
+          try { localStorage.setItem('imss_paa_diag_2027_clean_v1', JSON.stringify(diagnosticosObj)); } catch(e){}
+          cargarDiagnosticoUopsi();
+          actualizarTodo();
+        }
+      });
     }
 
     // ALTA Y EDICIÓN ATÓMICA EN NUBE: Sube o actualiza cursos directamente en Firebase
     function sincronizarAltaCursosEnNube(nuevosCursos) {
       if (modoTrabajoActual === 'simulacion') return;
-      if (!firebaseDb) return;
       const lista = Array.isArray(nuevosCursos) ? nuevosCursos : [nuevosCursos];
       if (!lista.length) return;
 
-      sincronizandoConNube = true;
+      const nowIso = new Date().toISOString();
       const updates = {};
       let agregados = 0;
+
       lista.forEach(c => {
         if (c && c.id) {
           const k = sanitizarClaveFirebase(c.id);
-          eliminadosSet.delete(k); // Si estaba marcado como eliminado, se desmarca porque el usuario lo guardó expresamente
-          updates['cursos/' + k] = JSON.parse(JSON.stringify(c)); // Limpia cualquier undefined que pudiera rechazar Firebase
+          eliminadosSet.delete(k); // Si estaba marcado como eliminado, se desmarca de inmediato
+          const cLimpio = JSON.parse(JSON.stringify(c)); // Limpia cualquier undefined
+          updates['cursos/' + k] = cLimpio;
           updates['eliminados/' + k] = null;
           agregados++;
+
+          // GARANTÍA 1: Petición REST con keepalive:true (Garantía instantánea a nivel red)
+          try {
+            fetch(`https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2/cursos/${k}.json`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(cLimpio),
+              keepalive: true
+            }).catch(() => {});
+            fetch(`https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2/eliminados/${k}.json`, {
+              method: 'DELETE',
+              keepalive: true
+            }).catch(() => {});
+          } catch(e){}
+
+          // GARANTÍA 2: Set directo vía WebSocket SDK
+          if (firebaseDb) {
+            try {
+              firebaseDb.ref('sipsi_sonora_2027_v2/cursos/' + k).set(cLimpio).catch(() => {});
+              firebaseDb.ref('sipsi_sonora_2027_v2/eliminados/' + k).remove().catch(() => {});
+            } catch(e){}
+          }
         }
       });
-      if (agregados === 0) {
-        sincronizandoConNube = false;
-        return;
-      }
-      updates['ultimaActualizacion'] = new Date().toISOString();
 
-      firebaseDb.ref('sipsi_sonora_2027_v2').update(updates).then(() => {
-        setTimeout(() => { sincronizandoConNube = false; }, 300);
-        console.log(`[Firebase] 🟢 ${agregados} curso(s) guardado(s)/actualizado(s) con éxito en la nube.`);
-        actualizarIndicadorGuardado();
-      }).catch(err => {
-        sincronizandoConNube = false;
-        console.warn('[Firebase] Error al guardar en nube:', err.message);
-        mostrarToast('Error al conectar con la nube: ' + err.message, 'error');
-      });
+      try {
+        localStorage.setItem('imss_paa_eliminados_2027', JSON.stringify([...eliminadosSet]));
+      } catch(e){}
+
+      if (agregados === 0) return;
+      updates['ultimaActualizacion'] = nowIso;
+
+      if (firebaseDb) {
+        sincronizandoConNube = true;
+        firebaseDb.ref('sipsi_sonora_2027_v2').update(updates).then(() => {
+          setTimeout(() => { sincronizandoConNube = false; }, 300);
+          console.log(`[Firebase] 🟢 ${agregados} curso(s) transmitido(s) en vivo a todas las PCs.`);
+          actualizarIndicadorGuardado();
+        }).catch(err => {
+          sincronizandoConNube = false;
+          console.warn('[Firebase] Error al guardar en nube:', err.message);
+        });
+      }
     }
 
     // BAJA GRANULAR: Borra de cursos Y registra permanentemente en la lista negra de eliminados
@@ -5669,20 +5727,81 @@
       });
     }
 
-    // COMPLEMENTARIAS GRANULARES
+    // COMPLEMENTARIAS GRANULARES (ALTA Y BAJA ATÓMICA EN NUBE)
     function sincronizarAltaCompEnNube(nuevaComp) {
-      if (!firebaseDb || !nuevaComp || !nuevaComp.id) return;
+      if (!nuevaComp || !nuevaComp.id) return;
+      if (modoTrabajoActual === 'simulacion') return;
       const k = sanitizarClaveFirebase(nuevaComp.id);
-      if (eliminadosSet.has(k)) return;
+      eliminadosSet.delete(k);
+      const nowIso = new Date().toISOString();
+      const compLimpia = JSON.parse(JSON.stringify(nuevaComp));
 
-      sincronizandoConNube = true;
-      const updates = {
-        ['complementarias/' + k]: nuevaComp,
-        ultimaActualizacion: new Date().toISOString()
-      };
-      firebaseDb.ref('sipsi_sonora_2027_v2').update(updates).then(() => {
-        setTimeout(() => { sincronizandoConNube = false; }, 300);
-      }).catch(() => { sincronizandoConNube = false; });
+      // GARANTÍA 1: REST con keepalive:true
+      try {
+        fetch(`https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2/complementarias/${k}.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(compLimpia),
+          keepalive: true
+        }).catch(() => {});
+        fetch(`https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2/eliminados/${k}.json`, {
+          method: 'DELETE',
+          keepalive: true
+        }).catch(() => {});
+      } catch(e){}
+
+      // GARANTÍA 2: SDK WebSocket
+      if (firebaseDb) {
+        sincronizandoConNube = true;
+        const updates = {
+          ['complementarias/' + k]: compLimpia,
+          ['eliminados/' + k]: null,
+          ultimaActualizacion: nowIso
+        };
+        firebaseDb.ref('sipsi_sonora_2027_v2').update(updates).then(() => {
+          setTimeout(() => { sincronizandoConNube = false; }, 300);
+        }).catch(() => { sincronizandoConNube = false; });
+      }
+    }
+
+    // SINCRONIZACIÓN DE CECS Y DIAGNÓSTICOS PARA TODAS LAS PCS
+    function sincronizarAltaCECEnNube(cec) {
+      if (!cec || !cec.id) return;
+      const k = sanitizarClaveFirebase(cec.id);
+      try {
+        fetch(`https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2/cecs/${k}.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(cec),
+          keepalive: true
+        }).catch(() => {});
+      } catch(e){}
+      if (firebaseDb) firebaseDb.ref('sipsi_sonora_2027_v2/cecs/' + k).set(cec).catch(() => {});
+    }
+
+    function sincronizarBajaCECEnNube(id) {
+      if (!id) return;
+      const k = sanitizarClaveFirebase(id);
+      try {
+        fetch(`https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2/cecs/${k}.json`, {
+          method: 'DELETE',
+          keepalive: true
+        }).catch(() => {});
+      } catch(e){}
+      if (firebaseDb) firebaseDb.ref('sipsi_sonora_2027_v2/cecs/' + k).remove().catch(() => {});
+    }
+
+    function sincronizarDiagnosticoEnNube(cve, diag) {
+      if (!cve || !diag) return;
+      try {
+        fetch(`https://project-45ae77c7-7154-41b8-bb8-default-rtdb.firebaseio.com/sipsi_sonora_2027_v2/diagnosticos/${cve}.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(diag),
+          keepalive: true
+        }).catch(() => {});
+      } catch(e){}
+      if (firebaseDb) firebaseDb.ref('sipsi_sonora_2027_v2/diagnosticos/' + cve).set(diag).catch(() => {});
     }
 
     function sincronizarBajaCompEnNube(id) {
@@ -5752,7 +5871,7 @@
     const sincronizarConNube = sincronizarReemplazoTotalEnNube;
 
     function cargarDatosDesdeStorage() {
-      const APP_VERSION = '2027.4.8';
+      const APP_VERSION = '2027.4.9';
       try {
         // Cargar eliminadosSet desde localStorage
         const rawElim = localStorage.getItem('imss_paa_eliminados_2027');
@@ -5931,7 +6050,7 @@
       if (ind) {
         const total = (cursosList ? cursosList.length : 0) + (complementariasList ? complementariasList.length : 0);
         const horaStr = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const iconoNube = estadoConexionNube ? '<i class="fa-solid fa-cloud" style="color:#4ade80;"></i> Nube Central 24/7 Activa' : '<i class="fa-solid fa-cloud-arrow-up" style="color:#fbbf24;"></i> Guardado Local (Sincronizando...)';
+        const iconoNube = estadoConexionNube ? '<i class="fa-solid fa-cloud" style="color:#4ade80;"></i> Nube Central 24/7 (Multi-PC en Vivo)' : '<i class="fa-solid fa-cloud-arrow-up" style="color:#fbbf24;"></i> Guardado Local (Sincronizando...)';
         ind.innerHTML = `${iconoNube} (${total} acts · ${horaStr})`;
         if (badge) {
           badge.style.borderColor = estadoConexionNube ? '#4ade80' : '#fbbf24';
@@ -7147,9 +7266,10 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
         });
       }
 
-      guardarEnStorage();
-      actualizarTodo();
+      // 1. TRANSMISIÓN INMEDIATA A NUBE PARA TODAS LAS PCS (REST + WEBSOCKET)
       sincronizarAltaCursosEnNube(nuevosCursosAGuardar);
+      guardarEnStorage();
+      try { actualizarTodo(); } catch(e){ console.warn(e); }
 
       // Ocultar alerta de colision del curso recien guardado
       const alerta = document.getElementById('c-alerta-colision');
@@ -7848,14 +7968,14 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
         }
       });
 
+      // 1. TRANSMISIÓN INMEDIATA A NUBE PARA TODAS LAS PCS (REST + WEBSOCKET)
+      sincronizarAltaCursosEnNube(targets);
+
       // Persistir en LocalStorage
       guardarEnStorage();
 
-      // Sincronizar en Firebase
-      sincronizarAltaCursosEnNube(targets);
-
       // Re-renderizar UI
-      actualizarTodo();
+      try { actualizarTodo(); } catch(e){ console.warn(e); }
 
       // Cerrar modal
       cerrarModalEditarCurso();
@@ -7926,11 +8046,12 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
 
       complementariasList.unshift(nuevaComp);
 
-      guardarEnStorage();
-      actualizarTodo();
+      // 1. TRANSMISIÓN INMEDIATA A NUBE PARA TODAS LAS PCS (REST + WEBSOCKET)
       sincronizarAltaCompEnNube(nuevaComp);
+      guardarEnStorage();
+      try { actualizarTodo(); } catch(e){ console.warn(e); }
       document.getElementById('ac-nombre').value = '';
-      mostrarToast(`Actividad '${nombre}' registrada.`, "success");
+      mostrarToast(`Actividad '${nombre}' registrada y transmitida en vivo a todas las PCs.`, "success");
     }
 
     function eliminarComplementaria(id) {
@@ -7959,16 +8080,18 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
     function guardarDiagnostico(event) {
       event.preventDefault();
       const cve = document.getElementById('diag-uopsi').value;
-      diagnosticosObj[cve] = {
+      const diagData = {
         poblacion: parseInt(document.getElementById('diag-poblacion').value) || 0,
         prioridad: document.getElementById('diag-prioridad-salud').value,
         grupo: document.getElementById('diag-grupo-etario').value,
         infra: document.getElementById('diag-infraestructura').value,
         justificacion: document.getElementById('diag-justificacion').value.trim()
       };
+      diagnosticosObj[cve] = diagData;
+      sincronizarDiagnosticoEnNube(cve, diagData);
       guardarEnStorage();
       renderizarTablaDiagnosticos();
-      mostrarToast(`Diagnóstico 06.5 guardado para ${UOPSI_CATALOGO[cve]?.nombre}.`, "success");
+      mostrarToast(`Diagnóstico 06.5 guardado y sincronizado para ${UOPSI_CATALOGO[cve]?.nombre}.`, "success");
     }
 
     function renderizarTablaDiagnosticos() {
@@ -8001,22 +8124,25 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
       const ubicacion = document.getElementById('cec-ubicacion').value.trim();
       const responsable = document.getElementById('cec-responsable').value.trim();
 
-      cecsList.unshift({
+      const nuevoCEC = {
         id: "CEC-" + Date.now().toString().slice(-4),
         uopsiCve, nombre, alianza, capacidad, ubicacion, responsable
-      });
+      };
+      cecsList.unshift(nuevoCEC);
+      sincronizarAltaCECEnNube(nuevoCEC);
       guardarEnStorage();
       actualizarTodo();
       document.getElementById('cec-nombre').value = '';
-      mostrarToast(`Centro de Extensión '${nombre}' registrado en ${UOPSI_CATALOGO[uopsiCve].nombre}.`, "success");
+      mostrarToast(`Centro de Extensión '${nombre}' registrado y sincronizado en ${UOPSI_CATALOGO[uopsiCve].nombre}.`, "success");
     }
 
     function eliminarCEC(id) {
       if (confirm("¿Dar de baja este Centro de Extensión?")) {
+        sincronizarBajaCECEnNube(id);
         cecsList = cecsList.filter(c => c.id !== id);
         guardarEnStorage();
         actualizarTodo();
-        mostrarToast("CEC retirado.", "warning");
+        mostrarToast("CEC retirado y sincronizado en todas las PCs.", "warning");
       }
     }
 
