@@ -11,6 +11,7 @@
   <link rel="apple-touch-icon" href="./app_icon.png">
   <title>IMSS · Plataforma Integral de Prestaciones Sociales 2027</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
       --imss-green: #0a5c36;
@@ -186,7 +187,7 @@
       <span><strong>Días Hábiles:</strong> 353</span>
       <span><strong>Cobertura:</strong> 6 CSS Oficiales</span>
       <span class="badge badge-cumple" id="tb-badge-pass">PASS: 6/6 Acreditadas</span>
-      <span class="badge" style="background:#0284c7; color:#ffffff; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px;" title="Versión de Sistema Oficial">v2027.4.12</span>
+      <span class="badge" style="background:#0284c7; color:#ffffff; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px;" title="Versión de Sistema Oficial">v2027.4.13</span>
     </div>
     <div class="toolbar-group" style="gap: 0.65rem; align-items: center;">
       <!-- CANDADO DE COORDINACIÓN -->
@@ -232,6 +233,9 @@
     </button>
     <button class="tab-btn" id="btn-t-agenda" onclick="cambiarPestana('tab-agenda')">
       <i class="fa-solid fa-calendar-days"></i> 8. Agenda Docente 2027
+    </button>
+    <button class="tab-btn" id="btn-t-metas" onclick="cambiarPestana('tab-metas-capturadas')">
+      <i class="fa-solid fa-chart-column"></i> 9. Metas Capturadas 2027
     </button>
   </div>
 
@@ -1221,7 +1225,270 @@
 
   
   <!-- MODAL: IMPORTADOR Y CONVERSOR 2026 ➔ 2027 -->
-  <div id="modal-importador" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(3px);">
+  
+  <!-- ========================================================= -->
+  <!-- TAB 9: METAS CAPTURADAS 2027 (GRÁFICAS Y CARGA POR UNIDAD)-->
+  <!-- ========================================================= -->
+  <div id="tab-metas-capturadas" class="tab-content">
+    <div style="padding: 1.25rem 2rem; max-width: 1500px; margin: 0 auto;">
+      
+      <!-- Banner Encabezado -->
+      <div style="background: linear-gradient(135deg, #063d23 0%, #0a5c36 50%, #1e3a8a 100%); color: white; border-radius: 12px; padding: 1.5rem 2rem; margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; box-shadow: 0 10px 25px -5px rgba(10, 92, 54, 0.3);">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.65rem;">
+            <span style="background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;">PAA OFICIAL 2027 (+2.6%)</span>
+            <span style="background: #b38e5d; color: #ffffff; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;">OOAD SONORA</span>
+          </div>
+          <h1 style="font-size: 1.5rem; font-weight: 800; margin: 0.5rem 0 0.2rem 0; letter-spacing: -0.5px;">
+            <i class="fa-solid fa-chart-pie" style="color: #6ee7b7; margin-right: 0.5rem;"></i>
+            Carga de Programación y Metas Capturadas 2027
+          </h1>
+          <p style="font-size: 0.84rem; opacity: 0.92; margin: 0; max-width: 800px;">
+            Monitoreo en tiempo real del cumplimiento de metas por unidad operativa y áreas temáticas según los archivos Excel SIPSI cargados.
+          </p>
+        </div>
+        <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+          <button type="button" class="btn" onclick="abrirModalImportador()" style="background: #ffffff; color: #0a5c36; font-weight: 700; font-size: 0.82rem; padding: 0.6rem 1.1rem; border-radius: 8px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Cargar / Actualizar Archivo Excel
+          </button>
+          <button type="button" class="btn" onclick="window.print()" style="background: rgba(255,255,255,0.15); color: #ffffff; font-weight: 600; font-size: 0.82rem; padding: 0.6rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-print"></i> Imprimir Reporte
+          </button>
+        </div>
+      </div>
+
+      <!-- Barra de Filtros y Selectores -->
+      <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+          <div>
+            <label style="display: block; font-size: 0.72rem; font-weight: 700; color: #475569; margin-bottom: 0.25rem; text-transform: uppercase;">
+              <i class="fa-solid fa-building-columns"></i> Unidad Operativa (CSS):
+            </label>
+            <select id="metas-filtro-unidad" class="form-select" onchange="actualizarTabMetasCapturadas()" style="font-size: 0.85rem; font-weight: 600; color: #0f172a; min-width: 280px; padding: 0.4rem 0.6rem; border-radius: 6px; border: 1px solid #cbd5e1;">
+              <option value="todas">⭐ Consolidado Estatal Sonora (6 Unidades)</option>
+              <option value="2601">CSS Hermosillo (Meta: 12,479)</option>
+              <option value="2602">CSS Ciudad Obregón (Meta: 7,941)</option>
+              <option value="2603">CSS Nogales (Meta: 5,003)</option>
+              <option value="2604">CSS Navojoa (Meta: 4,866)</option>
+              <option value="2605">CSS Empalme (Meta: 4,639)</option>
+              <option value="2606">CSS Huatabampo (Meta: 8,272)</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="display: block; font-size: 0.72rem; font-weight: 700; color: #475569; margin-bottom: 0.25rem; text-transform: uppercase;">
+              <i class="fa-solid fa-layer-group"></i> Área Temática:
+            </label>
+            <select id="metas-filtro-area" class="form-select" onchange="actualizarTabMetasCapturadas()" style="font-size: 0.85rem; font-weight: 600; color: #0f172a; min-width: 220px; padding: 0.4rem 0.6rem; border-radius: 6px; border: 1px solid #cbd5e1;">
+              <option value="todas">Todas las Áreas Temáticas (4)</option>
+              <option value="Deporte">Cultura Física y Deporte</option>
+              <option value="Capacitación">Capacitación y Adiestramiento</option>
+              <option value="Cultura">Desarrollo Cultural</option>
+              <option value="Salud">Promoción de la Salud</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="metas-semaforo-badge" style="display: flex; align-items: center; gap: 0.5rem; background: #f8fafc; padding: 0.4rem 0.9rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+          <span style="font-size: 0.75rem; color: #64748b; font-weight: 600;">Estado de Cumplimiento:</span>
+          <span id="metas-badge-estatus" style="font-weight: 800; font-size: 0.8rem; padding: 3px 10px; border-radius: 20px; background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0;">
+            <i class="fa-solid fa-circle-check"></i> Calculando...
+          </span>
+        </div>
+      </div>
+
+      <!-- Tarjetas de KPIs Principales -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+        
+        <div style="background: #ffffff; border-radius: 10px; padding: 1.15rem 1.25rem; border: 1px solid #e2e8f0; border-left: 5px solid #1e3a8a; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
+          <div style="font-size: 0.74rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Meta Oficial 2027 (+2.6%)</div>
+          <div id="kpi-meta-objetivo" style="font-size: 1.7rem; font-weight: 800; color: #1e3a8a; margin: 0.25rem 0;">43,200</div>
+          <div style="font-size: 0.72rem; color: #64748b;"><i class="fa-solid fa-flag"></i> Cupos institucionales asignados</div>
+        </div>
+
+        <div style="background: #ffffff; border-radius: 10px; padding: 1.15rem 1.25rem; border: 1px solid #e2e8f0; border-left: 5px solid #0a5c36; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
+          <div style="font-size: 0.74rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Cupos Capturados / Padrón</div>
+          <div id="kpi-cupos-capturados" style="font-size: 1.7rem; font-weight: 800; color: #0a5c36; margin: 0.25rem 0;">0</div>
+          <div id="kpi-cupos-sub" style="font-size: 0.72rem; color: #64748b;"><i class="fa-solid fa-users"></i> Registrados en cursos y talleres</div>
+        </div>
+
+        <div style="background: #ffffff; border-radius: 10px; padding: 1.15rem 1.25rem; border: 1px solid #e2e8f0; border-left: 5px solid #b38e5d; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
+          <div style="font-size: 0.74rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Porcentaje de Cumplimiento</div>
+          <div id="kpi-pct-cumplimiento" style="font-size: 1.7rem; font-weight: 800; color: #b38e5d; margin: 0.25rem 0;">0.0%</div>
+          <div id="kpi-brecha-texto" style="font-size: 0.72rem; color: #64748b;"><i class="fa-solid fa-chart-line"></i> Brecha calculada</div>
+        </div>
+
+        <div style="background: #ffffff; border-radius: 10px; padding: 1.15rem 1.25rem; border: 1px solid #e2e8f0; border-left: 5px solid #2563eb; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
+          <div style="font-size: 0.74rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Actividades Programadas</div>
+          <div id="kpi-total-actividades" style="font-size: 1.7rem; font-weight: 800; color: #2563eb; margin: 0.25rem 0;">0</div>
+          <div id="kpi-act-sub" style="font-size: 0.72rem; color: #64748b;"><i class="fa-solid fa-graduation-cap"></i> Cursos, talleres y módulos</div>
+        </div>
+
+        <div style="background: #ffffff; border-radius: 10px; padding: 1.15rem 1.25rem; border: 1px solid #e2e8f0; border-left: 5px solid #691c32; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
+          <div style="font-size: 0.74rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Meta de Asistencias SIPSI</div>
+          <div id="kpi-total-asistencias" style="font-size: 1.7rem; font-weight: 800; color: #691c32; margin: 0.25rem 0;">0</div>
+          <div id="kpi-horas-sub" style="font-size: 0.72rem; color: #64748b;"><i class="fa-solid fa-clock"></i> 0 horas de clase totales</div>
+        </div>
+      </div>
+
+      <!-- Barra de Progreso Visual Global -->
+      <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; box-shadow: 0 2px 6px rgba(0,0,0,0.03);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+          <strong style="font-size: 0.84rem; color: #1e293b;"><i class="fa-solid fa-bars-progress" style="color: #0a5c36;"></i> Avance Global de la Meta 2027</strong>
+          <span id="lbl-barra-progreso-num" style="font-weight: 800; font-size: 0.88rem; color: #0a5c36;">0 / 43,200 cupos (0%)</span>
+        </div>
+        <div style="width: 100%; height: 16px; background: #e2e8f0; border-radius: 20px; overflow: hidden; position: relative;">
+          <div id="barra-progreso-global-fill" style="height: 100%; width: 0%; background: linear-gradient(90deg, #0a5c36, #16a34a); border-radius: 20px; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);"></div>
+        </div>
+      </div>
+
+      <!-- Contenedor de Gráficas Interactivas -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem;">
+        
+        <!-- Gráfica 1: Comparativa por Unidad -->
+        <div style="background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div>
+              <h3 style="font-size: 0.95rem; font-weight: 700; color: #0f172a; margin: 0;">
+                <i class="fa-solid fa-chart-column" style="color: #2563eb; margin-right: 0.35rem;"></i>
+                Meta vs Capturado por Unidad (CSS)
+              </h3>
+              <p style="font-size: 0.72rem; color: #64748b; margin: 2px 0 0 0;">Comparación de cupos requeridos (+2.6%) vs programados en el archivo</p>
+            </div>
+          </div>
+          <div style="position: relative; height: 280px; width: 100%;">
+            <canvas id="chart-metas-unidades"></canvas>
+          </div>
+        </div>
+
+        <!-- Gráfica 2: Carga por Área Temática -->
+        <div style="background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div>
+              <h3 style="font-size: 0.95rem; font-weight: 700; color: #0f172a; margin: 0;">
+                <i class="fa-solid fa-list-check" style="color: #059669; margin-right: 0.35rem;"></i>
+                Cumplimiento por Área Temática
+              </h3>
+              <p style="font-size: 0.72rem; color: #64748b; margin: 2px 0 0 0;">Avance específico en Deporte, Capacitación, Cultura y Salud</p>
+            </div>
+          </div>
+          <div style="position: relative; height: 280px; width: 100%;">
+            <canvas id="chart-metas-areas"></canvas>
+          </div>
+        </div>
+
+        <!-- Gráfica 3: Proporción de Actividades por Eje -->
+        <div style="background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div>
+              <h3 style="font-size: 0.95rem; font-weight: 700; color: #0f172a; margin: 0;">
+                <i class="fa-solid fa-chart-pie" style="color: #b38e5d; margin-right: 0.35rem;"></i>
+                Distribución de Actividades por Área
+              </h3>
+              <p style="font-size: 0.72rem; color: #64748b; margin: 2px 0 0 0;">Proporción porcentual del total de cursos ofertados</p>
+            </div>
+          </div>
+          <div style="position: relative; height: 280px; width: 100%;">
+            <canvas id="chart-distribucion-ejes"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tabla Comparativa Detallada de Metas vs Capturado -->
+      <div style="background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 1.5rem;">
+        <div style="padding: 1rem 1.25rem; background: #f8fafc; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+          <div>
+            <h3 style="font-size: 0.95rem; font-weight: 700; color: #0f172a; margin: 0;">
+              <i class="fa-solid fa-table" style="color: #1e3a8a; margin-right: 0.4rem;"></i>
+              Cédula de Carga y Cumplimiento de Metas por Unidad y Área
+            </h3>
+            <p style="font-size: 0.72rem; color: #64748b; margin: 2px 0 0 0;">Valores oficiales 2027 (+2.6% institucional) contrastados con los cursos capturados</p>
+          </div>
+          <div style="font-size: 0.74rem; color: #475569; font-weight: 600;">
+            <i class="fa-solid fa-info-circle" style="color: #2563eb;"></i> Cifras actualizadas al instante al importar o editar
+          </div>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="table" style="width: 100%; border-collapse: collapse; font-size: 0.82rem; margin: 0;">
+            <thead>
+              <tr style="background: #f1f5f9; color: #334155; text-align: left; border-bottom: 2px solid #cbd5e1;">
+                <th style="padding: 0.75rem 1rem;">Unidad Operativa</th>
+                <th style="padding: 0.75rem 1rem;">Área Temática</th>
+                <th style="padding: 0.75rem 1rem; text-align: right;">Meta PAA 2027</th>
+                <th style="padding: 0.75rem 1rem; text-align: right;">Cupos Capturados</th>
+                <th style="padding: 0.75rem 1rem; text-align: right;">Diferencia</th>
+                <th style="padding: 0.75rem 1rem; text-align: center; width: 180px;">% Avance</th>
+                <th style="padding: 0.75rem 1rem; text-align: right;">Cursos</th>
+                <th style="padding: 0.75rem 1rem; text-align: right;">Asistencias</th>
+                <th style="padding: 0.75rem 1rem; text-align: center;">Estatus</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-metas-capturadas-detalle">
+              <!-- Filas dinámicas -->
+            </tbody>
+            <tfoot id="tfoot-metas-capturadas-total" style="background: #f8fafc; font-weight: 800; border-top: 2px solid #cbd5e1;">
+              <!-- Fila de totales -->
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+      <!-- Desglose Adicional: Instructores y Espacios -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.25rem;">
+        
+        <!-- Top Docentes de la Unidad -->
+        <div style="background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <h3 style="font-size: 0.92rem; font-weight: 700; color: #0f172a; margin: 0 0 0.8rem 0; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-chalkboard-user" style="color: #2563eb;"></i> Carga por Docente / Instructor (Top 10)
+          </h3>
+          <div style="overflow-x: auto;">
+            <table class="table" style="width: 100%; font-size: 0.78rem;">
+              <thead>
+                <tr style="background: #f8fafc; color: #64748b;">
+                  <th>Docente</th>
+                  <th>Tipo</th>
+                  <th style="text-align: right;">Cursos</th>
+                  <th style="text-align: right;">Cupos</th>
+                  <th style="text-align: right;">Horas/Sem</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-metas-docentes-top">
+                <!-- Dinámico -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Ocupación de Instalaciones -->
+        <div style="background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+          <h3 style="font-size: 0.92rem; font-weight: 700; color: #0f172a; margin: 0 0 0.8rem 0; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-door-open" style="color: #059669;"></i> Ocupación de Aulas e Instalaciones
+          </h3>
+          <div style="overflow-x: auto;">
+            <table class="table" style="width: 100%; font-size: 0.78rem;">
+              <thead>
+                <tr style="background: #f8fafc; color: #64748b;">
+                  <th>Instalación / Espacio</th>
+                  <th style="text-align: right;">Cursos</th>
+                  <th style="text-align: right;">Cupos</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-metas-aulas-top">
+                <!-- Dinámico -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+<div id="modal-importador" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(3px);">
     <div style="background: #ffffff; border-radius: 12px; max-width: 920px; width: 95%; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden;">
       
       <!-- Modal Header -->
@@ -6468,7 +6735,8 @@
         'tab-pass': 'btn-t-pass',
         'tab-cartelera': 'btn-t-cart',
         'tab-reporte': 'btn-t-rep',
-        'tab-agenda': 'btn-t-agenda'
+        'tab-agenda': 'btn-t-agenda',
+        'tab-metas-capturadas': 'btn-t-metas'
       };
       if (mapping[idTab]) {
         const btn = document.getElementById(mapping[idTab]);
@@ -6478,6 +6746,7 @@
       if (idTab === 'tab-reporte') actualizarCedulaEjecutiva();
       if (idTab === 'tab-cartelera') generarCarteleraVisual();
       if (idTab === 'tab-pass') actualizarMonitorPASS();
+      if (idTab === 'tab-metas-capturadas') actualizarTabMetasCapturadas();
       if (idTab === 'tab-agenda') {
         const selectDoc = document.getElementById('agenda-docente');
         if (!selectDoc || !selectDoc.value || selectDoc.options.length === 0) {
@@ -8764,6 +9033,7 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
       renderizarTablaDiagnosticos();
       renderizarTablaCECs();
       actualizarMonitorPASS();
+      actualizarTabMetasCapturadas();
 
       const totCursos = cursosList.length;
       let totH = 0, totAsist = 0, totValle = 0, totCupoInscritos = 0;
@@ -10489,6 +10759,581 @@ function obtenerSiguienteDiaClase(fechaDesde, dowTarget, festivosSet) {
         if (btnConfirmar) {
           btnConfirmar.disabled = false;
           btnConfirmar.innerHTML = '<i class="fa-solid fa-circle-check"></i> Confirmar e Incorporar a la Programación';
+        }
+      }
+    }
+
+  
+    // =========================================================
+    // TAB 9: METAS CAPTURADAS 2027 - GRÁFICAS Y CARGA POR UNIDAD
+    // =========================================================
+    let chartMetasUnidadesInst = null;
+    let chartMetasAreasInst = null;
+    let chartDistribucionEjesInst = null;
+
+    function actualizarTabMetasCapturadas() {
+      const uFiltro = document.getElementById('metas-filtro-unidad')?.value || 'todas';
+      const aFiltro = document.getElementById('metas-filtro-area')?.value || 'todas';
+
+      // 1. Cursos activos (excluyendo aquellos con solicitud de baja aprobada)
+      const cursosActivos = (cursosList || []).filter(c => c && c.id && !c.solicitudBaja);
+
+      // Metas institucionales globales
+      const metasEstatalesAreas = { "Capacitación": 9666, "Deporte": 16873, "Cultura": 4741, "Salud": 11920 };
+      const areasList = ["Deporte", "Capacitación", "Cultura", "Salud"];
+
+      // Recopilar estadísticas por unidad y por área
+      const stats = {};
+      Object.keys(UOPSI_CATALOGO).forEach(uCve => {
+        stats[uCve] = {
+          nombre: UOPSI_CATALOGO[uCve].nombre,
+          metaTotal: UOPSI_CATALOGO[uCve].meta,
+          cuposTotal: 0,
+          cursosTotal: 0,
+          asistTotal: 0,
+          horasTotal: 0,
+          porArea: {
+            "Deporte": { cupos: 0, cursos: 0, asist: 0, horas: 0, meta: UOPSI_CATALOGO[uCve].metasArea["Deporte"] || 0 },
+            "Capacitación": { cupos: 0, cursos: 0, asist: 0, horas: 0, meta: UOPSI_CATALOGO[uCve].metasArea["Capacitación"] || 0 },
+            "Cultura": { cupos: 0, cursos: 0, asist: 0, horas: 0, meta: UOPSI_CATALOGO[uCve].metasArea["Cultura"] || 0 },
+            "Salud": { cupos: 0, cursos: 0, asist: 0, horas: 0, meta: UOPSI_CATALOGO[uCve].metasArea["Salud"] || 0 }
+          },
+          docentes: {},
+          aulas: {}
+        };
+      });
+
+      // Procesar cursos activos
+      cursosActivos.forEach(c => {
+        const uCve = c.uopsiCve || '2601';
+        if (!stats[uCve]) return;
+        const area = normalizarAreaEje(c.eje || c.area || '');
+        const cupo = parseInt(c.cupo) || 0;
+        const asist = parseInt(c.metaSipsi) || 0;
+        const horas = parseFloat(c.horasTotales) || 0;
+
+        stats[uCve].cuposTotal += cupo;
+        stats[uCve].cursosTotal += 1;
+        stats[uCve].asistTotal += asist;
+        stats[uCve].horasTotal += horas;
+
+        if (stats[uCve].porArea[area]) {
+          stats[uCve].porArea[area].cupos += cupo;
+          stats[uCve].porArea[area].cursos += 1;
+          stats[uCve].porArea[area].asist += asist;
+          stats[uCve].porArea[area].horas += horas;
+        }
+
+        // Docentes
+        const docNom = (c.instructor || 'Sin Asignar').trim();
+        if (!stats[uCve].docentes[docNom]) {
+          stats[uCve].docentes[docNom] = { nombre: docNom, tipo: c.tipoInst || 'Docente', cursos: 0, cupos: 0, horasSem: 0 };
+        }
+        stats[uCve].docentes[docNom].cursos += 1;
+        stats[uCve].docentes[docNom].cupos += cupo;
+        stats[uCve].docentes[docNom].horasSem += (parseFloat(c.horasSemana) || 0);
+
+        // Aulas
+        const aulaNom = (c.aula || 'SIN INSTALACION').trim();
+        if (!stats[uCve].aulas[aulaNom]) {
+          stats[uCve].aulas[aulaNom] = { aula: aulaNom, cursos: 0, cupos: 0 };
+        }
+        stats[uCve].aulas[aulaNom].cursos += 1;
+        stats[uCve].aulas[aulaNom].cupos += cupo;
+      });
+
+      // Complementarias validadas (suman a cupo/asistencias)
+      (complementariasList || []).filter(a => a && a.padronSipsi).forEach(a => {
+        const uCve = a.uopsiCve || '2601';
+        if (stats[uCve]) {
+          const asis = parseInt(a.asistentes) || 0;
+          stats[uCve].cuposTotal += asis;
+          stats[uCve].asistTotal += asis;
+          const aArea = normalizarAreaEje(a.area || a.eje || 'Salud');
+          if (stats[uCve].porArea[aArea]) {
+            stats[uCve].porArea[aArea].cupos += asis;
+            stats[uCve].porArea[aArea].asist += asis;
+          }
+        }
+      });
+
+      // 2. Calcular KPIs según selección
+      let metaTarget = 0;
+      let cuposTarget = 0;
+      let cursosTarget = 0;
+      let asistTarget = 0;
+      let horasTarget = 0;
+
+      if (uFiltro === 'todas') {
+        if (aFiltro === 'todas') {
+          metaTarget = META_MINIMA_SONORA || 43200;
+          Object.values(stats).forEach(u => {
+            cuposTarget += u.cuposTotal;
+            cursosTarget += u.cursosTotal;
+            asistTarget += u.asistTotal;
+            horasTarget += u.horasTotal;
+          });
+        } else {
+          metaTarget = metasEstatalesAreas[aFiltro] || 0;
+          Object.values(stats).forEach(u => {
+            const ar = u.porArea[aFiltro];
+            cuposTarget += ar.cupos;
+            cursosTarget += ar.cursos;
+            asistTarget += ar.asist;
+            horasTarget += ar.horas;
+          });
+        }
+      } else {
+        const uData = stats[uFiltro] || {};
+        if (aFiltro === 'todas') {
+          metaTarget = uData.metaTotal || 0;
+          cuposTarget = uData.cuposTotal || 0;
+          cursosTarget = uData.cursosTotal || 0;
+          asistTarget = uData.asistTotal || 0;
+          horasTarget = uData.horasTotal || 0;
+        } else {
+          const ar = (uData.porArea && uData.porArea[aFiltro]) || { meta: 0, cupos: 0, cursos: 0, asist: 0, horas: 0 };
+          metaTarget = ar.meta || 0;
+          cuposTarget = ar.cupos || 0;
+          cursosTarget = ar.cursos || 0;
+          asistTarget = ar.asist || 0;
+          horasTarget = ar.horas || 0;
+        }
+      }
+
+      const pctCumplimiento = metaTarget > 0 ? ((cuposTarget / metaTarget) * 100) : 0;
+      const brecha = cuposTarget - metaTarget;
+
+      // Actualizar Elementos del DOM
+      const elMeta = document.getElementById('kpi-meta-objetivo');
+      if (elMeta) elMeta.textContent = metaTarget.toLocaleString();
+
+      const elCupos = document.getElementById('kpi-cupos-capturados');
+      if (elCupos) elCupos.textContent = cuposTarget.toLocaleString();
+
+      const elPct = document.getElementById('kpi-pct-cumplimiento');
+      if (elPct) {
+        elPct.textContent = pctCumplimiento.toFixed(1) + '%';
+        elPct.style.color = pctCumplimiento >= 100 ? '#0a5c36' : (pctCumplimiento >= 75 ? '#b38e5d' : '#dc2626');
+      }
+
+      const elBrecha = document.getElementById('kpi-brecha-texto');
+      if (elBrecha) {
+        if (brecha >= 0) {
+          elBrecha.innerHTML = `<span style="color:#0a5c36; font-weight:700;"><i class="fa-solid fa-arrow-up"></i> +${brecha.toLocaleString()} cupos superávit</span>`;
+        } else {
+          elBrecha.innerHTML = `<span style="color:#dc2626; font-weight:700;"><i class="fa-solid fa-arrow-down"></i> ${brecha.toLocaleString()} cupos faltantes</span>`;
+        }
+      }
+
+      const elAct = document.getElementById('kpi-total-actividades');
+      if (elAct) elAct.textContent = cursosTarget.toLocaleString();
+
+      const elAsist = document.getElementById('kpi-total-asistencias');
+      if (elAsist) elAsist.textContent = asistTarget.toLocaleString();
+
+      const elHoras = document.getElementById('kpi-horas-sub');
+      if (elHoras) elHoras.innerHTML = `<i class="fa-solid fa-clock"></i> ${Math.round(horasTarget).toLocaleString()} horas de clase totales`;
+
+      // Barra de progreso
+      const barraFill = document.getElementById('barra-progreso-global-fill');
+      const barraLbl = document.getElementById('lbl-barra-progreso-num');
+      const pctClamped = Math.min(100, Math.max(0, pctCumplimiento));
+      if (barraFill) {
+        barraFill.style.width = pctClamped + '%';
+        barraFill.style.background = pctCumplimiento >= 100
+          ? 'linear-gradient(90deg, #0a5c36, #16a34a)'
+          : (pctCumplimiento >= 75 ? 'linear-gradient(90deg, #b38e5d, #eab308)' : 'linear-gradient(90deg, #dc2626, #f87171)');
+      }
+      if (barraLbl) {
+        barraLbl.textContent = `${cuposTarget.toLocaleString()} / ${metaTarget.toLocaleString()} cupos (${pctCumplimiento.toFixed(1)}%)`;
+        barraLbl.style.color = pctCumplimiento >= 100 ? '#0a5c36' : (pctCumplimiento >= 75 ? '#b38e5d' : '#dc2626');
+      }
+
+      // Badge Semáforo
+      const badgeEstatus = document.getElementById('metas-badge-estatus');
+      if (badgeEstatus) {
+        if (pctCumplimiento >= 100) {
+          badgeEstatus.innerHTML = '<i class="fa-solid fa-circle-check"></i> Meta Superada / Cumplida';
+          badgeEstatus.style.background = '#ecfdf5';
+          badgeEstatus.style.color = '#065f46';
+          badgeEstatus.style.borderColor = '#a7f3d0';
+        } else if (pctCumplimiento >= 75) {
+          badgeEstatus.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> En Progreso (Avanzado)';
+          badgeEstatus.style.background = '#fefce8';
+          badgeEstatus.style.color = '#854d0e';
+          badgeEstatus.style.borderColor = '#fef08a';
+        } else {
+          badgeEstatus.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Requiere Carga de Cursos';
+          badgeEstatus.style.background = '#fef2f2';
+          badgeEstatus.style.color = '#991b1b';
+          badgeEstatus.style.borderColor = '#fecaca';
+        }
+      }
+
+      // 3. Renderizar Gráficas con Chart.js si está cargado
+      if (typeof Chart !== 'undefined') {
+        renderizarGraficasMetas(stats, uFiltro, aFiltro);
+      }
+
+      // 4. Renderizar Tabla Detallada
+      renderizarTablaDetalladaMetas(stats, uFiltro, aFiltro);
+
+      // 5. Renderizar Top Docentes y Aulas
+      renderizarTopDocentesYAulas(stats, uFiltro);
+    }
+
+    function renderizarGraficasMetas(stats, uFiltro, aFiltro) {
+      const ctxUnidades = document.getElementById('chart-metas-unidades')?.getContext('2d');
+      const ctxAreas = document.getElementById('chart-metas-areas')?.getContext('2d');
+      const ctxEjes = document.getElementById('chart-distribucion-ejes')?.getContext('2d');
+
+      // Gráfica 1: Comparativa por Unidad
+      if (ctxUnidades) {
+        if (chartMetasUnidadesInst) chartMetasUnidadesInst.destroy();
+        
+        const labels = ['Hermosillo', 'Obregón', 'Nogales', 'Navojoa', 'Empalme', 'Huatabampo'];
+        const cves = ['2601', '2602', '2603', '2604', '2605', '2606'];
+        
+        const dataMetas = cves.map(cve => aFiltro === 'todas' ? stats[cve].metaTotal : stats[cve].porArea[aFiltro].meta);
+        const dataCapturados = cves.map(cve => aFiltro === 'todas' ? stats[cve].cuposTotal : stats[cve].porArea[aFiltro].cupos);
+
+        chartMetasUnidadesInst = new Chart(ctxUnidades, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: 'Meta PAA Oficial 2027 (+2.6%)',
+                data: dataMetas,
+                backgroundColor: 'rgba(30, 58, 138, 0.85)',
+                borderColor: '#1e3a8a',
+                borderWidth: 1,
+                borderRadius: 4
+              },
+              {
+                label: 'Cupos Capturados / Padrón',
+                data: dataCapturados,
+                backgroundColor: 'rgba(10, 92, 54, 0.85)',
+                borderColor: '#0a5c36',
+                borderWidth: 1,
+                borderRadius: 4
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'top', labels: { boxWidth: 12, font: { size: 10 } } },
+              tooltip: {
+                callbacks: {
+                  afterBody: (context) => {
+                    const idx = context[0].dataIndex;
+                    const meta = dataMetas[idx];
+                    const capt = dataCapturados[idx];
+                    const pct = meta > 0 ? ((capt / meta) * 100).toFixed(1) : 0;
+                    return `Avance: ${pct}% (${capt >= meta ? 'Superada' : 'Faltan ' + (meta - capt)})`;
+                  }
+                }
+              }
+            },
+            scales: {
+              y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { font: { size: 10 } } },
+              x: { grid: { display: false }, ticks: { font: { size: 10, weight: 'bold' } } }
+            }
+          }
+        });
+      }
+
+      // Gráfica 2: Cumplimiento por Área Temática
+      if (ctxAreas) {
+        if (chartMetasAreasInst) chartMetasAreasInst.destroy();
+        
+        const areasLabels = ['Deporte', 'Capacitación', 'Cultura', 'Salud'];
+        const metasAreaValues = [];
+        const captAreaValues = [];
+
+        areasLabels.forEach(area => {
+          let m = 0, c = 0;
+          if (uFiltro === 'todas') {
+            Object.values(stats).forEach(u => {
+              m += u.porArea[area].meta;
+              c += u.porArea[area].cupos;
+            });
+          } else {
+            m = stats[uFiltro]?.porArea[area]?.meta || 0;
+            c = stats[uFiltro]?.porArea[area]?.cupos || 0;
+          }
+          metasAreaValues.push(m);
+          captAreaValues.push(c);
+        });
+
+        chartMetasAreasInst = new Chart(ctxAreas, {
+          type: 'bar',
+          data: {
+            labels: areasLabels,
+            datasets: [
+              {
+                label: 'Meta por Área',
+                data: metasAreaValues,
+                backgroundColor: 'rgba(179, 142, 93, 0.85)',
+                borderColor: '#b38e5d',
+                borderWidth: 1,
+                borderRadius: 4
+              },
+              {
+                label: 'Cupos Capturados',
+                data: captAreaValues,
+                backgroundColor: 'rgba(5, 150, 105, 0.85)',
+                borderColor: '#059669',
+                borderWidth: 1,
+                borderRadius: 4
+              }
+            ]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'top', labels: { boxWidth: 12, font: { size: 10 } } }
+            },
+            scales: {
+              x: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { font: { size: 10 } } },
+              y: { grid: { display: false }, ticks: { font: { size: 10, weight: 'bold' } } }
+            }
+          }
+        });
+      }
+
+      // Gráfica 3: Distribución de Actividades por Eje (Dona)
+      if (ctxEjes) {
+        if (chartDistribucionEjesInst) chartDistribucionEjesInst.destroy();
+        
+        const areasLabels = ['Deporte', 'Capacitación', 'Cultura', 'Salud'];
+        const cursosAreaCount = areasLabels.map(area => {
+          let count = 0;
+          if (uFiltro === 'todas') {
+            Object.values(stats).forEach(u => count += u.porArea[area].cursos);
+          } else {
+            count = stats[uFiltro]?.porArea[area]?.cursos || 0;
+          }
+          return count;
+        });
+
+        chartDistribucionEjesInst = new Chart(ctxEjes, {
+          type: 'doughnut',
+          data: {
+            labels: areasLabels,
+            datasets: [{
+              data: cursosAreaCount,
+              backgroundColor: [
+                '#059669', // Deporte (Verde)
+                '#2563eb', // Capacitación (Azul)
+                '#b38e5d', // Cultura (Dorado)
+                '#dc2626'  // Salud (Rojo)
+              ],
+              hoverOffset: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+            },
+            cutout: '65%'
+          }
+        });
+      }
+    }
+
+    function renderizarTablaDetalladaMetas(stats, uFiltro, aFiltro) {
+      const tbody = document.getElementById('tbody-metas-capturadas-detalle');
+      const tfoot = document.getElementById('tfoot-metas-capturadas-total');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      const uKeys = (uFiltro === 'todas') ? Object.keys(UOPSI_CATALOGO) : [uFiltro];
+      const areasKeys = (aFiltro === 'todas') ? ["Deporte", "Capacitación", "Cultura", "Salud"] : [aFiltro];
+
+      let totMetaGlobal = 0;
+      let totCuposGlobal = 0;
+      let totCursosGlobal = 0;
+      let totAsistGlobal = 0;
+
+      uKeys.forEach(uCve => {
+        const u = stats[uCve];
+        if (!u) return;
+
+        areasKeys.forEach((area, aIdx) => {
+          const ar = u.porArea[area];
+          if (!ar) return;
+
+          totMetaGlobal += ar.meta;
+          totCuposGlobal += ar.cupos;
+          totCursosGlobal += ar.cursos;
+          totAsistGlobal += ar.asist;
+
+          const pct = ar.meta > 0 ? ((ar.cupos / ar.meta) * 100) : 0;
+          const dif = ar.cupos - ar.meta;
+
+          let badgeHtml = '';
+          if (pct >= 100) {
+            badgeHtml = `<span style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; padding:2px 8px; border-radius:12px; font-weight:700; font-size:0.68rem;"><i class="fa-solid fa-check"></i> Cumplida</span>`;
+          } else if (pct >= 75) {
+            badgeHtml = `<span style="background:#fefce8; color:#854d0e; border:1px solid #fef08a; padding:2px 8px; border-radius:12px; font-weight:700; font-size:0.68rem;"><i class="fa-solid fa-hourglass-half"></i> En Proceso</span>`;
+          } else {
+            badgeHtml = `<span style="background:#fef2f2; color:#991b1b; border:1px solid #fecaca; padding:2px 8px; border-radius:12px; font-weight:700; font-size:0.68rem;"><i class="fa-solid fa-arrow-up-right-dots"></i> Requiere Carga</span>`;
+          }
+
+          const pctClamped = Math.min(100, Math.max(0, pct));
+          const colorBarra = pct >= 100 ? '#0a5c36' : (pct >= 75 ? '#b38e5d' : '#dc2626');
+
+          const tr = document.createElement('tr');
+          tr.style.borderBottom = '1px solid #e2e8f0';
+          if (aIdx % 2 === 1) tr.style.background = '#fcfdfe';
+
+          tr.innerHTML = `
+            <td style="padding: 0.65rem 1rem;">
+              <strong>${u.nombre}</strong>
+              <div style="font-size:0.68rem; color:#64748b;">Clave: ${uCve}</div>
+            </td>
+            <td style="padding: 0.65rem 1rem;">
+              <span style="font-weight:600; color:#0f172a;">${area}</span>
+            </td>
+            <td style="padding: 0.65rem 1rem; text-align: right; font-weight: 700; color: #1e3a8a;">
+              ${ar.meta.toLocaleString()}
+            </td>
+            <td style="padding: 0.65rem 1rem; text-align: right; font-weight: 800; color: #0a5c36;">
+              ${ar.cupos.toLocaleString()}
+            </td>
+            <td style="padding: 0.65rem 1rem; text-align: right; font-weight: 700; color: ${dif >= 0 ? '#0a5c36' : '#dc2626'};">
+              ${dif >= 0 ? '+' + dif.toLocaleString() : dif.toLocaleString()}
+            </td>
+            <td style="padding: 0.65rem 1rem;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <div style="flex:1; height:8px; background:#e2e8f0; border-radius:10px; overflow:hidden;">
+                  <div style="width:${pctClamped}%; height:100%; background:${colorBarra}; border-radius:10px;"></div>
+                </div>
+                <span style="font-size:0.75rem; font-weight:800; min-width:45px; text-align:right; color:${colorBarra};">${pct.toFixed(1)}%</span>
+              </div>
+            </td>
+            <td style="padding: 0.65rem 1rem; text-align: right; font-weight: 600;">
+              ${ar.cursos.toLocaleString()}
+            </td>
+            <td style="padding: 0.65rem 1rem; text-align: right; font-weight: 600; color: #64748b;">
+              ${ar.asist.toLocaleString()}
+            </td>
+            <td style="padding: 0.65rem 1rem; text-align: center;">
+              ${badgeHtml}
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      });
+
+      // Pie de tabla con totales
+      if (tfoot) {
+        const pctTot = totMetaGlobal > 0 ? ((totCuposGlobal / totMetaGlobal) * 100) : 0;
+        const difTot = totCuposGlobal - totMetaGlobal;
+        tfoot.innerHTML = `
+          <tr style="border-top: 2px solid #cbd5e1; background: #f8fafc;">
+            <td style="padding: 0.8rem 1rem;" colspan="2">
+              <strong style="font-size: 0.88rem; color: #0f172a;">TOTAL RESUMEN</strong>
+            </td>
+            <td style="padding: 0.8rem 1rem; text-align: right; color: #1e3a8a; font-size: 0.92rem;">
+              ${totMetaGlobal.toLocaleString()}
+            </td>
+            <td style="padding: 0.8rem 1rem; text-align: right; color: #0a5c36; font-size: 0.95rem;">
+              ${totCuposGlobal.toLocaleString()}
+            </td>
+            <td style="padding: 0.8rem 1rem; text-align: right; color: ${difTot >= 0 ? '#0a5c36' : '#dc2626'}; font-size: 0.92rem;">
+              ${difTot >= 0 ? '+' + difTot.toLocaleString() : difTot.toLocaleString()}
+            </td>
+            <td style="padding: 0.8rem 1rem; text-align: center; color: ${pctTot >= 100 ? '#0a5c36' : '#b38e5d'}; font-size: 0.95rem;">
+              ${pctTot.toFixed(1)}%
+            </td>
+            <td style="padding: 0.8rem 1rem; text-align: right; font-size: 0.92rem;">
+              ${totCursosGlobal.toLocaleString()}
+            </td>
+            <td style="padding: 0.8rem 1rem; text-align: right; color: #64748b; font-size: 0.92rem;">
+              ${totAsistGlobal.toLocaleString()}
+            </td>
+            <td style="padding: 0.8rem 1rem; text-align: center;">
+              ${pctTot >= 100 ? '<span style="color:#0a5c36; font-weight:800;">ALCANZADA</span>' : '<span style="color:#b38e5d; font-weight:800;">EN AVANCE</span>'}
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    function renderizarTopDocentesYAulas(stats, uFiltro) {
+      const tbodyDoc = document.getElementById('tbody-metas-docentes-top');
+      const tbodyAul = document.getElementById('tbody-metas-aulas-top');
+
+      // Unir docentes de la selección
+      const todosDocentes = {};
+      const todasAulas = {};
+
+      const uKeys = (uFiltro === 'todas') ? Object.keys(UOPSI_CATALOGO) : [uFiltro];
+      uKeys.forEach(uCve => {
+        const u = stats[uCve];
+        if (!u) return;
+        Object.values(u.docentes).forEach(d => {
+          if (!todosDocentes[d.nombre]) {
+            todosDocentes[d.nombre] = { nombre: d.nombre, tipo: d.tipo, cursos: 0, cupos: 0, horasSem: 0 };
+          }
+          todosDocentes[d.nombre].cursos += d.cursos;
+          todosDocentes[d.nombre].cupos += d.cupos;
+          todosDocentes[d.nombre].horasSem += d.horasSem;
+        });
+
+        Object.values(u.aulas).forEach(a => {
+          if (!todasAulas[a.aula]) {
+            todasAulas[a.aula] = { aula: a.aula, cursos: 0, cupos: 0 };
+          }
+          todasAulas[a.aula].cursos += a.cursos;
+          todasAulas[a.aula].cupos += a.cupos;
+        });
+      });
+
+      if (tbodyDoc) {
+        tbodyDoc.innerHTML = '';
+        const topDoc = Object.values(todosDocentes).sort((a,b) => b.cupos - a.cupos).slice(0, 10);
+        if (!topDoc.length) {
+          tbodyDoc.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:1rem;">No hay docentes asignados aún</td></tr>';
+        } else {
+          topDoc.forEach(d => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td style="padding: 4px 8px;"><strong>${d.nombre}</strong></td>
+              <td style="padding: 4px 8px;"><span class="badge" style="font-size:0.65rem; background:#f1f5f9; color:#475569;">${d.tipo}</span></td>
+              <td style="padding: 4px 8px; text-align:right; font-weight:600;">${d.cursos}</td>
+              <td style="padding: 4px 8px; text-align:right; font-weight:700; color:#0a5c36;">${d.cupos.toLocaleString()}</td>
+              <td style="padding: 4px 8px; text-align:right; color:#64748b;">${Math.round(d.horasSem)}h</td>
+            `;
+            tbodyDoc.appendChild(tr);
+          });
+        }
+      }
+
+      if (tbodyAul) {
+        tbodyAul.innerHTML = '';
+        const topAul = Object.values(todasAulas).sort((a,b) => b.cursos - a.cursos).slice(0, 10);
+        if (!topAul.length) {
+          tbodyAul.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#94a3b8; padding:1rem;">No hay instalaciones registradas</td></tr>';
+        } else {
+          topAul.forEach(a => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td style="padding: 4px 8px;"><strong>${a.aula}</strong></td>
+              <td style="padding: 4px 8px; text-align:right; font-weight:600;">${a.cursos}</td>
+              <td style="padding: 4px 8px; text-align:right; font-weight:700; color:#1e3a8a;">${a.cupos.toLocaleString()}</td>
+            `;
+            tbodyAul.appendChild(tr);
+          });
         }
       }
     }
